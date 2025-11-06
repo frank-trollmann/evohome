@@ -1,6 +1,6 @@
 
 from simulation.prediction_system import Prediction_System
-from examples.data_recording.data_recorder import Data_Recorder
+from examples.simple_scenario.data_recorder import Data_Recorder
 
 import pandas as pd
 
@@ -20,7 +20,7 @@ class Decision_Tree_Predictor(Prediction_System):
 
     def __init__(self, record_data):
         if(record_data):
-            self.data_recorder = Data_Recorder("examples/data_recording/data/running.pickle")
+            self.data_recorder = Data_Recorder("examples/simple_scenario/data/running.pickle")
         else:
             self.data_recorder = None
 
@@ -42,7 +42,7 @@ class Decision_Tree_Predictor(Prediction_System):
         print("simulation started. Training Model.")
 
         # load data
-        file_name = "examples/data_recording/data/recording.pickle"
+        file_name = "examples/simple_scenario/data/recording.pickle"
         data_frame = pd.read_pickle(file_name)
         training_features = ["weekday","hour", "minute"]
         predicted_features = []
