@@ -26,6 +26,7 @@ class Simulation:
 
         self.scenario = None
         self.prediction_system = None
+        self.data_recorder = None
         
         self.tick_count = 0
         self.prediction_delay_in_min = prediction_delay_in_min
@@ -43,6 +44,10 @@ class Simulation:
     def set_prediction_system(self,prediction_system):
         self.prediction_system = prediction_system
         self.prediction_system.set_simulation(self)
+
+    def set_data_recorder(self,data_recorder):
+        self.data_recorder = data_recorder
+        self.data_recorder.set_simulation(self)
 
     def start(self):
         if(self.scenario == None):
@@ -64,34 +69,43 @@ class Simulation:
 
 
         # show window if needed.
-        if(self.display_user_interface):
+        if self.display_user_interface:
             window = Main_window(scenario_copy)
 
-        if(self.prediction_system != None):
+        if self.prediction_system != None :
             self.prediction_system.on_simulation_start()
+        
+        if self.data_recorder != None:
+            self.data_recorder.on_simulation_start()
 
         # run simulation
         self.tick_count = 0
         while True:
             self.tick()
 
-            if(self.prediction_system != None):
-                data_point = self.get_sensor_values()
-                self.prediction_system.on_new_datapoint(copy(self.current_time), data_point, self.get_current_prediction())
+            # update prediction forecast
+            if self.prediction_system is not None:
                 prediction = self.prediction_system.predict_presence(self.predicted_time)
                 self.predictions.append(prediction)
+            
+            # update data recorder
+            if self.data_recorder is not None:
+                data_point = self.get_sensor_values()
+                prediction = self.get_current_prediction()
+                self.data_recorder.on_new_datapoint(copy(self.current_time),data_point, prediction)
 
-                if(len(self.predictions) > self.prediction_delay_in_min + 1):
+            # update list of predictions
+            if(len(self.predictions) > self.prediction_delay_in_min + 1):
                     self.predictions.popleft()
 
+            # update GUI
             if(self.display_user_interface):
                 time.sleep(0.1)
                 window.update_content(self)
                 if window.end_selected:
                     self.end()
 
-
-
+            # end condition
             self.tick_count += 1
             if self.max_simulated_minutes > 0 and self.tick_count >= self.max_simulated_minutes:
                 self.end()
@@ -99,9 +113,14 @@ class Simulation:
     def end(self):
         if(self.prediction_system != None):
             self.prediction_system.on_simulation_end()
-            if(self.display_user_interface):
+
+        if self.data_recorder != None:
+            self.data_recorder.on_simulation_end()
+
+        if(self.display_user_interface):
                 pygame.quit()
-            sys.exit()
+
+        sys.exit()
 
 
     def tick(self):
