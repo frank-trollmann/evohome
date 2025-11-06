@@ -16,4 +16,9 @@ The project is structured along the following folders:
 
 # Useage
 
-The scenario can be started as a module via *python -m examples.simple_scenario.main <args>* from the main folder of the project.
+The scenario can be started as a module via *python -m examples.simple_scenario.main <execution_mode>* from the main folder of the project.
+
+Execution mode can have one of three values:
+- *RECORD*: runs the simulation for 6 months, recording presence data. Data will be stored in *data/recording.pickle* and can be explored using *data_exploration.ipynb*
+- RUN:  runs the simulation for 24 months, recording presence data and predictions. Data will be stored in *data/running.pickle* and can be explored using *model_evaluation.ipynb*
+- VIEW: runs the simulation indefinitely with predictions and a user interface. No data will be recorded
