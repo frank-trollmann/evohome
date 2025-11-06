@@ -1,9 +1,9 @@
 import sys
 
-import domain_model.scenario
-from examples.simple_scenario import extended_data_recorder
 from examples.simple_scenario.src.extended_data_recorder import Extended_Data_Recorder
 from examples.simple_scenario.src.decision_tree_predictor import Decision_Tree_Predictor
+from examples.simple_scenario.src.simple_scenario import create_simple_scenario
+
 from simulation import prediction_system
 from simulation.simulation import Simulation
 
@@ -19,7 +19,7 @@ if __name__ == "__main__":
         print(f"Invalid execution mode {execution_mode}. Please provide one of the following arguments: RECORD/RUN/VIEW")
         sys.exit()
 
-    scenario = domain_model.scenario.create_test_scenario()
+    scenario = create_simple_scenario()
     simulation = Simulation(display_user_interface = execution_mode == "VIEW", 
                             max_simulated_minutes = -1,
                             prediction_delay_in_min = 60)
