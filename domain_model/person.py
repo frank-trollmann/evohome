@@ -40,7 +40,7 @@ class Person:
         if new_room != None:
             new_room.persons.append(self)
 
-    def add_obligation(self,name, start_time, end_time, location = None, weekdays = None):
+    def add_obligation(self, obligation):
         """
             Adds an obligation to the person.
             
@@ -51,4 +51,14 @@ class Person:
                 location (Room): the location where the obligation happens. None means the location happens outside of the house.
                 weekdays (int[]): the weekdays where the obligation happens. 0 = Monday, 6 = Sunday. None means every day.
         """
-        self.obligations.append(Obligation(name,start_time,end_time,location,weekdays))
+        self.obligations.append(obligation)
+
+
+    def remove_obligation(self, obligation_name):
+        """
+            Removes an obligation from the person
+
+            Args:
+                name (string): the name of the obligation to remove.
+        """
+        self.obligations = [obligation for obligation in self.obligations if obligation.name != obligation_name]
