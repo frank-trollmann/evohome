@@ -2,8 +2,8 @@ import sys
 
 import domain_model.scenario
 from examples.simple_scenario import extended_data_recorder
-from examples.simple_scenario.extended_data_recorder import Extended_Data_Recorder
-from examples.simple_scenario.decision_tree_predictor import Decision_Tree_Predictor
+from examples.simple_scenario.src.extended_data_recorder import Extended_Data_Recorder
+from examples.simple_scenario.src.decision_tree_predictor import Decision_Tree_Predictor
 from simulation import prediction_system
 from simulation.simulation import Simulation
 

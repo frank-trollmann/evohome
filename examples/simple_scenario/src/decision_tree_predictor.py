@@ -1,6 +1,5 @@
 
 from simulation.prediction_system import Prediction_System
-from examples.simple_scenario.extended_data_recorder import Extended_Data_Recorder
 
 import pandas as pd
 
