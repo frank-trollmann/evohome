@@ -62,9 +62,7 @@ class Simulation:
         self.persons = scenario_copy.persons
         self.current_time = copy(scenario_copy.startTime)
         self.predicted_time = copy(self.current_time) + timedelta(minutes=self.prediction_delay_in_min)
-        self.person_simulators = []
-        for person in self.persons:
-            self.person_simulators.append(Person_Simulator(self, person))
+        self.person_simulators = [Person_Simulator(self,person) for person in self.persons]
         self.changes = sorted(scenario_copy.changes, key = lambda change: change.datetime)
 
 
@@ -127,7 +125,7 @@ class Simulation:
         self.current_time = self.current_time + self.delta_time
         self.predicted_time = self.predicted_time + self.delta_time
 
-        if(self.changes and self.current_time == self.changes[0].datetime):
+        while self.changes and self.current_time == self.changes[0].datetime:
             self.changes[0].execute(self)
             self.changes.pop(0)
             print("Change executed at ", self.current_time)
@@ -146,3 +144,7 @@ class Simulation:
         person.move_to_room(None)
         self.persons.remove(person)
         self.person_simulators = [sim for sim in self.person_simulators if sim.person != person]
+
+    def add_person(self,person):
+        self.persons.append(person)
+        self.person_simulators.append(Person_Simulator(self,person))
