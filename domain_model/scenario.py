@@ -30,7 +30,7 @@ class Scenario_Configuration:
 
 def create_test_scenario():
     scenario = Scenario_Configuration()
-    scenario.background_image = "images/house_1.png"
+    scenario.background_image = "examples/simple_scenario/images/house_1.png"
 
     house = House()
     scenario.house = house
