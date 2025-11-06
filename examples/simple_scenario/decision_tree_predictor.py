@@ -1,6 +1,6 @@
 
 from simulation.prediction_system import Prediction_System
-from examples.simple_scenario.data_recorder import Data_Recorder
+from examples.simple_scenario.extended_data_recorder import Extended_Data_Recorder
 
 import pandas as pd
 
@@ -18,28 +18,8 @@ class Decision_Tree_Predictor(Prediction_System):
         - room_n: the value of one room (0 or 1)
     """
 
-    def __init__(self, record_data):
-        if(record_data):
-            self.data_recorder = Data_Recorder("examples/simple_scenario/data/running.pickle")
-        else:
-            self.data_recorder = None
-
-    def set_simulation(self, simulation):
-        super().set_simulation(simulation)
-        if(self.data_recorder is not None):
-            self.data_recorder.set_simulation(simulation)
-
-
-    def on_new_datapoint(self, time, sensor_data, prediction ):
-        if self.data_recorder is not None:
-            self.data_recorder.on_new_datapoint(time, sensor_data, prediction)
-
-
     def on_simulation_start(self):
-        if self.data_recorder is not None:
-            self.data_recorder.on_simulation_start()
-
-        print("simulation started. Training Model.")
+        print("Decision Tree Predictor: Training Model")
 
         # load data
         file_name = "examples/simple_scenario/data/recording.pickle"
@@ -55,8 +35,8 @@ class Decision_Tree_Predictor(Prediction_System):
         self.model = tree.DecisionTreeClassifier()
         self.model.fit(X.values,y)
         
-        print("Model trained.")
-
+        print("Decision Tree Predictor: Training Finished")
+        
 
 
     def predict_presence(self, time):
@@ -66,10 +46,4 @@ class Decision_Tree_Predictor(Prediction_System):
         prediction = self.model.predict([[weekday, hour, minute]])
         return prediction[0]
 
-
-    def on_simulation_end(self):
-        if self.data_recorder is not None:
-            self.data_recorder.on_simulation_end()
-
-        print("simulation ended.")
        
