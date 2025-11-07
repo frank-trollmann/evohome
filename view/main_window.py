@@ -89,7 +89,7 @@ class Main_window:
         
 
     def draw_time(self,surface,simulation):
-        text = simulation.current_time.strftime("%m/%d/%Y, %H:%M:%S")
+        text = simulation.current_time.strftime("%m/%d/%Y, %H:%M:%S, %A")
         text_surface = pygame.font.SysFont('Comic Sans MS', 20).render(text,True,(0,0,0),(255,255,255))
         surface.blit(text_surface, (10,10))
 
