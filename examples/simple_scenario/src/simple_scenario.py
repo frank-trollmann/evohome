@@ -1,4 +1,5 @@
 from domain_model.changes.move_in_change import Move_In_Change
+from domain_model.changes.obligation_add_change import Obligation_Add_Change
 from domain_model.changes.obligation_remove_change import Obligation_Remove_Change
 from domain_model.obligation import Obligation
 from domain_model.scenario import Scenario_Configuration
@@ -138,8 +139,14 @@ def create_simple_scenario():
     scenario.changes.append(child_2_move_in)
 
     remove_cooking_change = Obligation_Remove_Change(datetime(year = 2021, month = 3, day = 2, hour = 0, minute = 0), parent1, "Cook")
-    add_cooking_change = Obligation_Remove_Change(datetime(year = 2021, month = 4, day = 2, hour = 0, minute = 0), parent1, "Cook")
+    cook2_obligation = Obligation("Cook2", 
+                                start_time= time(15,30), 
+                                end_time = time(16,30), 
+                                location = kitchen, 
+                                weekdays = [0,1,2,3,4,5])
+    add_cooking_change = Obligation_Add_Change(datetime(year = 2021, month = 3, day = 2, hour = 0, minute = 0), parent1, cook2_obligation)
     scenario.changes.append(remove_cooking_change)
+    scenario.changes.append(add_cooking_change) 
 
     return scenario
 
