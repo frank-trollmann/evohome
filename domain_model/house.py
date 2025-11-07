@@ -41,7 +41,7 @@ class House:
             rooms.append(self.rooms.get(name,None))
         return rooms
 
-    def add_transtion(self,room1, room2):
+    def add_transtion(self, room1, room2):
         """
             Adds a bidirectional transition between two rooms. 
             The rooms are not added and need to be added separately using add_room
@@ -50,8 +50,14 @@ class House:
                 room1 (Room): the source room.
                 room2 (Room): the target room.
         """
-        self.transitions[room1.name].append(room2.name)
-        self.transitions[room2.name].append(room1.name)
+        self.transitions[room1.name].append(room2)
+        self.transitions[room2.name].append(room1)
+
+    def get_adjacent_rooms(self, room):
+        """
+            returns the rooms adjacent to a given room
+        """
+        return self.transitions[room.name]
 
 
     def __add_room_function(self, function, room):
