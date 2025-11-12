@@ -43,13 +43,18 @@ class House:
 
     def add_transtion(self, room1, room2):
         """
-            Adds a bidirectional transition between two rooms. 
-            The rooms are not added and need to be added separately using add_room
+            Adds a bidirectional transition between two rooms.
+            The two rooms need to be already part of the house.
 
             Args:
                 room1 (Room): the source room.
                 room2 (Room): the target room.
         """
+        if not room1.name in self.rooms.keys():
+            raise Exception(f"Trying to add transition while {room1.name} is not part of house.")
+        if not room2.name in self.rooms.keys():
+            raise Exception(f"Trying to add transition while {room2.name} is not part of house.")
+        
         self.transitions[room1.name].append(room2)
         self.transitions[room2.name].append(room1)
 

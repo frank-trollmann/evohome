@@ -1,4 +1,5 @@
 
+from collections import deque
 from datetime import time
 from operator import truediv
 import random
@@ -6,9 +7,12 @@ import random
 from domain_model.room import Room
 from simulation import simulation
 from simulation.schedule_item import Schedule_Item
+from simulation.pathfinding import Pathfinding
 
 class Person_Simulator:
 
+    MODE_ACTIVITY = 0
+    MODE_MOVEMENT = 1
 
     def __init__(self, simulation, person):
         self.simulation = simulation
@@ -16,6 +20,8 @@ class Person_Simulator:
         self.schedule = []
         self.last_simulated_day = -1
         self.current_schedule_item = None
+        self.mode = Person_Simulator.MODE_ACTIVITY
+        self.path = None
 
     def tick(self):
         if self.simulation.current_time.day != self.last_simulated_day:
@@ -26,27 +32,57 @@ class Person_Simulator:
         while len(self.schedule) > 0 and now > self.schedule[0].end_time:
             del self.schedule[0]
 
-        # go to schedule position, if not there
-        if now > self.schedule[0].start_time:
-            if(self.current_schedule_item != self.schedule[0]):
-                #print(f"Person {self.person.name} new activity: {self.schedule[0].description}")
-                self.current_schedule_item = self.schedule[0]
-                self.person.move_to_room(self.schedule[0].get_room())
-            return
+        if self.mode == Person_Simulator.MODE_MOVEMENT:
+            self.move()
+        elif self.mode == Person_Simulator.MODE_ACTIVITY:
 
-        # pick leisure activity if not picked already
-        if(self.current_schedule_item != None):
-            self.current_schedule_item = None
-            leisure_rooms = [self.person.sleep_room, None]
-            leisure_rooms.extend(self.simulation.house.get_rooms_by_function(Room.FUNCTION_LEISURE))
-            picked_room = random.choice(leisure_rooms)
-            if picked_room == None:
-                pass
-                #print(f"Person {self.person.name} spending leisure time outside")
-            else:
-                pass
-                #print(f"Person {self.person.name} spending leisure time time in {picked_room.name}")
-            self.person.move_to_room(picked_room)
+            # go to schedule position, if not there
+            if now > self.schedule[0].start_time:
+                if(self.current_schedule_item != self.schedule[0]):
+                    self.current_schedule_item = self.schedule[0]
+                    self.start_movement(self.schedule[0].get_room())
+                    #self.person.move_to_room(self.schedule[0].get_room())
+                return
+
+            # pick leisure activity if not picked already
+            if(self.current_schedule_item != None):
+                self.current_schedule_item = None
+                leisure_rooms = [self.person.sleep_room, None]
+                leisure_rooms.extend(self.simulation.house.get_rooms_by_function(Room.FUNCTION_LEISURE))
+                picked_room = random.choice(leisure_rooms)
+                self.start_movement(picked_room)
+                #self.person.move_to_room(picked_room)
+
+    def move(self):
+        """
+            Moves the person towards the room.
+            this makes a step towards the next room in self.path.
+        """
+        if len(self.path) == 0:
+            self.mode = Person_Simulator.MODE_ACTIVITY
+            return
+        
+        next_room = self.path.popleft()
+        self.person.move_to_room(next_room)
+
+
+    def start_movement(self, target_room):
+        """
+            Starts moving the person towards the room.
+            This calculates a path and sets the simulator to MODE_MOVEMENT
+        """
+        if target_room is None or self.person.room is None:
+            self.person.move_to_room(target_room)
+            self.mode = Person_Simulator.MODE_ACTIVITY
+            return
+        
+        pathfinding = Pathfinding.instance()
+        self.path = deque(pathfinding.get_path(self.simulation.house, self.person.room, target_room))
+        self.mode = Person_Simulator.MODE_MOVEMENT
+
+        
+
+
 
     def make_day_schedule(self):
         self.schedule.clear()
@@ -71,3 +107,4 @@ class Person_Simulator:
                                            rooms = [self.person.sleep_room]))
         
         self.schedule = sorted(self.schedule,key = lambda schedule_item: schedule_item.start_time)
+
