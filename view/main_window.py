@@ -46,9 +46,8 @@ class Main_window:
         
         # draw room connections
         for start_room_key in house.transitions.keys():
-            for end_room_key in house.transitions[start_room_key]:
+            for end_room in house.transitions[start_room_key]:
                 start_room = house.rooms[start_room_key]
-                end_room = house.rooms[end_room_key]
                 pygame.draw.line(surface = house_background,
                                 start_pos = (start_room.x,start_room.y),
                                 end_pos = (end_room.x, end_room.y),
