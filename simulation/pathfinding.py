@@ -38,7 +38,7 @@ class Pathfinding:
     
     def get_path(self, house, start_room, end_room):
         if self.has_path(start_room, end_room):
-            return self.paths[start_room][end_room]
+            return self.paths[start_room.name][end_room.name]
         
         path = self.__calculate_path(house, start_room, end_room)
         self.add_path(start_room, end_room, path)
