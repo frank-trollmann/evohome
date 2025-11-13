@@ -1,4 +1,5 @@
 
+import random
 import pygame
 import sys
 from copy import copy, deepcopy
@@ -122,8 +123,12 @@ class Simulation:
 
 
     def tick(self):
+        old_day = self.current_time.day
         self.current_time = self.current_time + self.delta_time
         self.predicted_time = self.predicted_time + self.delta_time
+
+        if(old_day != self.current_time.day):
+            random.shuffle(self.person_simulators)
 
         while self.changes and self.current_time == self.changes[0].datetime:
             self.changes[0].execute(self)
