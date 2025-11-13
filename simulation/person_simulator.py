@@ -29,6 +29,8 @@ class Person_Simulator:
     def tick(self):
         now = self.simulation.current_time.time()
         if self.simulation.current_time.day != self.last_simulated_day:
+            self.current_task = None
+            self.mode = Person_Simulator.MODE_UNDECIDED
             self.make_day_schedule()
 
         while len(self.schedule) > 0 and now > self.schedule[0].end_time:
