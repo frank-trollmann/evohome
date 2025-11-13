@@ -1,3 +1,6 @@
+from operator import is_
+from domain_model.changes.leisure_activity_add import Leisure_Activity_Add_Change
+from domain_model.changes.leisure_activity_remove_change import Leisure_Activity_Remove_Change
 from domain_model.changes.move_in_change import Move_In_Change
 from domain_model.changes.obligation_add_change import Obligation_Add_Change
 from domain_model.changes.obligation_remove_change import Obligation_Remove_Change
@@ -24,15 +27,15 @@ def create_simple_scenario():
     # create rooms and transitions
     hallway_1 = Room("Hallway 1", 230, 370)
     hallway_2 = Room("Hallway 2", 530, 370)
-    bedroom1 = Room("Bedroom 1", 663, 490, [Room.FUNCTION_SLEEP])
-    bedroom2 = Room("Bedroom 2", 170, 230, [Room.FUNCTION_SLEEP])
-    bedroom3 = Room("Bedroom 3", 170, 500, [Room.FUNCTION_SLEEP])
-    office = Room("Storage", 100, 370, [Room.FUNCTION_OFFICE, Room.FUNCTION_LEISURE], ressources=["PC"])
-    bathroom_1 = Room("Bath 1", 670, 320, [Room.FUNCTION_BATHROOM])
-    bathroom_2 = Room("Bath 2", 260, 260, [Room.FUNCTION_BATHROOM])
-    kitchen = Room("Kitchen", 510, 180, [Room.FUNCTION_COOK])
-    living_room = Room("Living Room", 460, 500, [Room.FUNCTION_LEISURE, Room.FUNCTION_EAT], ressources=["TV", "Couch"])
-    porch = Room("Porch", 500, 740, [Room.FUNCTION_LEISURE])
+    bedroom1 = Room("Bedroom 1", 663, 490, functions = [Room.FUNCTION_SLEEP])
+    bedroom2 = Room("Bedroom 2", 170, 230, functions = [Room.FUNCTION_SLEEP])
+    bedroom3 = Room("Bedroom 3", 170, 500, functions = [Room.FUNCTION_SLEEP])
+    office = Room("Storage", 100, 370, functions = [Room.FUNCTION_OFFICE, Room.FUNCTION_LEISURE], ressources=["PC"])
+    bathroom_1 = Room("Bath 1", 670, 320, functions = [Room.FUNCTION_BATHROOM])
+    bathroom_2 = Room("Bath 2", 260, 260, functions = [Room.FUNCTION_BATHROOM])
+    kitchen = Room("Kitchen", 510, 180, functions = [Room.FUNCTION_COOK])
+    living_room = Room("Living Room", 460, 500, functions = [Room.FUNCTION_LEISURE, Room.FUNCTION_EAT], ressources=["TV", "Couch"])
+    porch = Room("Porch", 500, 740, functions = [Room.FUNCTION_LEISURE], is_outside=True)
 
     house.add_room(hallway_1)
     house.add_room(hallway_2)
@@ -183,11 +186,13 @@ def create_simple_scenario():
     child_2.add_leisure_activity(play_pc,4)
 
     # create changes
+    # child 2 leaves for three months
     child_2_move_out = Move_Out_Change(datetime(year = 2021, month = 6, day = 2, hour = 0, minute = 0), child_2)
     child_2_move_in = Move_In_Change(datetime(year = 2021, month = 9, day = 2, hour = 0, minute = 0), child_2)
     scenario.changes.append(child_2_move_out)
     scenario.changes.append(child_2_move_in)
 
+    # parent 1 changes time for cooking
     remove_cooking_change = Obligation_Remove_Change(datetime(year = 2021, month = 3, day = 2, hour = 0, minute = 0), parent_1, "Cook")
     cook2_obligation = Obligation("Cook2", 
                                 start_time= time(15,30), 
@@ -197,6 +202,16 @@ def create_simple_scenario():
     add_cooking_change = Obligation_Add_Change(datetime(year = 2021, month = 3, day = 2, hour = 0, minute = 0), parent_1, cook2_obligation)
     scenario.changes.append(remove_cooking_change)
     scenario.changes.append(add_cooking_change) 
+
+    # child 2 picks up cooking practice instead of playing video games 
+    remove_play_change = Leisure_Activity_Remove_Change(datetime(year = 2022, month = 1, day = 2, hour = 0, minute = 0), child_2, "Play Games")
+    practice_cooking = Leisure_Activity("Practice Cooking", 
+                                            location = kitchen, 
+                                            min_duration=30, 
+                                            max_duration=60)
+    add_practice_cooking_change = Leisure_Activity_Add_Change(datetime(year = 2022, month = 1, day = 2, hour = 0, minute = 0), child_2, practice_cooking, 4)
+    scenario.changes.append(remove_play_change)
+    scenario.changes.append(add_practice_cooking_change) 
 
     return scenario
 

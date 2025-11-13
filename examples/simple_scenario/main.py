@@ -26,7 +26,7 @@ if __name__ == "__main__":
     simulation.set_scenario(scenario)
 
     if execution_mode == "RECORD":
-        simulation.max_simulated_minutes = 6*30*24*60
+        simulation.max_simulated_minutes = 3*30*24*60
         data_recorder = Extended_Data_Recorder("examples/simple_scenario/data/recording.pickle")
         simulation.set_data_recorder(data_recorder)
 
