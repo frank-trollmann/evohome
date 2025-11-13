@@ -27,11 +27,11 @@ def create_simple_scenario():
     bedroom1 = Room("Bedroom 1", 663, 490, [Room.FUNCTION_SLEEP])
     bedroom2 = Room("Bedroom 2", 170, 230, [Room.FUNCTION_SLEEP])
     bedroom3 = Room("Bedroom 3", 170, 500, [Room.FUNCTION_SLEEP])
-    office = Room("Storage", 100, 370, [Room.FUNCTION_OFFICE, Room.FUNCTION_LEISURE])
+    office = Room("Storage", 100, 370, [Room.FUNCTION_OFFICE, Room.FUNCTION_LEISURE], ressources=["PC"])
     bathroom_1 = Room("Bath 1", 670, 320, [Room.FUNCTION_BATHROOM])
     bathroom_2 = Room("Bath 2", 260, 260, [Room.FUNCTION_BATHROOM])
     kitchen = Room("Kitchen", 510, 180, [Room.FUNCTION_COOK])
-    living_room = Room("Living Room", 460, 500, [Room.FUNCTION_LEISURE, Room.FUNCTION_EAT])
+    living_room = Room("Living Room", 460, 500, [Room.FUNCTION_LEISURE, Room.FUNCTION_EAT], ressources=["TV", "Couch"])
     porch = Room("Porch", 500, 740, [Room.FUNCTION_LEISURE])
 
     house.add_room(hallway_1)
@@ -101,11 +101,13 @@ def create_simple_scenario():
     play_pc = Leisure_Activity("Play Games",
                                             location = office, 
                                             min_duration = 60, 
-                                            max_duration=240)
+                                            max_duration=240,
+                                            required_ressources=["PC"])
     watch_tv = Leisure_Activity("TV",
                                             location = living_room, 
                                             min_duration=10, 
-                                            max_duration=60)
+                                            max_duration=60,
+                                            required_ressources=["TV", "Couch"])
 
     alone_time_parent_2 = Leisure_Activity("Alone Time", 
                                             location = bedroom1, 
@@ -118,7 +120,8 @@ def create_simple_scenario():
     inside_reading = Leisure_Activity("Inside reading", 
                                             location = living_room, 
                                             min_duration=30, 
-                                            max_duration=240)
+                                            max_duration=240,
+                                            required_ressources=["Couch"])
 
     alone_time_child_1 = Leisure_Activity("Alone Time", 
                                             bedroom2, 
