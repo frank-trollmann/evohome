@@ -73,3 +73,12 @@ class Person:
                 name (string): the name of the obligation to remove.
         """
         self.obligations = [obligation for obligation in self.obligations if obligation.name != obligation_name]
+
+    def remove_leisure_activity(self, activity_name):
+        """
+            Removes a leisure activity from the person.
+
+            Args:
+                name (string): the name of the leisure activity to remove.
+        """
+        self.leisure_activities = [activity for activity in self.leisure_activities if activity[0].name != activity_name]
