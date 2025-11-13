@@ -21,7 +21,7 @@ class Obligation_Add_Change(Scheduled_Change):
     
     def execute(self, _):
         """
-            Removes the person from the simulation.
+            adds the obligation.
         """
         self.person.add_obligation(self.obligation)
         
