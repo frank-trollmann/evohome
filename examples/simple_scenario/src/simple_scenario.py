@@ -19,7 +19,7 @@ def create_simple_scenario():
 
     house = House()
     scenario.house = house
-    scenario.startTime = datetime(year = 2020, month = 6, day = 1, hour = 0, minute = 0)
+    scenario.startTime = datetime(year = 2020, month = 6, day = 6, hour = 0, minute = 0)
 
     # create rooms and transitions
     hallway_1 = Room("Hallway 1", 230, 370)
@@ -64,59 +64,83 @@ def create_simple_scenario():
                                 start_time= time(7,00), 
                                 end_time = time(14,00), 
                                 location = office, 
-                                weekdays = [0,1,2,3,4,5])
+                                weekdays = [0,1,2,3,4])
     work_parent_2_obligation = Obligation("Work", 
                                 start_time= time(6,00), 
                                 end_time = time(16,00), 
                                 location = None, 
-                                weekdays = [0,1,2,3,4,5])
+                                weekdays = [0,1,2,3,4])
     get_kids_obligation = Obligation("Get kids", 
                                 start_time= time(14,00), 
                                 end_time = time(15,00), 
                                 location = None, 
-                                weekdays = [0,1,2,3,4,5])
+                                weekdays = [0,1,2,3,4])
     cook_obligation = Obligation("Cook", 
                                 start_time= time(16,00), 
                                 end_time = time(17,00), 
-                                location = kitchen, 
-                                weekdays = [0,1,2,3,4,5])
+                                location = kitchen)
     dinner_obligation = Obligation("Dinner", 
                                 start_time= time(17,00), 
                                 end_time = time(18,00), 
-                                location = living_room, 
-                                weekdays = [0,1,2,3,4,5])
+                                location = living_room)
     bring_to_bed_obligation = Obligation("Put Coline to bed", 
                                 start_time= time(19,30), 
                                 end_time = time(20,00), 
-                                location = bedroom2, 
-                                weekdays = [0,1,2,3,4,5])
+                                location = bedroom2)
     school_obligation = Obligation("School", 
                                 start_time= time(7,00), 
                                 end_time = time(15,00), 
                                 location = None, 
-                                weekdays = [0,1,2,3,4,5])
+                                weekdays = [0,1,2,3,4])
     
     # create leisure_activities
-    alone_time_parent_1 = Leisure_Activity("Alone Time", bedroom1)
-    play_pc = Leisure_Activity("Play Games",office)
-    watch_tv = Leisure_Activity("TV",living_room)
+    alone_time_parent_1 = Leisure_Activity("Alone Time", 
+                                            location = bedroom1,
+                                            min_duration= 30, 
+                                            max_duration= 120)
+    play_pc = Leisure_Activity("Play Games",
+                                            location = office, 
+                                            min_duration = 60, 
+                                            max_duration=240)
+    watch_tv = Leisure_Activity("TV",
+                                            location = living_room, 
+                                            min_duration=10, 
+                                            max_duration=60)
 
-    alone_time_parent_2 = Leisure_Activity("Alone Time", bedroom1)
-    porch_reading = Leisure_Activity("Porch reading", porch)
-    inside_reading = Leisure_Activity("Inside reading", living_room)
+    alone_time_parent_2 = Leisure_Activity("Alone Time", 
+                                            location = bedroom1, 
+                                            min_duration=30, 
+                                            max_duration=60)
+    porch_reading = Leisure_Activity("Porch reading", 
+                                            location = porch, 
+                                            min_duration=30, 
+                                            max_duration=240)
+    inside_reading = Leisure_Activity("Inside reading", 
+                                            location = living_room, 
+                                            min_duration=30, 
+                                            max_duration=240)
 
-    alone_time_child_1 = Leisure_Activity("Alone Time", bedroom2)
-    shopping = Leisure_Activity("Shopping", weekdays = [0,1,2,3,4,5])
+    alone_time_child_1 = Leisure_Activity("Alone Time", 
+                                            bedroom2, 
+                                            min_duration=20, 
+                                            max_duration=120)
+    shopping = Leisure_Activity("Shopping", 
+                                            location = None, 
+                                            weekdays = [0,1,2,3,4,5], 
+                                            min_duration=60, 
+                                            max_duration=240)
 
-    alone_time_child_2 = Leisure_Activity("Alone Time", bedroom3)
+    alone_time_child_2 = Leisure_Activity("Alone Time", 
+                                            location = bedroom3, 
+                                            min_duration=30, 
+                                            max_duration=120)
 
 
     
      # create persons
     parent_1 = Person("Arny", (255, 255, 0),wake_up_time= time(6,00), sleep_time = time(22,00))
     parent_1.sleep_room = bedroom1
-    parent_1.move_to_room(bedroom1)
-    scenario.persons.append(parent_1)
+    scenario.add_person(parent_1)
     parent_1.add_obligation(work_parent_1_obligation)
     parent_1.add_obligation(get_kids_obligation)
     parent_1.add_obligation(cook_obligation)
@@ -127,8 +151,7 @@ def create_simple_scenario():
 
     parent_2 = Person("Betty", (0, 255, 255),wake_up_time = time(5,00), sleep_time = time(21,00))
     parent_2.sleep_room = bedroom1
-    parent_2.move_to_room(bedroom1)
-    scenario.persons.append(parent_2)
+    scenario.add_person(parent_2)
     parent_2.add_obligation(work_parent_2_obligation)
     parent_2.add_obligation(dinner_obligation)
     parent_2.add_obligation(bring_to_bed_obligation)
@@ -139,8 +162,7 @@ def create_simple_scenario():
 
     child_1 = Person("Coline", (255, 0, 255),wake_up_time = time(6,00), sleep_time = time(20,00))
     child_1.sleep_room = bedroom2
-    child_1.move_to_room(bedroom2)
-    scenario.persons.append(child_1)
+    scenario.add_person(child_1)
     child_1.add_obligation(school_obligation)
     child_1.add_obligation(dinner_obligation)
     child_1.add_obligation(bring_to_bed_obligation)
@@ -150,11 +172,10 @@ def create_simple_scenario():
 
     child_2 = Person("Dave", (255, 0, 0),wake_up_time = time(6,00), sleep_time = time(21,00))
     child_2.sleep_room = bedroom3
-    child_2.move_to_room(bedroom3)
-    scenario.persons.append(child_2)
+    scenario.add_person(child_2)
     child_2.add_obligation(school_obligation)
     child_2.add_obligation(dinner_obligation)
-    child_2.add_leisure_activity(alone_time_child_1,2)
+    child_2.add_leisure_activity(alone_time_child_2,2)
     child_2.add_leisure_activity(watch_tv,4)
     child_2.add_leisure_activity(play_pc,4)
 
