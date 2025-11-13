@@ -1,11 +1,8 @@
 
 from collections import deque
-from datetime import time
-from operator import truediv
+from datetime import time, timedelta
 import random
 
-from domain_model.room import Room
-from simulation import simulation
 from simulation.schedule_item import Schedule_Item
 from simulation.pathfinding import Pathfinding
 
@@ -20,17 +17,24 @@ class Person_Simulator:
         self.person = person
         self.schedule = []
         self.last_simulated_day = -1
+        self.reset_state_variables()
+
+    def reset_state_variables(self):
+        """
+            Reset all variables associated to the current state (activity, path, task.)
+        """
         self.current_task = None
+        self.current_activity = None
+        self.current_activity_end = None
         self.moving = False
-        self.mode = Person_Simulator.MODE_LEISURE
+        self.mode = Person_Simulator.MODE_UNDECIDED
         self.path = None
 
 
     def tick(self):
         now = self.simulation.current_time.time()
         if self.simulation.current_time.day != self.last_simulated_day:
-            self.current_task = None
-            self.mode = Person_Simulator.MODE_UNDECIDED
+            self.reset_state_variables()
             self.make_day_schedule()
 
         while len(self.schedule) > 0 and now > self.schedule[0].end_time:
@@ -42,8 +46,11 @@ class Person_Simulator:
         
         if self.mode == Person_Simulator.MODE_OBLIGATION:
             if now > self.current_task.end_time:
-                self.current_task = None
-                self.mode = Person_Simulator.MODE_UNDECIDED
+                self.reset_state_variables()
+
+        if self.mode == Person_Simulator.MODE_LEISURE:
+            if self.current_activity_end is not None and now > self.current_activity_end:
+                self.reset_state_variables()
    
         if self.mode == Person_Simulator.MODE_UNDECIDED or self.mode == Person_Simulator.MODE_LEISURE:
             if now >= self.schedule[0].start_time:
@@ -63,8 +70,13 @@ class Person_Simulator:
         available_activities = [option[0] for option in available_options]
         weights = [option[1] for option in available_options]
 
-        choice = random.choices(population=available_activities, weights=weights)[0]
-        self.start_move(choice.location)
+        self.current_activity = random.choices(population=available_activities, weights=weights)[0]
+        duration = self.current_activity.calculate_duration()
+        if duration > 0:
+            self.current_activity_end = (self.simulation.current_time + timedelta(minutes= duration)).time()
+            if self.current_activity_end < self.simulation.current_time.time():
+                self.current_activity_end = None
+        self.start_move(self.current_activity.location)
 
     def move_tick(self):
         """

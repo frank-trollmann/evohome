@@ -1,11 +1,13 @@
 
+import random
+
 
 class Leisure_Activity:
     """
         This class represents a leisure activity and associated preferences.
         Leisure activities will be selected randomly according to their weight whenever a simulated person has free time. 
     """
-    def __init__(self,name,location = None, weekdays = None):
+    def __init__(self,name,location = None, weekdays = None, min_duration = 1, max_duration = -1):
         """
             Constructor.
 
@@ -19,6 +21,8 @@ class Leisure_Activity:
         self.name = name
         self.location = location
         self.weekdays = weekdays
+        self.min_duration = min_duration
+        self.max_duration = max_duration
 
     def is_available(self,date):
         """
@@ -35,4 +39,14 @@ class Leisure_Activity:
             return False
 
         return True
-
+    
+    def calculate_duration(self):
+        """
+            Calculates a random duration of this activity. 
+            The duration will be between self.min_duration and self.max_duration.
+            If self.max_duration is not set, this will return -1 (to be interpreted as running indefinitely.)
+        """
+        if self.max_duration <=0:
+            return -1
+        min_duration = max(self.min_duration,1)
+        return random.randint(min_duration, self.max_duration)
