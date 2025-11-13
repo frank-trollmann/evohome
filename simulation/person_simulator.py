@@ -71,7 +71,7 @@ class Person_Simulator:
     def pick_leisure_activity(self):
         available_options = [option for option in self.person.leisure_activities if option[0].is_available(self.simulation.current_time)]
         available_activities = [option[0] for option in available_options]
-        weights = [option[1] for option in available_options]
+        weights = [self.__get_adjusted_weight(option[1], option[0]) for option in available_options]
 
         self.current_activity = random.choices(population=available_activities, weights=weights)[0]
         if self.current_activity is None:
@@ -85,6 +85,14 @@ class Person_Simulator:
                 self.current_activity_end = None
         self.current_activity.start_activity()
         self.start_move(self.current_activity.location)
+
+    def __get_adjusted_weight(self, weight, activity):
+        """
+            Calculates the adjusted weight of an activity based on current circumstances.
+        """
+        if activity.location is None or activity.location.is_outside:
+            weight *= self.simulation.weather.get_quality()
+        return weight
 
     def move_tick(self):
         """

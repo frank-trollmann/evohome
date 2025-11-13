@@ -13,7 +13,7 @@ class Room:
     FUNCTION_OFFICE = "Working"
 
 
-    def __init__(self, name, x, y, functions = [], ressources = []):
+    def __init__(self, name, x, y, is_outside = False, functions = [], ressources = []):
         """
             Constructor.
 
@@ -31,6 +31,7 @@ class Room:
         self.free_ressources = set(ressources)
         self.blocked_ressources = set()
         self.persons = []
+        self.is_outside = is_outside
 
     def ressources_available(self, ressources):
         """
