@@ -17,6 +17,7 @@ class Person_Simulator:
         self.person = person
         self.schedule = []
         self.last_simulated_day = -1
+        self.current_activity = None
         self.reset_state_variables()
 
     def reset_state_variables(self):
@@ -24,7 +25,9 @@ class Person_Simulator:
             Reset all variables associated to the current state (activity, path, task.)
         """
         self.current_task = None
-        self.current_activity = None
+        if self.current_activity is not None:
+            self.current_activity.end_activity()
+            self.current_activity = None
         self.current_activity_end = None
         self.moving = False
         self.mode = Person_Simulator.MODE_UNDECIDED
@@ -71,11 +74,16 @@ class Person_Simulator:
         weights = [option[1] for option in available_options]
 
         self.current_activity = random.choices(population=available_activities, weights=weights)[0]
+        if self.current_activity is None:
+            # fallback in case there are no valid activities just stand around and do nothing.
+            return
+        
         duration = self.current_activity.calculate_duration()
         if duration > 0:
             self.current_activity_end = (self.simulation.current_time + timedelta(minutes= duration)).time()
             if self.current_activity_end < self.simulation.current_time.time():
                 self.current_activity_end = None
+        self.current_activity.start_activity()
         self.start_move(self.current_activity.location)
 
     def move_tick(self):
