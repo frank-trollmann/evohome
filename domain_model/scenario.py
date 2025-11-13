@@ -27,3 +27,14 @@ class Scenario_Configuration:
         self.persons.append(person)
         person.move_to_room(person.sleep_room)
 
+    def get_room_names(self):
+        """
+            Gets the names of all rooms in the house.
+            Room names will be sorted by first name
+
+            Returns:
+                string[]: the names of all rooms.
+        """
+        room_names = self.house.rooms.keys()
+        return sorted(room_names)
+
