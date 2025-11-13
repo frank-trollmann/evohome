@@ -45,7 +45,6 @@ class Person_Simulator:
    
         if self.mode == Person_Simulator.MODE_UNDECIDED or self.mode == Person_Simulator.MODE_LEISURE:
             if now >= self.schedule[0].start_time:
-                print("picking obligation " + self.schedule[0].description)
                 self.mode = Person_Simulator.MODE_OBLIGATION
                 self.current_task = self.schedule[0]
                 self.start_move(self.schedule[0].get_room())
@@ -58,11 +57,12 @@ class Person_Simulator:
 
 
     def pick_leisure_activity(self):
-        leisure_rooms = [self.person.sleep_room, None]
-        leisure_rooms.extend(self.simulation.house.get_rooms_by_function(Room.FUNCTION_LEISURE))
-        picked_room = random.choice(leisure_rooms)
-        print("picking leisure time " + str(picked_room))
-        self.start_move(picked_room)
+        available_options = [option for option in self.person.leisure_activities if option[0].is_available(self.simulation.current_time)]
+        available_activities = [option[0] for option in available_options]
+        weights = [option[1] for option in available_options]
+
+        choice = random.choices(population=available_activities, weights=weights)[0]
+        self.start_move(choice.location)
 
     def move_tick(self):
         """

@@ -24,6 +24,7 @@ class Person:
         self.sleep_room = None
         
         self.obligations = []
+        self.leisure_activities = []
 
     
     def move_to_room(self,new_room):
@@ -52,6 +53,16 @@ class Person:
                 weekdays (int[]): the weekdays where the obligation happens. 0 = Monday, 6 = Sunday. None means every day.
         """
         self.obligations.append(obligation)
+
+    def add_leisure_activity(self,activity, priority):
+        """
+            Adds a leisure activity to the person.
+
+            Args:
+                activity (Leisure_Activity): the leisure activity to add.
+                priority (int): the priority of the leisure activity. Higher priorities mean the activity will be chosen with higher probability.
+        """
+        self.leisure_activities.append((activity,priority))
 
 
     def remove_obligation(self, obligation_name):
