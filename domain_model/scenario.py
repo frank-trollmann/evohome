@@ -16,4 +16,14 @@ class Scenario_Configuration:
         self.persons = []
         self.startTime = None
         self.changes = []
+    
+    def add_person(self, person):
+        """
+            Adds a person to the scenario and moves them to their sleep room.
+
+            Args:
+                person (Person): the person to add.
+        """
+        self.persons.append(person)
+        person.move_to_room(person.sleep_room)
 
