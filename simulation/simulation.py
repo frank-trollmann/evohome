@@ -20,6 +20,7 @@ class Simulation:
         self.max_simulated_minutes = max_simulated_minutes;
 
         self.random_seed = random_seed
+        self.running = False
 
         self.house = None
         self.weather = None
@@ -96,7 +97,9 @@ class Simulation:
 
         # run simulation
         self.tick_count = 0
-        while True:
+        self.running = True
+
+        while self.running:
             self.tick()
 
             # update prediction forecast
@@ -141,7 +144,7 @@ class Simulation:
         if(self.display_user_interface):
                 pygame.quit()
 
-        sys.exit()
+        self.running = False
 
 
     def tick(self):
