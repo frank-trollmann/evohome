@@ -2,6 +2,7 @@
 import os
 import unittest
 
+from examples.simple_scenario.src.simple_adaptation_controller import Simple_Adaptation_Controller
 from examples.simple_scenario.src.decision_tree_predictor import Decision_Tree_Predictor
 from examples.simple_scenario.src.extended_data_recorder import Extended_Data_Recorder
 from examples.simple_scenario.src.simple_scenario import create_simple_scenario
@@ -37,6 +38,9 @@ class Test_Simple_Scenario(unittest.TestCase):
 
             prediction_system = Decision_Tree_Predictor()
             self.simulation.set_prediction_system(prediction_system)
+
+            adaptation_controller = Simple_Adaptation_Controller()
+            self.simulation.set_adaptation_controller(adaptation_controller)
 
             self.simulation.start()
         except Exception as exception:

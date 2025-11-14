@@ -1,5 +1,6 @@
 import sys
 
+from examples.simple_scenario.src.simple_adaptation_controller import Simple_Adaptation_Controller
 from examples.simple_scenario.src.extended_data_recorder import Extended_Data_Recorder
 from examples.simple_scenario.src.decision_tree_predictor import Decision_Tree_Predictor
 from examples.simple_scenario.src.simple_scenario import create_simple_scenario
@@ -43,6 +44,17 @@ if __name__ == "__main__":
         prediction_system = Decision_Tree_Predictor()
         simulation.set_prediction_system(prediction_system)
         simulation.prediction_delay_in_min = 0
+
+    if execution_mode == "RUN_ADAPTIVE":
+        simulation.max_simulated_minutes = 24*30*24*60
+        data_recorder = Extended_Data_Recorder("examples/simple_scenario/data/running.pickle")
+        simulation.set_data_recorder(data_recorder)
+
+        prediction_system = Decision_Tree_Predictor()
+        simulation.set_prediction_system(prediction_system)
+
+        adaptation_controller = Simple_Adaptation_Controller()
+        simulation.set_adaptation_controller(adaptation_controller)
 
     simulation.start()
 

@@ -34,6 +34,7 @@ class Simulation:
 
         self.scenario = None
         self.prediction_system = None
+        self.adaptation_controller = None
         self.data_recorder = None
         
         self.tick_count = 0
@@ -60,6 +61,10 @@ class Simulation:
     def set_prediction_system(self,prediction_system):
         self.prediction_system = prediction_system
         self.prediction_system.set_simulation(self)
+
+    def set_adaptation_controller(self, adaptation_controller):
+        self.adaptation_controller = adaptation_controller
+        self.adaptation_controller.set_simulation(self)
 
     def set_data_recorder(self,data_recorder):
         self.data_recorder = data_recorder
@@ -89,10 +94,13 @@ class Simulation:
         if self.display_user_interface:
             window = Main_window(scenario_copy)
 
-        if self.prediction_system != None :
+        if self.prediction_system is not None:
             self.prediction_system.on_simulation_start()
+
+        if self.adaptation_controller is not None:
+            self.adaptation_controller.on_simulation_start()
         
-        if self.data_recorder != None:
+        if self.data_recorder is not None:
             self.data_recorder.on_simulation_start()
 
         # run simulation
@@ -110,6 +118,14 @@ class Simulation:
                 self.predictions.append(prediction)
                 self.prediction_times.append(prediction_time)
             
+            # forward information to adaptation controller
+            if self.adaptation_controller is not None:
+                prediction = self.get_current_prediction()
+                if(prediction is not None):
+                    prediction_time = self.get_current_prediction_time()
+                    data_point = self.get_sensor_values()
+                    self.adaptation_controller.on_new_prediction(copy(self.current_time), data_point, prediction, prediction_time )
+
             # update data recorder
             if self.data_recorder is not None:
                 data_point = self.get_sensor_values()
