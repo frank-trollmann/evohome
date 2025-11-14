@@ -22,7 +22,8 @@ if __name__ == "__main__":
     scenario = create_simple_scenario()
     simulation = Simulation(display_user_interface = execution_mode == "VIEW", 
                             max_simulated_minutes = -1,
-                            prediction_delay_in_min = 60)
+                            prediction_delay_in_min = 60,
+                            random_seed = 42)
     simulation.set_scenario(scenario)
 
     if execution_mode == "RECORD":

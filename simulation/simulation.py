@@ -14,10 +14,12 @@ from simulation.person_simulator import Person_Simulator
 
 class Simulation:
     
-    def __init__(self, display_user_interface = True, max_simulated_minutes = -1, prediction_delay_in_min = 0):
+    def __init__(self, display_user_interface = True, max_simulated_minutes = -1, prediction_delay_in_min = 0, random_seed = None):
         self.delta_time = timedelta(minutes= 1)
         self.display_user_interface = display_user_interface
         self.max_simulated_minutes = max_simulated_minutes;
+
+        self.random_seed = random_seed
 
         self.house = None
         self.weather = None
@@ -66,6 +68,8 @@ class Simulation:
         if(self.scenario == None):
             raise Exception("Trying to simulate without a valid scenario. Did you forget to set a simulation scenario?")
         
+        random.seed(self.random_seed)
+
         # initialize from scenario (use deepcopy to avoid in-place modification)
         scenario_copy = deepcopy(self.scenario)
         self.house = scenario_copy.house
