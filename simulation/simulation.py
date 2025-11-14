@@ -6,6 +6,7 @@ from copy import copy, deepcopy
 from datetime import timedelta
 import time
 from collections import deque
+from timeit import default_timer as timer
 
 from simulation.weather import Weather_Simulation
 from view.main_window import Main_window
@@ -22,8 +23,9 @@ class Simulation:
         self.weather = None
         self.persons = []
         self.current_time = None
-        self.predicted_time = None
+        self.prediction_times = None
         self.predictions = deque()
+        self.prediction_times = deque()
         self.person_simulators = []
         self.changes = []
 
@@ -40,6 +42,14 @@ class Simulation:
         if len(self.predictions) == 0:
             return None
         return self.predictions[0]
+
+    def get_current_prediction_time(self):
+        if self.tick_count < self.prediction_delay_in_min:
+            return None
+        if len(self.prediction_times) == 0:
+            return None
+        return self.prediction_times[0]
+
 
     def set_scenario(self,scenario):
         self.scenario = scenario # copy scenario in case it is expected to be reused.
@@ -87,18 +97,23 @@ class Simulation:
 
             # update prediction forecast
             if self.prediction_system is not None:
+                start_time = timer()
                 prediction = self.prediction_system.predict_presence(self.predicted_time)
+                prediction_time = timer() - start_time
                 self.predictions.append(prediction)
+                self.prediction_times.append(prediction_time)
             
             # update data recorder
             if self.data_recorder is not None:
                 data_point = self.get_sensor_values()
                 prediction = self.get_current_prediction()
-                self.data_recorder.on_new_datapoint(copy(self.current_time),data_point, prediction, self.weather.get_quality())
+                prediction_time = self.get_current_prediction_time()
+                self.data_recorder.on_new_datapoint(copy(self.current_time),data_point, prediction, self.weather.get_quality(), prediction_time)
 
             # update list of predictions
             if(len(self.predictions) > self.prediction_delay_in_min + 1):
                     self.predictions.popleft()
+                    self.prediction_times.popleft()
 
             # update GUI
             if(self.display_user_interface):

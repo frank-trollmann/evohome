@@ -38,8 +38,9 @@ class Data_Recorder:
             self.rooms.append([])
             self.room_predictions.append([])
         self.weather = []
+        self.prediction_times = []
 
-    def on_new_datapoint(self, time, sensor_data, prediction, weather_quality):
+    def on_new_datapoint(self, time, sensor_data, prediction, weather_quality, prediction_time):
         """
             Notifies the data recorder of a new data point.
             The data recorder keeps track of the data internally.
@@ -48,9 +49,12 @@ class Data_Recorder:
                 time (datetime): the time of the data point.
                 sensor_data (array of booleans): the sensor data for all rooms.
                 prediction (array of booleans): the prediction for all rooms.
+                weather_quality (float): the quality of the weather at this time.
+                prediction_time (float): the time it took to compute the prediction.
         """
         self.dates.append(time)
         self.weather.append(weather_quality)
+        self.prediction_times.append(prediction_time)
         for index in range(len(sensor_data)):
             self.rooms[index].append(int(sensor_data[index]))
             predicted_value = None
@@ -66,11 +70,12 @@ class Data_Recorder:
             Returns:
                 data (dict): a dictionary representation of the data.
         """
-        data = {"date": self.dates}
+        data = {"date": self.dates, "weather": self.weather, "prediction_time": self.prediction_times}
         for index in range(len(self.simulation.rooms)):
             data["room_" + str(index)] = self.rooms[index]
             data["prediction_" + str(index)] = self.room_predictions[index]
-            data["weather"] = self.weather
+            
+            data
         return data
 
 

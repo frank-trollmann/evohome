@@ -17,8 +17,8 @@ class Extended_Data_Recorder(Data_Recorder):
         self.hours = []
         self.minutes = []
         
-    def on_new_datapoint(self, time, sensor_data, prediction, weather):
-        super().on_new_datapoint(time, sensor_data, prediction, weather)
+    def on_new_datapoint(self, time, sensor_data, prediction, weather, prediction_time):
+        super().on_new_datapoint(time, sensor_data, prediction, weather, prediction_time)
         self.weekdays.append(time.weekday())
         self.hours.append(time.hour)
         self.minutes.append(time.minute)
