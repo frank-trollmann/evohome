@@ -1,5 +1,5 @@
 
-from simulation.prediction_system import Prediction_System
+from simulation.learning_system.prediction_system import Prediction_System
 
 import pandas as pd
 
