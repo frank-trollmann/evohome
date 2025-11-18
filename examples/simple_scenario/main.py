@@ -12,12 +12,12 @@ from simulation.simulation import Simulation
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Missing command line argument. Please provide the following arguments:")
-        print("- Execution mode: RECORD/RUN/VIEW")
+        print("- Execution mode: RECORD/RUN/ADAPT/VIEW")
         sys.exit()
 
     execution_mode = sys.argv[1].upper()
-    if not execution_mode in ["RECORD","RUN","VIEW"]:
-        print(f"Invalid execution mode {execution_mode}. Please provide one of the following arguments: RECORD/RUN/VIEW")
+    if not execution_mode in ["RECORD","RUN","VIEW", "ADAPT"]:
+        print(f"Invalid execution mode {execution_mode}. Please provide one of the following arguments: RECORD/RUN/ADAPT/VIEW")
         sys.exit()
 
     scenario = create_simple_scenario()
@@ -45,9 +45,9 @@ if __name__ == "__main__":
         simulation.set_prediction_system(prediction_system)
         simulation.prediction_delay_in_min = 0
 
-    if execution_mode == "RUN_ADAPTIVE":
+    if execution_mode == "ADAPT":
         simulation.max_simulated_minutes = 24*30*24*60
-        data_recorder = Extended_Data_Recorder("examples/simple_scenario/data/running.pickle")
+        data_recorder = Extended_Data_Recorder("examples/simple_scenario/data/adapting.pickle")
         simulation.set_data_recorder(data_recorder)
 
         prediction_system = Decision_Tree_Predictor()

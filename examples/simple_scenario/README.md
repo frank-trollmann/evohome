@@ -21,4 +21,5 @@ The scenario can be started as a module via *python -m examples.simple_scenario.
 Execution mode can have one of three values:
 - *RECORD*: runs the simulation for 6 months, recording presence data. Data will be stored in *data/recording.pickle* and can be explored using *data_exploration.ipynb*
 - RUN:  runs the simulation for 24 months, recording presence data and predictions. Data will be stored in *data/running.pickle* and can be explored using *model_evaluation.ipynb*
-- VIEW: runs the simulation indefinitely with predictions and a user interface. No data will be recorded
+- ADAPT: runs the simulation for 24 months, while adapting. The scenario is the same as in RUN but an additional adpatation controller retrains the model periodically. Data will be stored in *data/adapting.pickle* and can be explored using *adaptation_evaluation.ipynb*
+- VIEW: runs the simulation indefinitely with predictions and a user interface. No data will be recorded.

@@ -24,16 +24,18 @@ class Decision_Tree_Predictor(Prediction_System):
         file_name = "examples/simple_scenario/data/recording.pickle"
         data_frame = pd.read_pickle(file_name)
         training_features = ["weekday","hour", "minute"]
-        predicted_features = []
+        predicted_features = [] 
         for index in range(len(self.simulation.rooms)):
             predicted_features.append("room_" + str(index))
 
-        # train model
         X = data_frame[training_features]
         y = data_frame[predicted_features]
+
+        self.train_model(X, y)
+
+    def train_model(self, X, y):
         self.model = tree.DecisionTreeClassifier()
         self.model.fit(X.values,y)
-        
         print("Decision Tree Predictor: Training Finished")
         
 
