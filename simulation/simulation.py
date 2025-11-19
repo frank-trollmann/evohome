@@ -152,7 +152,8 @@ class Simulation:
 
             # update GUI
             if(self.display_user_interface):
-                window.update_content(self)
+                window.update_content()
+                window.handle_events()
                 window.frame_pause()
                 if window.end_selected:
                     self.end()

@@ -19,26 +19,78 @@ class Main_window:
         self.sleep_time = 0.1
         self.paused = False
 
-        self.house_background = self.create_house_background(simulation.scenario)
+        self.house_background = self.__create_house_background()
         self.draw_surface = Surface(self.house_background.get_size())
         self.screen = pygame.display.set_mode((500,500), flags=DOUBLEBUF | RESIZABLE)
         self.end_selected = False
 
         Window.from_display_module().maximize()
 
+    def update_content(self):
+        """
+            Updates the visualization with the current content of the simulation
+        """
+        self.draw_surface.blit(self.house_background,(0,0),None)
+        self.__draw_persons(self.draw_surface, self.simulation)
+        self.__draw_predictions(self.draw_surface,self.simulation)
+        self.__draw_time(self.draw_surface,self.simulation)
+
+        screen_size = self.screen.get_size()
+        draw_size = self.draw_surface.get_size()
+        scale_factor_x = screen_size[0] / draw_size[0]
+        scale_factor_y = screen_size[1] / draw_size[1]
+        scale_factor = min(scale_factor_x, scale_factor_y)
+        scaled_draw_surface = pygame.transform.scale_by(self.draw_surface, scale_factor)
+        scaled_size = scaled_draw_surface.get_size()
+        offset_x = (screen_size[0] - scaled_size[0]) / 2.0
+        offset_y = (screen_size[1] - scaled_size[1]) / 2.0
+
+
+        self.screen.fill((255,255,255))
+        self.screen.blit(scaled_draw_surface,(offset_x,offset_y))
+        pygame.display.flip()
+
+        self.handle_events()
+
+    def frame_pause(self):
+        """
+            Pauses the application appropriately to the speed set in the window.
+            Can be used to speed up / slow down visualization
+        """
+        time.sleep(self.sleep_time)
 
     
-    """
-        Create the static background image of the house. The image consists of ...
-            - The floor plan image (if one is provided)
-            - Nodes for all rooms
-            - Edges for room transitions
-        The returned object is a pygame surface with dimensions equal to the background image.
-        If no background image is provided, the dimenions are calculated so they can accomodate the coordinates of all rooms.
-    """
-    def create_house_background(self, scenario):
+    def handle_events(self):
+        """
+            handles input related events.
+        """
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.end_selected = True
+            
+            if event.type == pygame.KEYDOWN :
+                if event.key == pygame.K_SPACE:
+                    if self.simulation.is_paused():
+                        self.simulation.resume()
+                    else:
+                        self.simulation.pause()
+                elif event.key == pygame.K_LEFT:
+                    self.sleep_time *= 2.0
+                elif event.key == pygame.K_RIGHT:
+                    self.sleep_time /= 2.0
 
+
+    def __create_house_background(self):
+        """
+            Create the static background image of the house. The image consists of ...
+                - The floor plan image (if one is provided)
+                - Nodes for all rooms
+                - Edges for room transitions
+            The returned object is a pygame surface with dimensions equal to the background image.
+            If no background image is provided, the dimenions are calculated so they can accomodate the coordinates of all rooms.
+        """
         # initialize canvas based on background image or room coordinates
+        scenario = self.simulation.scenario
         if scenario.background_image != None:
             house_image = pygame.image.load(scenario.background_image)
             house_background = pygame.Surface([house_image.get_width(),house_image.get_height()])
@@ -70,14 +122,11 @@ class Main_window:
 
         return house_background
 
-    def frame_pause(self):
-        time.sleep(self.sleep_time)
-
-    """
-        draw all persons onto the screen.
-    """
-    def draw_persons(self, surface, simulation):
-        
+    
+    def __draw_persons(self, surface, simulation):
+        """
+            draw all persons onto the surface
+        """
         for room in simulation.house.rooms.values():
             current_person_index = 0
             for person in room.persons:
@@ -89,7 +138,10 @@ class Main_window:
                                color = person.ui_color)
                 current_person_index += 1
 
-    def draw_predictions(self,surface, simulation):
+    def __draw_predictions(self, surface, simulation):
+        """
+            draw information about the predictions
+        """
         current_prediction = simulation.get_current_prediction()
         if(current_prediction is None):
             return
@@ -104,47 +156,11 @@ class Main_window:
             index += 1
         
 
-    def draw_time(self,surface,simulation):
+    def __draw_time(self, surface, simulation):
+        """
+            draw the current time to the surface
+        """
         text = simulation.current_time.strftime("%m/%d/%Y, %H:%M:%S, %A")
         text_surface = pygame.font.SysFont('Comic Sans MS', 20).render(text,True,(0,0,0),(255,255,255))
         surface.blit(text_surface, (10,10))
 
-
-    def update_content(self, simulation):
-        self.draw_surface.blit(self.house_background,(0,0),None)
-        self.draw_persons(self.draw_surface, simulation)
-        self.draw_predictions(self.draw_surface,simulation)
-        self.draw_time(self.draw_surface,simulation)
-
-        screen_size = self.screen.get_size()
-        draw_size = self.draw_surface.get_size()
-        scale_factor_x = screen_size[0] / draw_size[0]
-        scale_factor_y = screen_size[1] / draw_size[1]
-        scale_factor = min(scale_factor_x, scale_factor_y)
-        scaled_draw_surface = pygame.transform.scale_by(self.draw_surface, scale_factor)
-        scaled_size = scaled_draw_surface.get_size()
-        offset_x = (screen_size[0] - scaled_size[0]) / 2.0
-        offset_y = (screen_size[1] - scaled_size[1]) / 2.0
-
-
-        self.screen.fill((255,255,255))
-        self.screen.blit(scaled_draw_surface,(offset_x,offset_y))
-        pygame.display.flip()
-
-        self.handle_events()
-
-    def handle_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.end_selected = True
-            
-            if event.type == pygame.KEYDOWN :
-                if event.key == pygame.K_SPACE:
-                    if self.simulation.is_paused():
-                        self.simulation.resume()
-                    else:
-                        self.simulation.pause()
-                elif event.key == pygame.K_LEFT:
-                    self.sleep_time *= 2.0
-                elif event.key == pygame.K_RIGHT:
-                    self.sleep_time /= 2.0
