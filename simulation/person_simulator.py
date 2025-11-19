@@ -18,9 +18,44 @@ class Person_Simulator:
         self.schedule = []
         self.last_simulated_day = -1
         self.current_activity = None
-        self.reset_state_variables()
+        self.__reset_state_variables()
 
-    def reset_state_variables(self):
+    def tick(self):
+        """
+            This function should be called every minute to update the persons position and activities
+        """
+        now = self.simulation.current_time.time()
+        if self.simulation.current_time.day != self.last_simulated_day:
+            self.__reset_state_variables()
+            self.__make_day_schedule()
+
+        while len(self.schedule) > 0 and now > self.schedule[0].end_time:
+            del self.schedule[0]
+
+        if self.moving:
+            self.__move_tick()
+            return
+        
+        if self.mode == Person_Simulator.MODE_OBLIGATION:
+            if now > self.current_task.end_time:
+                self.__reset_state_variables()
+
+        if self.mode == Person_Simulator.MODE_LEISURE:
+            if self.current_activity_end is not None and now > self.current_activity_end:
+                self.__reset_state_variables()
+   
+        if self.mode == Person_Simulator.MODE_UNDECIDED or self.mode == Person_Simulator.MODE_LEISURE:
+            if now >= self.schedule[0].start_time:
+                self.mode = Person_Simulator.MODE_OBLIGATION
+                self.current_task = self.schedule[0]
+                self.__start_move(self.schedule[0].get_room())
+
+        if self.mode == Person_Simulator.MODE_UNDECIDED:
+            self.mode = Person_Simulator.MODE_LEISURE
+            self.__pick_leisure_activity()
+            return
+        
+    def __reset_state_variables(self):
         """
             Reset all variables associated to the current state (activity, path, task.)
         """
@@ -34,41 +69,10 @@ class Person_Simulator:
         self.path = None
 
 
-    def tick(self):
-        now = self.simulation.current_time.time()
-        if self.simulation.current_time.day != self.last_simulated_day:
-            self.reset_state_variables()
-            self.make_day_schedule()
-
-        while len(self.schedule) > 0 and now > self.schedule[0].end_time:
-            del self.schedule[0]
-
-        if self.moving:
-            self.move_tick()
-            return
-        
-        if self.mode == Person_Simulator.MODE_OBLIGATION:
-            if now > self.current_task.end_time:
-                self.reset_state_variables()
-
-        if self.mode == Person_Simulator.MODE_LEISURE:
-            if self.current_activity_end is not None and now > self.current_activity_end:
-                self.reset_state_variables()
-   
-        if self.mode == Person_Simulator.MODE_UNDECIDED or self.mode == Person_Simulator.MODE_LEISURE:
-            if now >= self.schedule[0].start_time:
-                self.mode = Person_Simulator.MODE_OBLIGATION
-                self.current_task = self.schedule[0]
-                self.start_move(self.schedule[0].get_room())
-
-        if self.mode == Person_Simulator.MODE_UNDECIDED:
-            self.mode = Person_Simulator.MODE_LEISURE
-            self.pick_leisure_activity()
-            return
-        
-
-
-    def pick_leisure_activity(self):
+    def __pick_leisure_activity(self):
+        """
+            Picks and starts a leisure activity and duration for the current point in time.
+        """
         available_options = [option for option in self.person.leisure_activities if option[0].is_available(self.simulation.current_time)]
         available_activities = [option[0] for option in available_options]
         weights = [self.__get_adjusted_weight(option[1], option[0]) for option in available_options]
@@ -84,7 +88,7 @@ class Person_Simulator:
             if self.current_activity_end < self.simulation.current_time.time():
                 self.current_activity_end = None
         self.current_activity.start_activity()
-        self.start_move(self.current_activity.location)
+        self.__start_move(self.current_activity.location)
 
     def __get_adjusted_weight(self, weight, activity):
         """
@@ -94,7 +98,7 @@ class Person_Simulator:
             weight *= self.simulation.weather.get_quality()
         return weight
 
-    def move_tick(self):
+    def __move_tick(self):
         """
             Moves the person towards the room.
             this makes a step towards the next room in self.path.
@@ -107,7 +111,7 @@ class Person_Simulator:
         self.person.move_to_room(next_room)
 
 
-    def start_move(self, target_room):
+    def __start_move(self, target_room):
         """
             Starts moving the person towards the room.
             This calculates a path and sets the simulator to MODE_MOVEMENT
@@ -122,10 +126,11 @@ class Person_Simulator:
         self.path = deque(pathfinding.get_path(self.simulation.house, self.person.room, target_room))
 
         
-
-
-
-    def make_day_schedule(self):
+    def __make_day_schedule(self):
+        """
+            Calculates the schedule for the day.
+            This includes all obligations and sleep times.
+        """
         self.schedule.clear()
         self.last_simulated_day = self.simulation.current_time.day
 
