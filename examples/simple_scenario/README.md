@@ -6,6 +6,16 @@ This scenario illustrates how to:
 - deploy a machine learning model in the simulation
 - record and evaluate data about the performance of the machine learning model.
 
+# Useage
+
+The scenario can be started as a module via *python -m examples.simple_scenario.main <execution_mode>* from the main folder of the project.
+
+Execution mode can have one of three values:
+- *RECORD*: runs the simulation for 6 months, recording presence data. Data will be stored in *data/recording.pickle* and can be explored using *data_exploration.ipynb*
+- RUN:  runs the simulation for 24 months, recording presence data and predictions. Data will be stored in *data/running.pickle* and can be explored using *model_evaluation.ipynb*
+- ADAPT: runs the simulation for 24 months, while adapting. The scenario is the same as in RUN but an additional adpatation controller retrains the model periodically. Data will be stored in *data/adapting.pickle* and can be explored using *adaptation_evaluation.ipynb*
+- VIEW: runs the simulation indefinitely with predictions and a user interface. No data will be recorded.
+
 # The Scenario:
 
 The scenario is defined in src/simple_scenario.py. 
@@ -92,7 +102,7 @@ Each person has a daily schedule of obligations that differs only between weekda
 | Dinner | 17:00 - 18:00 | Living Room |
 
 ## Variability: 
-The scenario runs from 06.06.2020 for approximately two years. During this time the scenario is subject to the following variability:
+The scenario runs from 01.06.2020 for approximately two years. During this time the scenario is subject to the following variability:
 
 ### Leisure time:
 During periods of leisure time (when no obligation is scheduled) the person picks randomly from a weighted list of leisure activities. Some activities require ressources (e.g., watching TV occupies the TV) which limits choices for others. The priority of activities that happen outside of the house or on the porch is influenced by weather, so that activities on the porch will be less likely during winter or bad weather.
@@ -122,12 +132,3 @@ The project is structured along the following folders:
 - *src*: contains source code.
 
 
-# Useage
-
-The scenario can be started as a module via *python -m examples.simple_scenario.main <execution_mode>* from the main folder of the project.
-
-Execution mode can have one of three values:
-- *RECORD*: runs the simulation for 6 months, recording presence data. Data will be stored in *data/recording.pickle* and can be explored using *data_exploration.ipynb*
-- RUN:  runs the simulation for 24 months, recording presence data and predictions. Data will be stored in *data/running.pickle* and can be explored using *model_evaluation.ipynb*
-- ADAPT: runs the simulation for 24 months, while adapting. The scenario is the same as in RUN but an additional adpatation controller retrains the model periodically. Data will be stored in *data/adapting.pickle* and can be explored using *adaptation_evaluation.ipynb*
-- VIEW: runs the simulation indefinitely with predictions and a user interface. No data will be recorded.
