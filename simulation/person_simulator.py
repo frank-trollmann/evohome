@@ -2,6 +2,7 @@
 from collections import deque
 from datetime import time, timedelta
 import random
+import datetime
 
 from simulation.schedule_item import Schedule_Item
 from simulation.pathfinding import Pathfinding
@@ -134,11 +135,9 @@ class Person_Simulator:
         self.schedule.clear()
         self.last_simulated_day = self.simulation.current_time.day
 
-        self.schedule.append(Schedule_Item(description = "Sleep(Morning)",
-                                           start_time=time(0,00),
-                                           end_time=self.person.wake_up_time, 
-                                           activity_type=Schedule_Item.ACTIVITY_TYPE_SLEEP, 
-                                           rooms = [self.person.sleep_room]))
+        first_obligation_start = datetime.time(23,59) 
+        last_obligation_end = datetime.time(0,0)
+
         for obligation in self.person.obligations:
             if obligation.happens_today(self.simulation.current_time):
                 self.schedule.append(Schedule_Item(description = "Obligation: " + obligation.name,
@@ -146,10 +145,23 @@ class Person_Simulator:
                                            end_time=obligation.end_time, 
                                            activity_type=Schedule_Item.ACTIVITY_TYPE_OBLIGATION, 
                                            rooms = [obligation.location]))
+                
+                first_obligation_start = min(first_obligation_start,obligation.start_time)
+                last_obligation_end = max(last_obligation_end, obligation.end_time)
+        
+        wakeup_time = min(first_obligation_start, self.person.wake_up_time)
+        sleep_time = min(last_obligation_end, self.person.sleep_time)
+
+        self.schedule.append(Schedule_Item(description = "Sleep(Morning)",
+                                           start_time = time(0,00),
+                                           end_time = wakeup_time, 
+                                           activity_type = Schedule_Item.ACTIVITY_TYPE_SLEEP, 
+                                           rooms = [self.person.sleep_room]))
+        
         self.schedule.append(Schedule_Item(description = "Sleep(Evening)",
-                                            start_time=self.person.sleep_time,
-                                           end_time= time(23,59), 
-                                           activity_type=Schedule_Item.ACTIVITY_TYPE_SLEEP, 
+                                            start_time = sleep_time,
+                                           end_time = time(23,59), 
+                                           activity_type = Schedule_Item.ACTIVITY_TYPE_SLEEP, 
                                            rooms = [self.person.sleep_room]))
         
         self.schedule = sorted(self.schedule,key = lambda schedule_item: schedule_item.start_time)
