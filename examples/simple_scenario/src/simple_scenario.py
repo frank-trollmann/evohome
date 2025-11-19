@@ -22,7 +22,7 @@ def create_simple_scenario():
 
     house = House()
     scenario.house = house
-    scenario.startTime = datetime(year = 2020, month = 6, day = 6, hour = 0, minute = 0)
+    scenario.startTime = datetime(year = 2020, month = 6, day = 1, hour = 0, minute = 0)
 
     # create rooms and transitions
     hallway_1 = Room("Hallway 1", 230, 370)
@@ -172,7 +172,7 @@ def create_simple_scenario():
 
     
      # create persons
-    parent_1 = Person("Arny", (255, 255, 0),wake_up_time= time(6,00), sleep_time = time(22,00))
+    parent_1 = Person("Arny", (255, 255, 0),wake_up_time= time(8,00), sleep_time = time(22,00))
     parent_1.sleep_room = bedroom1
     scenario.add_person(parent_1)
     parent_1.add_obligation(breakfast_obligation)
@@ -186,7 +186,7 @@ def create_simple_scenario():
     parent_1.add_leisure_activity(play_pc, 2)
     parent_1.add_leisure_activity(watch_tv, 2)
 
-    parent_2 = Person("Betty", (0, 255, 255),wake_up_time = time(5,00), sleep_time = time(21,00))
+    parent_2 = Person("Betty", (0, 255, 255),wake_up_time = time(9,00), sleep_time = time(21,00))
     parent_2.sleep_room = bedroom1
     scenario.add_person(parent_2)
     parent_2.add_obligation(work_parent_2_obligation)
@@ -213,7 +213,7 @@ def create_simple_scenario():
     child_1.add_leisure_activity(shopping,2)
     child_1.add_leisure_activity(watch_tv,2)
 
-    child_2 = Person("Dave", (255, 0, 0),wake_up_time = time(6,00), sleep_time = time(21,00))
+    child_2 = Person("Dave", (255, 0, 0),wake_up_time = time(10,00), sleep_time = time(21,00))
     child_2.sleep_room = bedroom3
     scenario.add_person(child_2)
     child_2.add_obligation(breakfast_obligation)
