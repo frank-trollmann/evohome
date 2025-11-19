@@ -1,10 +1,8 @@
 
 import random
 import pygame
-import sys
 from copy import copy, deepcopy
 from datetime import timedelta
-import time
 from collections import deque
 from timeit import default_timer as timer
 
