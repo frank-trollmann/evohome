@@ -3,6 +3,7 @@ from pygame.locals import *
 from pygame import Surface
 from pygame._sdl2 import Window
 
+import time
 import os
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = "100,100"
@@ -10,15 +11,22 @@ pygame.init()
 
 class Main_window:
    
-    def __init__(self, scenario):
+    def __init__(self, simulation):
         pygame.font.init()
 
-        self.house_background = self.create_house_background(scenario)
+        self.simulation = simulation
+
+        self.sleep_time = 0.1
+        self.paused = False
+
+        self.house_background = self.create_house_background(simulation.scenario)
         self.draw_surface = Surface(self.house_background.get_size())
         self.screen = pygame.display.set_mode((500,500), flags=DOUBLEBUF | RESIZABLE)
         self.end_selected = False
 
         Window.from_display_module().maximize()
+
+
     
     """
         Create the static background image of the house. The image consists of ...
@@ -61,6 +69,9 @@ class Main_window:
                                 color = (0,0,255))
 
         return house_background
+
+    def frame_pause(self):
+        time.sleep(self.sleep_time)
 
     """
         draw all persons onto the screen.
@@ -120,6 +131,20 @@ class Main_window:
         self.screen.blit(scaled_draw_surface,(offset_x,offset_y))
         pygame.display.flip()
 
+        self.handle_events()
+
+    def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.end_selected = True
+            
+            if event.type == pygame.KEYDOWN :
+                if event.key == pygame.K_SPACE:
+                    if self.simulation.is_paused():
+                        self.simulation.resume()
+                    else:
+                        self.simulation.pause()
+                elif event.key == pygame.K_LEFT:
+                    self.sleep_time *= 2.0
+                elif event.key == pygame.K_RIGHT:
+                    self.sleep_time /= 2.0

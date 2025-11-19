@@ -21,6 +21,7 @@ class Simulation:
 
         self.random_seed = random_seed
         self.running = False
+        self.paused = False
 
         self.house = None
         self.weather = None
@@ -53,7 +54,14 @@ class Simulation:
             return None
         return self.prediction_times[0]
     
-
+    def pause(self):
+        self.paused = True
+    
+    def resume(self):
+        self.paused = False
+    
+    def is_paused(self):
+        return self.paused
 
     def set_scenario(self,scenario):
         self.scenario = scenario # copy scenario in case it is expected to be reused.
@@ -92,7 +100,7 @@ class Simulation:
 
         # show window if needed.
         if self.display_user_interface:
-            window = Main_window(scenario_copy)
+            window = Main_window(self)
 
         if self.prediction_system is not None:
             self.prediction_system.on_simulation_start()
@@ -108,43 +116,44 @@ class Simulation:
         self.running = True
 
         while self.running:
-            self.tick()
+            if not self.paused:
+                self.tick()
 
-            # update prediction forecast
-            if self.prediction_system is not None:
-                start_time = timer()
-                prediction = self.prediction_system.predict_presence(self.predicted_time)
-                prediction_time = timer() - start_time
-                self.predictions.append(prediction)
-                self.prediction_times.append(prediction_time)
-            
-            # forward information to adaptation controller
-            adaptation_time = -1
-            if self.adaptation_controller is not None:
-                prediction = self.get_current_prediction()
-                if(prediction is not None):
-                    prediction_time = self.get_current_prediction_time()
-                    data_point = self.get_sensor_values()
+                # update prediction forecast
+                if self.prediction_system is not None:
                     start_time = timer()
-                    self.adaptation_controller.on_new_prediction(copy(self.current_time), data_point, prediction, prediction_time )
-                    adaptation_time = timer() - start_time
+                    prediction = self.prediction_system.predict_presence(self.predicted_time)
+                    prediction_time = timer() - start_time
+                    self.predictions.append(prediction)
+                    self.prediction_times.append(prediction_time)
+                
+                # forward information to adaptation controller
+                adaptation_time = -1
+                if self.adaptation_controller is not None:
+                    prediction = self.get_current_prediction()
+                    if(prediction is not None):
+                        prediction_time = self.get_current_prediction_time()
+                        data_point = self.get_sensor_values()
+                        start_time = timer()
+                        self.adaptation_controller.on_new_prediction(copy(self.current_time), data_point, prediction, prediction_time )
+                        adaptation_time = timer() - start_time
 
-            # update data recorder
-            if self.data_recorder is not None:
-                data_point = self.get_sensor_values()
-                prediction = self.get_current_prediction()
-                prediction_time = self.get_current_prediction_time()
-                self.data_recorder.on_new_datapoint(copy(self.current_time),data_point, prediction, self.weather.get_quality(), prediction_time, adaptation_time)
+                # update data recorder
+                if self.data_recorder is not None:
+                    data_point = self.get_sensor_values()
+                    prediction = self.get_current_prediction()
+                    prediction_time = self.get_current_prediction_time()
+                    self.data_recorder.on_new_datapoint(copy(self.current_time),data_point, prediction, self.weather.get_quality(), prediction_time, adaptation_time)
 
-            # update list of predictions
-            if(len(self.predictions) > self.prediction_delay_in_min + 1):
-                    self.predictions.popleft()
-                    self.prediction_times.popleft()
+                # update list of predictions
+                if(len(self.predictions) > self.prediction_delay_in_min + 1):
+                        self.predictions.popleft()
+                        self.prediction_times.popleft()
 
             # update GUI
             if(self.display_user_interface):
-                time.sleep(0.1)
                 window.update_content(self)
+                window.frame_pause()
                 if window.end_selected:
                     self.end()
 
