@@ -13,6 +13,7 @@ class Main_window:
    
     def __init__(self, simulation):
         pygame.font.init()
+        self.font = pygame.font.SysFont('Comic Sans MS', 20)
 
         self.simulation = simulation
 
@@ -33,8 +34,6 @@ class Main_window:
         self.draw_surface.blit(self.house_background,(0,0),None)
         self.__draw_persons(self.draw_surface, self.simulation)
         self.__draw_predictions(self.draw_surface,self.simulation)
-        self.__draw_time(self.draw_surface,self.simulation)
-
         screen_size = self.screen.get_size()
         draw_size = self.draw_surface.get_size()
         scale_factor_x = screen_size[0] / draw_size[0]
@@ -46,8 +45,11 @@ class Main_window:
         offset_y = (screen_size[1] - scaled_size[1]) / 2.0
 
 
+
         self.screen.fill((255,255,255))
         self.screen.blit(scaled_draw_surface,(offset_x,offset_y))
+        self.__draw_controls(self.screen)
+        self.__draw_time(self.screen,self.simulation)
         pygame.display.flip()
 
         self.handle_events()
@@ -70,15 +72,19 @@ class Main_window:
             
             if event.type == pygame.KEYDOWN :
                 if event.key == pygame.K_SPACE:
-                    if self.simulation.is_paused():
-                        self.simulation.resume()
-                    else:
-                        self.simulation.pause()
+                    self.__toggle_pause()
                 elif event.key == pygame.K_LEFT:
-                    self.sleep_time *= 2.0
+                    self.__slow_down()
                 elif event.key == pygame.K_RIGHT:
-                    self.sleep_time /= 2.0
-
+                    self.__speed_up()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_LEFT:
+                screen_width = self.screen.get_size()[0]
+                if(self.__event_over_button(event, self.__get_pause_button_position(screen_width))):
+                    self.__toggle_pause()
+                if(self.__event_over_button(event, self.__get_slower_button_position(screen_width))):
+                    self.__slow_down()
+                if(self.__event_over_button(event, self.__get_faster_button_position(screen_width))):
+                    self.__speed_up()
 
     def __create_house_background(self):
         """
@@ -119,7 +125,6 @@ class Main_window:
                                 end_pos = (end_room.x, end_room.y),
                                 width = 5,
                                 color = (0,0,255))
-
         return house_background
 
     
@@ -161,6 +166,71 @@ class Main_window:
             draw the current time to the surface
         """
         text = simulation.current_time.strftime("%m/%d/%Y, %H:%M:%S, %A")
-        text_surface = pygame.font.SysFont('Comic Sans MS', 20).render(text,True,(0,0,0),(255,255,255))
+        text_surface = self.font.render(text,True,(0,0,0),(255,255,255))
         surface.blit(text_surface, (10,10))
+    
+    def __draw_controls(self,surface):
+        """
+            draws window controls to the given surface
+        """
+        screen_width = surface.get_size()[0]
+
+        slower_pos = self.__get_slower_button_position(screen_width)
+        self.__draw_button(surface, "<<", slower_pos)
+
+        play_pause_pos = self.__get_pause_button_position(screen_width)
+        if self.simulation.is_paused():
+            play_pause_text =  ">"
+        else:
+            play_pause_text =  "||"
+        self.__draw_button(surface, play_pause_text, play_pause_pos)
+
+        faster_pos = self.__get_faster_button_position(screen_width)
+        self.__draw_button(surface, ">>", faster_pos)
+
+    def __speed_up(self):
+        self.sleep_time = max(self.sleep_time/ 2.0, 0.0000001)
+
+    def __slow_down(self):
+        self.sleep_time = min(self.sleep_time*1, 2.0)
+
+    def __toggle_pause(self):
+        if self.simulation.is_paused():
+            self.simulation.resume()
+        else:
+            self.simulation.pause()
+
+    def __draw_button(self, surface, text,  position):
+        """
+            draw a single button to the given surface
+        """
+        size = self.__get_button_size()
+        pygame.draw.rect(surface,(200,200,200), position + self.__get_button_size())
+        slower_text_surface = self.font.render(text,True,(0,0,0),(200,200,200))
+
+        offset_x = (size[0] - slower_text_surface.get_size()[0])/2
+        offset_y = (size[1] - slower_text_surface.get_size()[1])/2
+
+        surface.blit(slower_text_surface,(position[0] + offset_x, position[1] + offset_y))
+    
+    def __event_over_button(self, event, button_position):
+        click_pos = event.pos
+        button_size = self.__get_button_size()
+        hit_x = click_pos[0] > button_position[0] and click_pos[0] < button_position[0] + button_size[0]
+        hit_y = click_pos[1] > button_position[1] and click_pos[1] < button_position[1] + button_size[1]
+        return hit_x and hit_y
+
+    def __get_slower_button_position(self, width):
+        return (width-150,10)
+    
+    def __get_faster_button_position(self, width):
+        return (width-50,10)
+    
+    def __get_pause_button_position(self,width):
+        return (width-100,10)
+    
+    def __get_button_size(self):
+        return (40,30)
+    
+
 
