@@ -1,6 +1,11 @@
 import pygame
 from pygame.locals import *
+from pygame import Surface
+from pygame._sdl2 import Window
 
+import os
+
+os.environ['SDL_VIDEO_WINDOW_POS'] = "100,100"
 pygame.init()
 
 class Main_window:
@@ -9,10 +14,11 @@ class Main_window:
         pygame.font.init()
 
         self.house_background = self.create_house_background(scenario)
-        self.screen = pygame.display.set_mode((self.house_background.get_width(),self.house_background.get_height()), flags=DOUBLEBUF | RESIZABLE)
+        self.draw_surface = Surface(self.house_background.get_size())
+        self.screen = pygame.display.set_mode((500,500), flags=DOUBLEBUF | RESIZABLE)
         self.end_selected = False
 
-
+        Window.from_display_module().maximize()
     
     """
         Create the static background image of the house. The image consists of ...
@@ -94,10 +100,24 @@ class Main_window:
 
 
     def update_content(self, simulation):
-        self.screen.blit(self.house_background,(0,0),None)
-        self.draw_persons(self.screen, simulation)
-        self.draw_predictions(self.screen,simulation)
-        self.draw_time(self.screen,simulation)
+        self.draw_surface.blit(self.house_background,(0,0),None)
+        self.draw_persons(self.draw_surface, simulation)
+        self.draw_predictions(self.draw_surface,simulation)
+        self.draw_time(self.draw_surface,simulation)
+
+        screen_size = self.screen.get_size()
+        draw_size = self.draw_surface.get_size()
+        scale_factor_x = screen_size[0] / draw_size[0]
+        scale_factor_y = screen_size[1] / draw_size[1]
+        scale_factor = min(scale_factor_x, scale_factor_y)
+        scaled_draw_surface = pygame.transform.scale_by(self.draw_surface, scale_factor)
+        scaled_size = scaled_draw_surface.get_size()
+        offset_x = (screen_size[0] - scaled_size[0]) / 2.0
+        offset_y = (screen_size[1] - scaled_size[1]) / 2.0
+
+
+        self.screen.fill((255,255,255))
+        self.screen.blit(scaled_draw_surface,(offset_x,offset_y))
         pygame.display.flip()
 
         for event in pygame.event.get():
