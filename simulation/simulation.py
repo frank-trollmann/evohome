@@ -28,7 +28,6 @@ class Simulation:
         self.current_time = None
         self.predictions = deque()
         self.prediction_times = deque()
-        self.adaptation_times = deque()
         self.person_simulators = []
         self.changes = []
 
@@ -54,12 +53,6 @@ class Simulation:
             return None
         return self.prediction_times[0]
     
-    def get_current_adaptation_time(self):
-        if self.tick_count < self.prediction_delay_in_min:
-            return None
-        if len(self.adaptation_times) == 0:
-            return None
-        return self.adaptation_times[0]
 
 
     def set_scenario(self,scenario):
@@ -126,6 +119,7 @@ class Simulation:
                 self.prediction_times.append(prediction_time)
             
             # forward information to adaptation controller
+            adaptation_time = -1
             if self.adaptation_controller is not None:
                 prediction = self.get_current_prediction()
                 if(prediction is not None):
@@ -134,21 +128,18 @@ class Simulation:
                     start_time = timer()
                     self.adaptation_controller.on_new_prediction(copy(self.current_time), data_point, prediction, prediction_time )
                     adaptation_time = timer() - start_time
-                    self.adaptation_times.append(adaptation_time)
 
             # update data recorder
             if self.data_recorder is not None:
                 data_point = self.get_sensor_values()
                 prediction = self.get_current_prediction()
                 prediction_time = self.get_current_prediction_time()
-                adaptation_time = self.get_current_adaptation_time()
                 self.data_recorder.on_new_datapoint(copy(self.current_time),data_point, prediction, self.weather.get_quality(), prediction_time, adaptation_time)
 
             # update list of predictions
             if(len(self.predictions) > self.prediction_delay_in_min + 1):
                     self.predictions.popleft()
                     self.prediction_times.popleft()
-                    self.adaptation_times.popleft()
 
             # update GUI
             if(self.display_user_interface):
