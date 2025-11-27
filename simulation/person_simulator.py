@@ -13,22 +13,21 @@ class Person_Simulator:
     MODE_OBLIGATION = 1
     MODE_LEISURE = 2
 
-    def __init__(self, simulation, person):
-        self.simulation = simulation
+    def __init__(self, simulator, person):
+        self.simulator = simulator
         self.person = person
         self.schedule = []
-        self.last_simulated_day = -1
         self.current_activity = None
         self.__reset_state_variables()
 
-    def tick(self):
+    def tick(self, current_time):
         """
             This function should be called every minute to update the persons position and activities
         """
-        now = self.simulation.current_time.time()
-        if self.simulation.current_time.day != self.last_simulated_day:
+        now = current_time.time()
+        if current_time.hour == 0 and current_time.minute == 0:
             self.__reset_state_variables()
-            self.__make_day_schedule()
+            self.__make_day_schedule(current_time)
 
         while len(self.schedule) > 0 and now > self.schedule[0].end_time:
             del self.schedule[0]
@@ -53,7 +52,7 @@ class Person_Simulator:
 
         if self.mode == Person_Simulator.MODE_UNDECIDED:
             self.mode = Person_Simulator.MODE_LEISURE
-            self.__pick_leisure_activity()
+            self.__pick_leisure_activity(current_time)
             return
         
     def __reset_state_variables(self):
@@ -70,11 +69,11 @@ class Person_Simulator:
         self.path = None
 
 
-    def __pick_leisure_activity(self):
+    def __pick_leisure_activity(self, current_time):
         """
             Picks and starts a leisure activity and duration for the current point in time.
         """
-        available_options = [option for option in self.person.leisure_activities if option[0].is_available(self.simulation.current_time)]
+        available_options = [option for option in self.person.leisure_activities if option[0].is_available(current_time)]
         available_activities = [option[0] for option in available_options]
         weights = [self.__get_adjusted_weight(option[1], option[0]) for option in available_options]
 
@@ -85,8 +84,8 @@ class Person_Simulator:
         
         duration = self.current_activity.calculate_duration()
         if duration > 0:
-            self.current_activity_end = (self.simulation.current_time + timedelta(minutes= duration)).time()
-            if self.current_activity_end < self.simulation.current_time.time():
+            self.current_activity_end = (current_time + timedelta(minutes= duration)).time()
+            if self.current_activity_end < current_time.time():
                 self.current_activity_end = None
         self.current_activity.start_activity()
         self.__start_move(self.current_activity.location)
@@ -96,7 +95,7 @@ class Person_Simulator:
             Calculates the adjusted weight of an activity based on current circumstances.
         """
         if activity.location is None or activity.location.is_outside:
-            weight *= self.simulation.weather.get_quality()
+            weight *= self.simulator.weather.get_quality()
         return weight
 
     def __move_tick(self):
@@ -124,22 +123,21 @@ class Person_Simulator:
         
         self.moving = True
         pathfinding = Pathfinding.instance()
-        self.path = deque(pathfinding.get_path(self.simulation.house, self.person.room, target_room))
+        self.path = deque(pathfinding.get_path(self.simulator.house, self.person.room, target_room))
 
         
-    def __make_day_schedule(self):
+    def __make_day_schedule(self, current_time):
         """
             Calculates the schedule for the day.
             This includes all obligations and sleep times.
         """
         self.schedule.clear()
-        self.last_simulated_day = self.simulation.current_time.day
 
         first_obligation_start = datetime.time(23,59) 
         last_obligation_end = datetime.time(0,0)
 
         for obligation in self.person.obligations:
-            if obligation.happens_today(self.simulation.current_time):
+            if obligation.happens_today(current_time):
                 self.schedule.append(Schedule_Item(description = "Obligation: " + obligation.name,
                                            start_time=obligation.start_time,
                                            end_time=obligation.end_time, 

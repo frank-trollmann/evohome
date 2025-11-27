@@ -17,9 +17,9 @@ class Move_Out_Change(Scheduled_Change):
         super().__init__(datetime)
         self.person = person
     
-    def execute(self, simulation):
+    def execute(self, simulator):
         """
             Removes the person from the simulation.
         """
-        simulation.remove_person(self.person)
+        simulator.remove_person(self.person)
         

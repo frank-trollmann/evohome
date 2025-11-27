@@ -2,6 +2,7 @@
 import os
 import unittest
 
+from simulation.scenario_simulator import Scenario_Simulator
 from examples.simple_scenario.src.simple_adaptation_controller import Simple_Adaptation_Controller
 from examples.simple_scenario.src.decision_tree_predictor import Decision_Tree_Predictor
 from examples.simple_scenario.src.extended_data_recorder import Extended_Data_Recorder
@@ -31,7 +32,8 @@ class Test_Simple_Scenario(unittest.TestCase):
         try:
             scenario = create_simple_scenario()
             self.simulation.max_simulated_minutes = 2*24*60
-            self.simulation.set_scenario(scenario)
+            scenario_simulator = Scenario_Simulator(scenario) 
+            self.simulation.set_simulator(scenario_simulator)
 
             data_recorder = Extended_Data_Recorder(self.filename)
             self.simulation.set_data_recorder(data_recorder)

@@ -1,0 +1,71 @@
+
+import random
+from copy import copy, deepcopy
+
+
+from simulation.weather import Weather_Simulation
+from simulation.person_simulator import Person_Simulator
+
+
+class Scenario_Simulator:
+    def __init__(self, scenario):
+        self.scenario = scenario
+
+        self.house = None
+        self.rooms = None
+        self.weather = None
+        self.persons = []
+        self.person_simulators = []
+        self.changes = []
+    
+    def start_simulation(self):
+        scenario_copy = deepcopy(self.scenario)
+        self.house = scenario_copy.house
+        self.weather = Weather_Simulation()
+        self.rooms = []
+        self.rooms.extend(self.house.rooms.values())
+        self.rooms = sorted(self.rooms, key = lambda room: room.name)
+        self.persons = scenario_copy.persons
+        self.person_simulators = [Person_Simulator(self,person) for person in self.persons]
+        self.changes = sorted(scenario_copy.changes, key = lambda change: change.datetime)
+
+    def get_room_by_name(self, key):
+        return self.house.rooms[key]
+
+    def get_rooms(self):
+        return self.rooms
+    
+    def get_transitions(self):
+        return self.house.transitions
+    
+    def get_start_time(self):
+        return copy(self.scenario.startTime)
+    
+    def tick(self, current_time):
+        if(current_time.hour == 0 and current_time.minute == 0):
+            random.shuffle(self.person_simulators)
+
+        self.weather.tick(current_time)
+
+        while self.changes and current_time == self.changes[0].datetime:
+            self.changes[0].execute(self)
+            self.changes.pop(0)
+            print("Change executed at ", current_time)
+
+        for person_simulator in self.person_simulators:
+            person_simulator.tick(current_time)
+
+    def get_weather_value(self):
+        return self.weather.get_quality()
+    
+    def get_background_image(self):
+        return self.scenario.background_image
+
+    def remove_person(self, person):
+        person.move_to_room(None)
+        self.persons.remove(person)
+        self.person_simulators = [sim for sim in self.person_simulators if sim.person != person]
+
+    def add_person(self,person):
+        self.persons.append(person)
+        self.person_simulators.append(Person_Simulator(self,person))

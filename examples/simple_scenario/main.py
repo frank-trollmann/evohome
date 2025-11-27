@@ -5,6 +5,7 @@ from examples.simple_scenario.src.extended_data_recorder import Extended_Data_Re
 from examples.simple_scenario.src.decision_tree_predictor import Decision_Tree_Predictor
 from examples.simple_scenario.src.simple_scenario import create_simple_scenario
 
+from simulation.scenario_simulator import Scenario_Simulator
 from simulation.learning_system import prediction_system
 from simulation.simulation import Simulation
 
@@ -25,7 +26,8 @@ if __name__ == "__main__":
                             max_simulated_minutes = -1,
                             prediction_delay_in_min = 60,
                             random_seed = 42)
-    simulation.set_scenario(scenario)
+    scenario_simulator = Scenario_Simulator(scenario) 
+    simulation.set_simulator(scenario_simulator)
 
     if execution_mode == "RECORD":
         simulation.max_simulated_minutes = 3*30*24*60

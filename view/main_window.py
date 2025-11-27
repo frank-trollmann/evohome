@@ -96,30 +96,33 @@ class Main_window:
             If no background image is provided, the dimenions are calculated so they can accomodate the coordinates of all rooms.
         """
         # initialize canvas based on background image or room coordinates
-        scenario = self.simulation.scenario
-        if scenario.background_image != None:
-            house_image = pygame.image.load(scenario.background_image)
+        simulator = self.simulation.simulator
+        rooms = simulator.get_rooms()
+        transitions = simulator.get_transitions()
+
+        background_image = simulator.get_background_image()
+        if background_image != None:
+            house_image = pygame.image.load(background_image)
             house_background = pygame.Surface([house_image.get_width(),house_image.get_height()])
             house_background.blit(house_image,(0,0),None)
             pygame.display.set_mode((house_image.get_width(),house_image.get_height()), flags=DOUBLEBUF | RESIZABLE)
         else:
-            max_x = max(scenario.house.rooms.values(), key = lambda room: room.x).x
-            max_y = max(scenario.house.rooms.values(), key = lambda room: room.y).y
+            max_x = max(rooms, key = lambda room: room.x).x
+            max_y = max(rooms, key = lambda room: room.y).y
             house_background = pygame.Surface([max_x + 20,max_y + 20])
             house_background.fill((255,255,255))
 
         # draw rooms
-        house = scenario.house
-        for room in house.rooms.values():
+        for room in rooms:
             pygame.draw.circle(surface = house_background,
                                center = (room.x,room.y),
                                radius = 10,
                                color = (0,0,255))
         
         # draw room connections
-        for start_room_key in house.transitions.keys():
-            for end_room in house.transitions[start_room_key]:
-                start_room = house.rooms[start_room_key]
+        for start_room_key in transitions.keys():
+            for end_room in transitions[start_room_key]:
+                start_room = simulator.get_room_by_name(start_room_key)
                 pygame.draw.line(surface = house_background,
                                 start_pos = (start_room.x,start_room.y),
                                 end_pos = (end_room.x, end_room.y),
@@ -132,10 +135,12 @@ class Main_window:
         """
             draw all persons onto the surface
         """
-        for room in simulation.house.rooms.values():
+        rooms = self.simulation.simulator.get_rooms()
+
+        for room in rooms:
             current_person_index = 0
             for person in room.persons:
-                x_offset = 20 * current_person_index
+                x_offset = 20 * current_person_index 
                 y_offset = 20
                 pygame.draw.circle(surface = surface,
                                center = (room.x + x_offset,room.y + y_offset),

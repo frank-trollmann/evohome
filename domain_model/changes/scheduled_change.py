@@ -14,7 +14,7 @@ class Scheduled_Change:
         """
         self.datetime = datetime
 
-    def execute(self, simulation):
+    def execute(self, _):
         """
             Executes the change by modifying the given simulation.
 
