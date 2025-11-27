@@ -18,9 +18,9 @@ class Simple_Adaptation_Controller(Adaptation_Controller):
         for index in range(len(self.simulation.rooms)):
             predicted_features.append("room_" + str(index))
 
-        # create initial x and y
-        self.X = data_frame[training_features]
-        self.Y = data_frame[predicted_features]
+        # create initial x and y from the last 30 days of data
+        self.X = data_frame[training_features][-7*24*60:]
+        self.Y = data_frame[predicted_features][-7*24*60:]
 
         self.substituted_index = 0
 
@@ -49,6 +49,7 @@ class Simple_Adaptation_Controller(Adaptation_Controller):
 
         y_value = {"room_" + str(index) : int(y[index]) for index in range(len(y))}
         self.Y.iloc[self.substituted_index] = y_value
+
 
         self.substituted_index = (self.substituted_index + 1) % len(self.X)
     
