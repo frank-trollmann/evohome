@@ -34,7 +34,7 @@ class Weather_Simulation:
         day_fraction = (60*current_time.hour + current_time.minute) /(24*60)
         time_factor = 0.5 + 0.5* self.__to_sin_value(day_fraction)
     
-        self.adjustment += random.choice([0.01, -0.01])
+        self.adjustment += random.choice([0.01, 0,0,0, -0.01])
         self.adjustment = min(0.1, max(-0.2,self.adjustment))
 
         value = self.season_factor * time_factor + self.adjustment;
