@@ -3,11 +3,12 @@ import random
 from copy import copy, deepcopy
 
 
+from simulation.simulator_base import Simulator_Base
 from simulation.weather import Weather_Simulation
 from simulation.person_simulator import Person_Simulator
 
 
-class Scenario_Simulator:
+class Scenario_Simulator(Simulator_Base):
     def __init__(self, scenario):
         self.scenario = scenario
 
@@ -29,8 +30,8 @@ class Scenario_Simulator:
         self.person_simulators = [Person_Simulator(self,person) for person in self.persons]
         self.changes = sorted(scenario_copy.changes, key = lambda change: change.datetime)
 
-    def get_room_by_name(self, key):
-        return self.house.rooms[key]
+    def get_room_by_name(self, name):
+        return self.house.rooms[name]
 
     def get_rooms(self):
         return self.rooms
