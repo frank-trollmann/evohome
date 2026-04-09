@@ -1,3 +1,4 @@
+from tkinter import EXCEPTION
 import pygame
 from pygame.locals import *
 from pygame import Surface
@@ -52,7 +53,6 @@ class Main_window:
         self.__draw_time(self.screen,self.simulation)
         pygame.display.flip()
 
-        self.handle_events()
 
     def frame_pause(self):
         """
@@ -66,7 +66,9 @@ class Main_window:
         """
             handles input related events.
         """
-        for event in pygame.event.get():
+        events = pygame.event.get(eventtype=[pygame.QUIT, pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN]) 
+
+        for event in events:
             if event.type == pygame.QUIT:
                 self.end_selected = True
             
@@ -85,7 +87,8 @@ class Main_window:
                     self.__slow_down()
                 if(self.__event_over_button(event, self.__get_faster_button_position(screen_width))):
                     self.__speed_up()
-
+        pygame.event.clear()
+                    
     def __create_house_background(self):
         """
             Create the static background image of the house. The image consists of ...
