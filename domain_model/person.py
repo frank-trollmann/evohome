@@ -6,7 +6,7 @@ class Person:
     """
         This class represents a person living in the house.
     """
-    def __init__(self, name, ui_color, wake_up_time, sleep_time):
+    def __init__(self, name, ui_color, wake_up_time = None, sleep_time = None):
         """
             Constructor.
             Args:
