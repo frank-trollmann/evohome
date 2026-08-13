@@ -106,6 +106,7 @@ class Simulation:
                 # update prediction forecast
                 if self.prediction_system is not None:
                     start_time = timer()
+                    self.prediction_system.on_new_datapoint(copy(self.current_time),self.get_sensor_values())
                     prediction = self.prediction_system.predict_presence(self.predicted_time)
                     prediction_time = timer() - start_time
                     self.predictions.append(prediction)

@@ -22,7 +22,7 @@ class Prediction_System:
         """
         pass
 
-    def on_new_datapoint(self, time, sensor_data, prediction ):
+    def on_new_datapoint(self, time, sensor_data ):
         """
             Method that notifies the prediction system of a new data point. 
             This can be used to collect data for a data set or as starting point for checking and adapting the current prediction model (e.g., as part of the M-phase of a MAPE-K loop.)
@@ -32,7 +32,6 @@ class Prediction_System:
             parameters:
             - time: an object of type datetime
             - sensor_data: an array of booleans. Each element in the array corresponds to the presence sensor in a room. Rooms are represented in the same order as self.simulation.rooms.
-            - the prediction that was made for this time point (None if predict_presence is unimplemented or if the prediction delay is not exceeded)
         """
         pass
 
