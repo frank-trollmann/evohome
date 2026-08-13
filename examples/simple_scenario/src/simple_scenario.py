@@ -78,7 +78,7 @@ def create_simple_scenario():
                                 end_time = time(15,00), 
                                 location = None, 
                                 weekdays = [0,1,2,3,4])
-    prepare_dinner_obligation = Obligation("Cook Dinner", 
+    prepare_dinner_obligation = Obligation("Cook", 
                                 start_time= time(16,00), 
                                 end_time = time(17,00), 
                                 location = kitchen)
@@ -237,8 +237,7 @@ def create_simple_scenario():
     cook2_obligation = Obligation("Cook2", 
                                 start_time= time(15,30), 
                                 end_time = time(16,30), 
-                                location = kitchen, 
-                                weekdays = [0,1,2,3,4,5])
+                                location = kitchen)
     add_cooking_change = Obligation_Add_Change(datetime(year = 2021, month = 3, day = 2, hour = 0, minute = 0), parent_1, cook2_obligation)
     scenario.changes.append(remove_cooking_change)
     scenario.changes.append(add_cooking_change) 
