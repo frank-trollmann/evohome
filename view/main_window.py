@@ -200,7 +200,7 @@ class Main_window:
         self.sleep_time = max(self.sleep_time/ 2.0, 0.0000001)
 
     def __slow_down(self):
-        self.sleep_time = min(self.sleep_time*1, 2.0)
+        self.sleep_time = min(self.sleep_time*2, 2.0)
 
     def __toggle_pause(self):
         if self.simulation.is_paused():
