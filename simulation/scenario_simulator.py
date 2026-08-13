@@ -62,7 +62,7 @@ class Scenario_Simulator(Simulator_Base):
         random.shuffle(self.person_simulators)
         changes = self.current_gradual_changes[:] # copy list to avoid concurrent modification. (on_next_day is deleting finished gradual changes)
         for gradual_change in  changes:
-            gradual_change.on_next_day()
+            gradual_change.on_next_day(self)
 
     def get_weather_value(self):
         return self.weather.get_quality()

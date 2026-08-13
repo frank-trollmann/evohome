@@ -1,5 +1,8 @@
 
 
+import math
+
+
 class Gradual_Change:
     """
         This class represents a gradual change that starts on a specific day and stretches over a number of days.
@@ -28,6 +31,7 @@ class Gradual_Change:
         self.current_day = 0
         self.execute_gradual_change()
         simulation.add_gradual_change(self)
+        print("starting gradual change")
 
     def on_next_day(self, simulation):
         """
@@ -37,10 +41,13 @@ class Gradual_Change:
         """
         self.current_day+= 1
         self.execute_gradual_change()
+        print("continuing gradual change " + str(self.current_day))
         if self.current_day >= self.duration:
             simulation.remove_gradual_change(self)
+            print("ending gradual change " + str(self.current_day))
 
-    def execute_gradual(self):
+
+    def execute_gradual_change(self):
         """
             Executes a 
 
@@ -48,4 +55,8 @@ class Gradual_Change:
                 simulation (Simulation): the simulation.
         """
         pass
+
+    def get_progress_fraction(self):
+        fraction = float(self.current_day) / self.duration
+        return max(0.0,min(1.0,fraction))
 
