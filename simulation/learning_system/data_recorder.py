@@ -52,6 +52,7 @@ class Data_Recorder:
                 prediction (array of booleans): the prediction for all rooms.
                 weather_quality (float): the quality of the weather at this time.
                 prediction_time (float): the time it took to compute the prediction.
+                adaptation_time (float): the time it took to compute the prediction.
         """
         self.dates.append(time)
         self.weather.append(weather_quality)
