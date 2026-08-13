@@ -82,3 +82,18 @@ class Person:
                 name (string): the name of the leisure activity to remove.
         """
         self.leisure_activities = [activity for activity in self.leisure_activities if activity[0].name != activity_name]
+
+    def change_leisure_activity_priority(self,activity_name, new_priority):
+        """
+            Changes the priority of a leisure activity.
+            Args:
+                name (string): the name of the leisure activity to remove.
+
+        """
+        self.leisure_activities = [Person.__update_activity_priority_with_name(activity_tuple,activity_name,new_priority) for activity_tuple in self.leisure_activities]
+
+
+    def __update_activity_priority_with_name(activity_tuple, the_name, new_priority):
+            if(activity_tuple[0].name == the_name):
+                return (activity_tuple[0],new_priority)
+            return activity_tuple
