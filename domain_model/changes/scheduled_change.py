@@ -19,6 +19,6 @@ class Scheduled_Change:
             Executes the change by modifying the given simulation.
 
             Args:
-                simulation (Simulation): the simulation.
+                simulation (Scenario_Simulator): the simulation.
         """
         pass

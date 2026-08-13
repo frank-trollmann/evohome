@@ -18,6 +18,7 @@ class Scenario_Simulator(Simulator_Base):
         self.persons = []
         self.person_simulators = []
         self.changes = []
+        self.current_gradual_changes = []
     
     def start_simulation(self):
         scenario_copy = deepcopy(self.scenario)
@@ -29,6 +30,7 @@ class Scenario_Simulator(Simulator_Base):
         self.persons = scenario_copy.persons
         self.person_simulators = [Person_Simulator(self,person) for person in self.persons]
         self.changes = sorted(scenario_copy.changes, key = lambda change: change.datetime)
+        self.current_gradual_changes = []
 
     def get_room_by_name(self, name):
         return self.house.rooms[name]
@@ -44,7 +46,7 @@ class Scenario_Simulator(Simulator_Base):
     
     def tick(self, current_time):
         if(current_time.hour == 0 and current_time.minute == 0):
-            random.shuffle(self.person_simulators)
+            self.on_new_day()
 
         self.weather.tick(current_time)
 
@@ -55,6 +57,12 @@ class Scenario_Simulator(Simulator_Base):
 
         for person_simulator in self.person_simulators:
             person_simulator.tick(current_time)
+
+    def on_new_day(self):
+        random.shuffle(self.person_simulators)
+        changes = self.current_gradual_changes[:] # copy list to avoid concurrent modification. (on_next_day is deleting finished gradual changes)
+        for gradual_change in  changes:
+            gradual_change.on_next_day()
 
     def get_weather_value(self):
         return self.weather.get_quality()
@@ -70,3 +78,9 @@ class Scenario_Simulator(Simulator_Base):
     def add_person(self,person):
         self.persons.append(person)
         self.person_simulators.append(Person_Simulator(self,person))
+
+    def add_gradual_change(self,change):
+        self.current_gradual_changes.append(change)
+
+    def remove_gradual_change(self,change):
+        self.current_gradual_changes.remove(change)
