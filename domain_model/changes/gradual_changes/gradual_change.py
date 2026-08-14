@@ -31,7 +31,6 @@ class Gradual_Change:
         self.current_day = 0
         self.execute_gradual_change()
         simulation.add_gradual_change(self)
-        print("starting gradual change")
 
     def on_next_day(self, simulation):
         """
