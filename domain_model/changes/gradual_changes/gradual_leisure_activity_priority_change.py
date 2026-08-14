@@ -23,7 +23,7 @@ class Gradual_Leisure_Activity_Priority_Change(Gradual_Change):
         self.start_priority = start_priority;
         self.end_priority = end_priority;
 
-    def execute_gradual(self,_):
+    def execute_gradual_change(self):
         priority = self.start_priority + self.get_progress_fraction()* (self.end_priority - self.start_priority)
         self.person.change_leisure_activity_priority(self.activity_name, priority)
 
