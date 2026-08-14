@@ -41,11 +41,8 @@ class Gradual_Change:
         """
         self.current_day+= 1
         self.execute_gradual_change()
-        print("continuing gradual change " + str(self.current_day))
         if self.current_day >= self.duration:
             simulation.remove_gradual_change(self)
-            print("ending gradual change " + str(self.current_day))
-
 
     def execute_gradual_change(self):
         """

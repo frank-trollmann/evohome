@@ -48,7 +48,6 @@ class Person_Simulator:
             if now >= self.schedule[0].start_time:
                 self.mode = Person_Simulator.MODE_OBLIGATION
                 self.current_task = self.schedule[0]
-                print("starting obligation " + self.schedule[0].description)
                 self.__start_move(self.schedule[0].get_room())
 
         if self.mode == Person_Simulator.MODE_UNDECIDED:
@@ -75,10 +74,8 @@ class Person_Simulator:
             Picks and starts a leisure activity and duration for the current point in time.
         """
         available_options = [option for option in self.person.leisure_activities if option[0].is_available(current_time)]
-        print("available options: " + str(len(available_options)))
         available_activities = [option[0] for option in available_options]
         weights = [self.__get_adjusted_weight(option[1], option[0]) for option in available_options]
-        print("weights: " + str(weights))
 
         self.current_activity = random.choices(population=available_activities, weights=weights)[0]
         if self.current_activity is None:
@@ -91,7 +88,6 @@ class Person_Simulator:
             if self.current_activity_end < current_time.time():
                 self.current_activity_end = None
         self.current_activity.start_activity()
-        print("starting activity " + self.current_activity.name)
         self.__start_move(self.current_activity.location)
 
     def __get_adjusted_weight(self, weight, activity):
