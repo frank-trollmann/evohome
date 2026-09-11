@@ -18,6 +18,7 @@ class Person_Simulator:
         self.person = person
         self.schedule = []
         self.current_activity = None
+        self.current_activity_location = None # kept outside of activity because activity has a list of options and may be shared among multiple people
         self.__reset_state_variables()
 
     def tick(self, current_time):
@@ -61,8 +62,9 @@ class Person_Simulator:
         """
         self.current_task = None
         if self.current_activity is not None:
-            self.current_activity.end_activity()
+            self.current_activity.end_activity(self.current_activity_location)
             self.current_activity = None
+            self.current_activity_location = None
         self.current_activity_end = None
         self.moving = False
         self.mode = Person_Simulator.MODE_UNDECIDED
@@ -73,28 +75,35 @@ class Person_Simulator:
         """
             Picks and starts a leisure activity and duration for the current point in time.
         """
-        available_options = [option for option in self.person.leisure_activities if option[0].is_available(current_time)]
-        available_activities = [option[0] for option in available_options]
-        weights = [self.__get_adjusted_weight(option[1], option[0]) for option in available_options]
+        ACTIVITY_INDEX = 0
+        PRIORITY_INDEX = 1
 
-        self.current_activity = random.choices(population=available_activities, weights=weights)[0]
-        if self.current_activity is None:
+        available_options = [option for option in self.person.leisure_activities if option[ACTIVITY_INDEX].is_available(current_time)]
+        available_activities = [option[ACTIVITY_INDEX] for option in available_options]
+        available_locations = [activity.get_location() for  activity in available_activities]
+        weights = [self.__get_adjusted_weight(available_options[index][PRIORITY_INDEX], available_locations[index]) for index in range(len(available_activities))]
+
+        current_activity_index = random.choices(population=range(len(weights)), weights=weights)[0]
+        if current_activity_index is None:
             # fallback in case there are no valid activities just stand around and do nothing.
             return
-        
+
+        self.current_activity = available_activities[current_activity_index]
+        self.current_activity_location = available_locations[current_activity_index]
         duration = self.current_activity.calculate_duration()
         if duration > 0:
             self.current_activity_end = (current_time + timedelta(minutes= duration)).time()
             if self.current_activity_end < current_time.time():
                 self.current_activity_end = None
-        self.current_activity.start_activity()
-        self.__start_move(self.current_activity.location)
 
-    def __get_adjusted_weight(self, weight, activity):
+        self.current_activity.start_activity(self.current_activity_location)
+        self.__start_move(self.current_activity_location)
+
+    def __get_adjusted_weight(self, weight, location):
         """
-            Calculates the adjusted weight of an activity based on current circumstances.
+            Calculates the adjusted weight of a location based on current circumstances.
         """
-        if activity.location is None or activity.location.is_outside:
+        if location is None or location.is_outside:
             weight *= self.simulator.weather.get_quality()
         return weight
 

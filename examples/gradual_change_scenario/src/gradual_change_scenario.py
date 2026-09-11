@@ -79,20 +79,20 @@ def create_gradual_change_scenario():
 
     # create leisure activities
     socialize_activity = Leisure_Activity("Socializing", 
-                                            location = None,
+                                            location_options = None,
                                             min_duration= 30, 
                                             max_duration= 120)
     study_activity = Leisure_Activity("Studying", 
-                                                location = sleep,
+                                                location_options = [sleep],
                                                 min_duration= 30, 
                                                 max_duration= 90)
 
     snacking_activity = Leisure_Activity("Snacking", 
-                                                    location = kitchen,
+                                                    location_options = [kitchen],
                                                     min_duration= 10, 
                                                     max_duration= 30)
     watching_tv_activity = Leisure_Activity("Watching TV", 
-                                                        location = living,
+                                                        location_options = [living],
                                                         min_duration= 10, 
                                                         max_duration= 180)
 

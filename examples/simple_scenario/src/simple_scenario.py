@@ -126,46 +126,46 @@ def create_simple_scenario():
     
     # create leisure_activities
     alone_time_parent_1 = Leisure_Activity("Alone Time", 
-                                            location = bedroom1,
+                                            location_options = [bedroom1],
                                             min_duration= 30, 
                                             max_duration= 120)
     play_pc = Leisure_Activity("Play Games",
-                                            location = office, 
+                                            location_options = [office], 
                                             min_duration = 60, 
                                             max_duration=240,
                                             required_ressources=["PC"])
     watch_tv = Leisure_Activity("TV",
-                                            location = living_room, 
+                                            location_options = [living_room], 
                                             min_duration=10, 
                                             max_duration=60,
                                             required_ressources=["TV", "Couch"])
 
     alone_time_parent_2 = Leisure_Activity("Alone Time", 
-                                            location = bedroom1, 
+                                            location_options = [bedroom1], 
                                             min_duration=30, 
                                             max_duration=60)
     porch_reading = Leisure_Activity("Porch reading", 
-                                            location = porch, 
+                                            location_options = [porch], 
                                             min_duration=30, 
                                             max_duration=240)
     inside_reading = Leisure_Activity("Inside reading", 
-                                            location = living_room, 
+                                            location_options = [living_room], 
                                             min_duration=30, 
                                             max_duration=240,
                                             required_ressources=["Couch"])
 
     alone_time_child_1 = Leisure_Activity("Alone Time", 
-                                            bedroom2, 
+                                            location_options = [bedroom2], 
                                             min_duration=20, 
                                             max_duration=120)
     shopping = Leisure_Activity("Shopping", 
-                                            location = None, 
+                                            location_options = None, 
                                             weekdays = [0,1,2,3,4,5], 
                                             min_duration=60, 
                                             max_duration=240)
 
     alone_time_child_2 = Leisure_Activity("Alone Time", 
-                                            location = bedroom3, 
+                                            location_options = [bedroom3], 
                                             min_duration=30, 
                                             max_duration=120)
 
@@ -245,7 +245,7 @@ def create_simple_scenario():
     # child 2 picks up cooking practice instead of playing video games 
     remove_play_change = Leisure_Activity_Remove_Change(datetime(year = 2022, month = 1, day = 2, hour = 0, minute = 0), child_2, "Play Games")
     practice_cooking = Leisure_Activity("Practice Cooking", 
-                                            location = kitchen, 
+                                            location_options = [kitchen], 
                                             min_duration=30, 
                                             max_duration=60)
     add_practice_cooking_change = Leisure_Activity_Add_Change(datetime(year = 2022, month = 1, day = 2, hour = 0, minute = 0), child_2, practice_cooking, 4)
