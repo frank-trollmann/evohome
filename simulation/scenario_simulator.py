@@ -9,9 +9,10 @@ from simulation.person_simulator import Person_Simulator
 
 
 class Scenario_Simulator(Simulator_Base):
-    def __init__(self, scenario):
+    def __init__(self, scenario, verbose = False):
         self.scenario = scenario
-
+        self.verbose = verbose
+        
         self.house = None
         self.rooms = None
         self.weather = None
@@ -28,7 +29,7 @@ class Scenario_Simulator(Simulator_Base):
         self.rooms.extend(self.house.rooms.values())
         self.rooms = sorted(self.rooms, key = lambda room: room.name)
         self.persons = scenario_copy.persons
-        self.person_simulators = [Person_Simulator(self,person) for person in self.persons]
+        self.person_simulators = [Person_Simulator(self,person, verbose=self.verbose) for person in self.persons]
         self.changes = sorted(scenario_copy.changes, key = lambda change: change.datetime)
         self.current_gradual_changes = []
 

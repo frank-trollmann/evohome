@@ -1,9 +1,12 @@
 
+from asyncio import current_task
 from collections import deque
 from datetime import time, timedelta
+from os import name
 import random
 import datetime
 
+from domain_model import room
 from simulation.schedule_item import Schedule_Item
 from simulation.pathfinding import Pathfinding
 
@@ -13,8 +16,9 @@ class Person_Simulator:
     MODE_OBLIGATION = 1
     MODE_LEISURE = 2
 
-    def __init__(self, simulator, person):
+    def __init__(self, simulator, person, verbose = False):
         self.simulator = simulator
+        self.verbose = verbose
         self.person = person
         self.schedule = []
         self.current_activity = None
@@ -50,6 +54,12 @@ class Person_Simulator:
                 self.mode = Person_Simulator.MODE_OBLIGATION
                 self.current_task = self.schedule[0]
                 self.__start_move(self.schedule[0].get_room())
+
+                if(self.verbose):
+                    room_description = "outside"
+                    if(self.schedule[0].get_room() != None):
+                        room_description = "in " + self.schedule[0].get_room().name
+                    print(self.person.name, "started obligation", self.current_task.description, room_description)
 
         if self.mode == Person_Simulator.MODE_UNDECIDED:
             self.mode = Person_Simulator.MODE_LEISURE
@@ -98,6 +108,14 @@ class Person_Simulator:
 
         self.current_activity.start_activity(self.current_activity_location)
         self.__start_move(self.current_activity_location)
+
+        if(self.verbose):
+            room_description = "outside"
+            if(self.current_activity_location != None):
+                room_description = "in " + self.current_activity_location.name
+            print(self.person.name, "picked Leisure Activity", self.current_activity.name, room_description)
+
+        
 
     def __get_adjusted_weight(self, weight, location):
         """
