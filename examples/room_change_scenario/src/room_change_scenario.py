@@ -132,14 +132,14 @@ def create_room_change_scenario():
                                 location_options = [living_room, bedroom, hobby_room],
                                 min_duration= 60, 
                                 max_duration= 90,
-                                required_ressources="Sewing Machine")
+                                required_ressources=["Sewing Machine"])
     anna.add_leisure_activity(sewing_activity,3)
 
     crafting = Leisure_Activity("Crafting", 
                                 location_options = [living_room, bedroom, hobby_room],
                                 min_duration= 10, 
                                 max_duration= 60,
-                                required_ressources="Crafting Materials")
+                                required_ressources=["Crafting Materials"])
     anna.add_leisure_activity(crafting,4)
     bettina.add_leisure_activity(crafting,2)
 
@@ -147,7 +147,7 @@ def create_room_change_scenario():
                                 location_options = [living_room, bedroom, hobby_room],
                                 min_duration= 10, 
                                 max_duration= 60,
-                                required_ressources="Painting Materials")
+                                required_ressources=["Painting Materials"])
     anna.add_leisure_activity(painting,2)
 
     shopping = Leisure_Activity("Shopping", 
