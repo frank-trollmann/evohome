@@ -23,7 +23,7 @@ if __name__ == "__main__":
                             max_simulated_minutes = -1,
                             prediction_delay_in_min = 60,
                             random_seed = 42)
-    scenario_simulator = Scenario_Simulator(scenario) 
+    scenario_simulator = Scenario_Simulator(scenario, simulation) 
     simulation.set_simulator(scenario_simulator)
 
     if execution_mode == "RECORD":

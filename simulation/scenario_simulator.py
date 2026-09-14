@@ -9,8 +9,9 @@ from simulation.person_simulator import Person_Simulator
 
 
 class Scenario_Simulator(Simulator_Base):
-    def __init__(self, scenario, verbose = False):
+    def __init__(self, scenario, simulation, verbose = False):
         self.scenario = scenario
+        self.simulation = simulation
         self.verbose = verbose
         
         self.house = None
@@ -85,3 +86,7 @@ class Scenario_Simulator(Simulator_Base):
 
     def remove_gradual_change(self,change):
         self.current_gradual_changes.remove(change)
+
+    def notify_visualization_refresh_needed(self):
+        if self.simulation is not None:
+            self.simulation.notify_visualization_refresh_needed()

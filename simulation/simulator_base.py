@@ -2,6 +2,7 @@
 
 class Simulator_Base:
 
+
     def start_simulation(self):
         """
             This function is called when the simulation is started.
@@ -66,3 +67,10 @@ class Simulator_Base:
             :return: the background image
         """
         return None
+
+    def notify_visualization_refresh_needed(self):
+            """
+                This function can be used in the simulation to notify that an update to the visualization is needed.
+                Can, for example, be used to let the visualization know that the background image / room needs to be redrawn.
+            """
+            pass

@@ -32,7 +32,7 @@ class Test_Simple_Scenario(unittest.TestCase):
         try:
             scenario = create_simple_scenario()
             self.simulation.max_simulated_minutes = 2*24*60
-            scenario_simulator = Scenario_Simulator(scenario) 
+            scenario_simulator = Scenario_Simulator(scenario, self.simulation) 
             self.simulation.set_simulator(scenario_simulator)
 
             data_recorder = Extended_Data_Recorder(self.filename)

@@ -9,7 +9,7 @@ from timeit import default_timer as timer
 from view.main_window import Main_window
 
 class Simulation:
-    
+
     def __init__(self, display_user_interface = True, max_simulated_minutes = -1, prediction_delay_in_min = 0, random_seed = None):
         self.delta_time = timedelta(minutes= 1)
         self.display_user_interface = display_user_interface
@@ -28,6 +28,8 @@ class Simulation:
         self.data_recorder = None
 
         self.simulator = None
+
+        self.window = None
 
         self.tick_count = 0
         self.prediction_delay_in_min = prediction_delay_in_min
@@ -84,7 +86,7 @@ class Simulation:
 
         # show window if needed.
         if self.display_user_interface:
-            window = Main_window(self)
+            self.window = Main_window(self)
 
         # start prediction, recoding and adaptation hooks
         if self.prediction_system is not None:
@@ -140,11 +142,12 @@ class Simulation:
 
             # update GUI
             if(self.display_user_interface):
-                window.update_content()
-                window.handle_events()
-                window.frame_pause()
-                if window.end_selected:
+                self.window.update_content()
+                self.window.handle_events()
+                self.window.frame_pause()
+                if self.window.end_selected:
                     self.end()
+                self.window = None
 
             # end condition
             self.tick_count += 1
@@ -168,3 +171,7 @@ class Simulation:
         for room in self.rooms:
             sensor_values.append(bool(room.persons))
         return sensor_values
+
+    def notify_visualization_refresh_needed(self):
+            if self.window is not None:
+                self.window.refresh_house_background()
