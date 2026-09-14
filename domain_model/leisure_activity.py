@@ -110,6 +110,8 @@ class Leisure_Activity:
 
         # case B: options set: check that there is at least one option with the required ressources
         for room in self.location_options:
+            if not room.is_active:
+                continue;
             if room.ressources_available(self.required_ressources):
                 return True
         return False

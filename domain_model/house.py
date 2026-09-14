@@ -69,7 +69,7 @@ class House:
         """
             returns the rooms adjacent to a given room
         """
-        return self.transitions[room.name]
+        return [neighbor for neighbor in self.transitions[room.name] if neighbor.is_active]
 
     def get_exit(self):
         """

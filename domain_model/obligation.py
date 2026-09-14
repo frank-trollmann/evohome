@@ -28,6 +28,7 @@ class Obligation:
     def happens_today(self,date):
         """
             Checks whether the obligation schould be scheduled on a given date. 
+            Scheduling the obligation requires the location to be active and the date to be included in the list of weekdays the application happens in.
             
             Args:
                 date (datetime): the date to check.
@@ -35,6 +36,10 @@ class Obligation:
             Returns:
                 bool: True if the date is a day of the week where this obligation happens.
         """
+
+        if self.location is not None and not self.location.is_active:
+            return False
+
         if self.weekdays == None:
             return True
         

@@ -64,4 +64,11 @@ class Room:
         """
         self.blocked_ressources -= ressources
         self.free_ressources |= ressources
+
+    def set_active(self, active):
+        """
+            sets the room to be active or inactive.
+            Inactive rooms are treated as being not part of the house. They are ignored in pathfinding and activities.
+        """
+        self.is_active = active
         

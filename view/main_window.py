@@ -28,6 +28,14 @@ class Main_window:
 
         Window.from_display_module().maximize()
 
+    def refresh_house_background(self):
+        """
+            Can be used to redraw the house background when needed.
+            Once drawn, the house background will remain static till the next call of this function.
+        """
+        self.house_background = self.__create_house_background()
+
+
     def update_content(self):
         """
             Updates the visualization with the current content of the simulation
@@ -117,20 +125,30 @@ class Main_window:
 
         # draw rooms
         for room in rooms:
+            if room.is_active:
+                room_color = (0,0,255)
+            else:
+                room_color = (100,100,100)
             pygame.draw.circle(surface = house_background,
                                center = (room.x,room.y),
                                radius = 10,
-                               color = (0,0,255))
+                               color = room_color)
         
         # draw room connections
         for start_room_key in transitions.keys():
+            start_room = simulator.get_room_by_name(start_room_key)
             for end_room in transitions[start_room_key]:
-                start_room = simulator.get_room_by_name(start_room_key)
+
+                if start_room.is_active and end_room.is_active:
+                    line_color = (0,0,255)
+                else:
+                    line_color = (100,100,100)
+    
                 pygame.draw.line(surface = house_background,
                                 start_pos = (start_room.x,start_room.y),
                                 end_pos = (end_room.x, end_room.y),
                                 width = 5,
-                                color = (0,0,255))
+                                color = line_color)
         return house_background
 
     
