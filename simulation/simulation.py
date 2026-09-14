@@ -147,7 +147,7 @@ class Simulation:
                 self.window.frame_pause()
                 if self.window.end_selected:
                     self.end()
-                self.window = None
+                    self.window = None
 
             # end condition
             self.tick_count += 1

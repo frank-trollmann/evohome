@@ -53,8 +53,6 @@ class Main_window:
         offset_x = (screen_size[0] - scaled_size[0]) / 2.0
         offset_y = (screen_size[1] - scaled_size[1]) / 2.0
 
-
-
         self.screen.fill((255,255,255))
         self.screen.blit(scaled_draw_surface,(offset_x,offset_y))
         self.__draw_controls(self.screen)
@@ -116,7 +114,6 @@ class Main_window:
             house_image = pygame.image.load(background_image)
             house_background = pygame.Surface([house_image.get_width(),house_image.get_height()])
             house_background.blit(house_image,(0,0),None)
-            pygame.display.set_mode((house_image.get_width(),house_image.get_height()), flags=DOUBLEBUF | RESIZABLE)
         else:
             max_x = max(rooms, key = lambda room: room.x).x
             max_y = max(rooms, key = lambda room: room.y).y
