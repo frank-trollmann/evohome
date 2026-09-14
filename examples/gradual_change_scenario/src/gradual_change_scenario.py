@@ -26,7 +26,7 @@ def create_gradual_change_scenario():
     sleep = Room("Sleep", 530, 230,  functions = [Room.FUNCTION_SLEEP])
     living = Room("Living", 530, 540, functions = [Room.FUNCTION_OFFICE, Room.FUNCTION_LEISURE], ressources=["PC"])
     kitchen = Room("Kitchen", 220, 540, functions = [Room.FUNCTION_COOK])
-    hallway = Room("Hallway", 220, 380)
+    hallway = Room("Hallway", 220, 380, is_exit=True)
     
     house.add_room(bath)
     house.add_room(sleep)

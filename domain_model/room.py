@@ -13,7 +13,7 @@ class Room:
     FUNCTION_OFFICE = "Working"
 
 
-    def __init__(self, name, x, y, is_outside = False, functions = [], ressources = []):
+    def __init__(self, name, x, y, is_outside = False, functions = [], ressources = [], is_exit = False):
         """
             Constructor.
 
@@ -23,6 +23,7 @@ class Room:
                 y (int): the y coordinate of the room in the user interface.
                 functions (string[]): the functions of the room. See ROOM_FUNCTION_* constants.
                 ressources (string[]): the ressources available in this room (e.g., furniture).
+                is_exit (bool): True if the room is an exit from the house.
         """
         self.name = name
         self.x = x
@@ -32,6 +33,8 @@ class Room:
         self.blocked_ressources = set()
         self.persons = []
         self.is_outside = is_outside
+        self.is_exit = is_exit
+        self.is_active = True
 
     def ressources_available(self, ressources):
         """

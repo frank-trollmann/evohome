@@ -28,7 +28,7 @@ def create_room_change_scenario():
     kitchen = Room("Kitchen", 200, 550, functions = [Room.FUNCTION_COOK])
     living_room = Room("Living Room", 250, 250,  functions = [Room.FUNCTION_LEISURE],  ressources= ["TV"])
     bedroom = Room("Bedroom", 900, 250, functions = [Room.FUNCTION_SLEEP])
-    hallway_1 = Room("Hallway 1", 400, 500)
+    hallway_1 = Room("Hallway 1", 400, 500, is_exit= True)
     hallway_2 = Room("Hallway 2", 700, 500)
     bathroom = Room("Bathroom", 700, 650)
     hobby_room = Room("Hobby Room", 600, 250, functions = [Room.FUNCTION_LEISURE], ressources= ["Sewing Machine", "Crafting Materials", "Painting Materials"])

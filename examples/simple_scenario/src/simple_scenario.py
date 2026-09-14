@@ -35,7 +35,7 @@ def create_simple_scenario():
     bathroom_2 = Room("Bath 2", 260, 260, functions = [Room.FUNCTION_BATHROOM])
     kitchen = Room("Kitchen", 510, 180, functions = [Room.FUNCTION_COOK])
     living_room = Room("Living Room", 460, 500, functions = [Room.FUNCTION_LEISURE, Room.FUNCTION_EAT], ressources=["TV", "Couch"])
-    porch = Room("Porch", 500, 740, functions = [Room.FUNCTION_LEISURE], is_outside=True)
+    porch = Room("Porch", 500, 740, functions = [Room.FUNCTION_LEISURE], is_outside=True, is_exit= True)
 
     house.add_room(hallway_1)
     house.add_room(hallway_2)

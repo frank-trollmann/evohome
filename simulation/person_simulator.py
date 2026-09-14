@@ -143,14 +143,33 @@ class Person_Simulator:
             Starts moving the person towards the room.
             This calculates a path and sets the simulator to MODE_MOVEMENT
         """
+
+        is_leaving_house = False
+
+        # if target is outside of house, move to exit instead.
+        if(target_room is None):
+            target_room = self.simulator.house.get_exit()
+            is_leaving_house = True
+
+        # if person is inside of house, let them return home first.
+        if(self.person.room is None):
+            self.person.move_to_room(self.simulator.house.get_exit())
+
+        # if either room still is None (e.g., because house has not implemented an exit) just move in / out without pathing.
         if target_room is None or self.person.room is None:
             self.moving = False
             self.person.move_to_room(target_room)
             return
-        
+
+
         self.moving = True
         pathfinding = Pathfinding.instance()
         self.path = deque(pathfinding.get_path(self.simulator.house, self.person.room, target_room))
+
+        # if leaving house, add one more transition from exit to gone.
+        if(is_leaving_house):
+            self.path.append(None)
+
 
         
     def __make_day_schedule(self, current_time):

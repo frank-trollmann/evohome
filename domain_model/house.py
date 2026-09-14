@@ -1,4 +1,7 @@
 
+import random
+
+
 class House:
     """
         This class represents the simulated house.
@@ -10,6 +13,7 @@ class House:
         self.rooms = {}
         self.transitions = {}
         self.rooms_by_function = {}
+        self.exits = []
 
 
     def add_room(self, room):
@@ -23,6 +27,9 @@ class House:
         self.transitions[room.name] = []
         for function in room.functions:
             self.__add_room_function(function,room)
+
+        if(room.is_exit):
+            self.exits.append(room)
     
 
     def get_rooms_by_function(self,function):
@@ -63,6 +70,18 @@ class House:
             returns the rooms adjacent to a given room
         """
         return self.transitions[room.name]
+
+    def get_exit(self):
+        """
+            Finds a random exit from the house.
+            Returns the Room that contains the exit or None if there isn't one.
+        """
+        exits = [room for room in self.exits if room.is_active]
+        if len(exits) == 0:
+            return None
+        else:
+            return random.choice(exits)
+
 
 
     def __add_room_function(self, function, room):
