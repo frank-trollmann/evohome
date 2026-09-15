@@ -71,4 +71,25 @@ class Room:
             Inactive rooms are treated as being not part of the house. They are ignored in pathfinding and activities.
         """
         self.is_active = active
+
+    def add_ressources(self, ressource_list):
+        """
+            Adds ressources to the room.
+            Initially, these ressources will be free.
+
+            Args:
+                ressources (list<string>): the ressources to add.
+        """
+        self.free_ressources.update(ressource_list)
+
+    def remove_ressources(self,ressource_list):
+        """
+            Removes ressources from the room.
+            
+            Args:
+                ressources (list<string>): the ressources to remove.
+        """
+        removed_ressources = set(ressource_list)
+        self.free_ressources -= removed_ressources
+        self.blocked_ressources -= removed_ressources
         
