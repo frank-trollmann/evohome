@@ -26,5 +26,6 @@ class Room_Activation_Change(Scheduled_Change):
             Sets the room to be active / inactive. Also refreshes drawing background.
         """
         self.room.set_active(self.active)
+        simulator.notify_visualization_refresh_needed()
 
         
