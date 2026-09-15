@@ -51,6 +51,7 @@ class Person_Simulator:
    
         if self.mode == Person_Simulator.MODE_UNDECIDED or self.mode == Person_Simulator.MODE_LEISURE:
             if now >= self.schedule[0].start_time:
+                self.__reset_state_variables()
                 self.mode = Person_Simulator.MODE_OBLIGATION
                 self.current_task = self.schedule[0]
                 self.__start_move(self.schedule[0].get_room())

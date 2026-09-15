@@ -61,7 +61,8 @@ class Leisure_Activity:
         # case B: choose randomly among all location options
         valid_locations = []
         for location in self.location_options:
-            if location.ressources_available(self.required_ressources):
+
+            if location.is_active and location.ressources_available(self.required_ressources):
                 valid_locations.append(location)
 
         if len(valid_locations) > 0:
