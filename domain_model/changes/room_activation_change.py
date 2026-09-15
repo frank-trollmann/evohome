@@ -25,6 +25,6 @@ class Room_Activation_Change(Scheduled_Change):
                 simulator (ScenarioSimulator): a reference to the simulator of this scenario.
             Sets the room to be active / inactive. Also refreshes drawing background.
         """
-        self.room.XXX (TODO: Needs implementation.)
+        self.room.set_active(self.active)
 
         
