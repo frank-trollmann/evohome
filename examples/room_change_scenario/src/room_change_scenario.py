@@ -3,6 +3,8 @@ from turtle import home
 
 from tornado.autoreload import watch
 from domain_model.changes.gradual_changes.gradual_leisure_activity_priority_change import Gradual_Leisure_Activity_Priority_Change
+from domain_model.changes.room_activation_change import Room_Activation_Change
+from domain_model.changes.room_ressource_change import Room_Ressource_Change
 from domain_model.leisure_activity import Leisure_Activity
 from domain_model.obligation import Obligation
 from domain_model.scenario import Scenario_Configuration
@@ -14,6 +16,7 @@ from datetime import datetime
 from datetime import time
 
 from examples.gradual_change_scenario.src.gradual_sleep_cycle_change import Gradual_Sleep_Cycle_Change
+from examples.room_change_scenario.src.work_location_change import Work_Location_Change
 
 
 def create_room_change_scenario():
@@ -199,87 +202,97 @@ def create_room_change_scenario():
     anna.add_leisure_activity(watching_tv,1)
     bettina.add_leisure_activity(watching_tv,3)
 
+    # Phase 2 changes (close home office )
+    time1 = datetime(year = 2020, month = 3, day = 1, hour = 0, minute = 0)
+    close_home_office_change = Room_Activation_Change(datetime= time1,
+                                                          room = home_office,
+                                                          active= False)
+    scenario.changes.append(close_home_office_change)
+    move_pc_change_1 = Room_Ressource_Change(datetime= time1,
+                                           room = home_office,
+                                           removed_ressources=["PC"])
+    scenario.changes.append(move_pc_change_1)
+    move_pc_change_2 = Room_Ressource_Change(datetime= time1,
+                                               room = living_room,
+                                               added_ressources=["PC"])
+    scenario.changes.append(move_pc_change_2)
+    work_location_change = Work_Location_Change(datetime= time1,
+                                                work_obligation=bettina_weekday_work_obligation,
+                                                new_location=living_room
+                                                    ) 
+    scenario.changes.append(work_location_change)
 
+
+
+    # Phase 3 changes (close hobby room)
+    time2 = datetime(year = 2020, month = 5, day = 1, hour = 0, minute = 0)
+    close_hobby_room_change = Room_Activation_Change(datetime= time2,
+                                                              room = hobby_room,
+                                                              active= False)
+    scenario.changes.append(close_hobby_room_change)
+
+    move_sewing_machine_change_1 = Room_Ressource_Change(datetime= time2,
+                                               room = hobby_room,
+                                               removed_ressources=["Sewing Machine"])
+    scenario.changes.append(move_sewing_machine_change_1)
+    move_sewing_machine_change_2 = Room_Ressource_Change(datetime= time2,
+                                                   room = bedroom,
+                                                   added_ressources=["Sewing Machine"])
+    scenario.changes.append(move_sewing_machine_change_2)
+
+
+
+    # phase 4 changes (open home office)
+    time3 = datetime(year = 2020, month = 7, day = 1, hour = 0, minute = 0)
+    open_home_office_change = Room_Activation_Change(datetime= time3,
+                                                          room = home_office,
+                                                          active= True)
+    scenario.changes.append(open_home_office_change)
+    restore_pc_change_1 = Room_Ressource_Change(datetime= time3,
+                                                   room = living_room,
+                                                   removed_ressources=["PC"])
+    scenario.changes.append(restore_pc_change_1)
+    restore_pc_change_2 = Room_Ressource_Change(datetime= time3,
+                                                room = home_office,
+                                                added_ressources=["PC"])
+    scenario.changes.append(restore_pc_change_2)
+    restore_work_location_change = Work_Location_Change(datetime= time3,
+                                                work_obligation=bettina_weekday_work_obligation,
+                                                new_location=home_office
+                                                    ) 
+    scenario.changes.append(restore_work_location_change)
+    move_arts_craft_change_1 = Room_Ressource_Change(datetime= time3,
+                                                   room = hobby_room,
+                                                   removed_ressources=["Painting Materials", "Crafting Materials"])
+    scenario.changes.append(move_arts_craft_change_1)
+    move_arts_craft_change_2 = Room_Ressource_Change(datetime= time3,
+                                                       room = home_office,
+                                                       added_ressources=["Painting Materials", "Crafting Materials"])
+    scenario.changes.append(move_arts_craft_change_2)
+
+    # phase 5 changes (open hobby room)
+    time4 = datetime(year = 2020, month = 9, day = 1, hour = 0, minute = 0)
+    open_hobby_room_change = Room_Activation_Change(datetime= time4,
+                                                                  room = hobby_room,
+                                                                  active= True)
+    scenario.changes.append(open_hobby_room_change)
+    restore_sewing_machine_change_1 = Room_Ressource_Change(datetime= time4,
+                                                   room = bedroom,
+                                                   removed_ressources=["Sewing Machine"])
+    scenario.changes.append(restore_sewing_machine_change_1)
+    restore_sewing_machine_change_2 = Room_Ressource_Change(datetime= time4,
+                                                    room = hobby_room,
+                                                    added_ressources=["Sewing Machine"])
+    scenario.changes.append(restore_sewing_machine_change_2)
+    restore_arts_craft_change_1 = Room_Ressource_Change(datetime= time4,
+                                                   room = home_office,
+                                                   removed_ressources=["Painting Materials", "Crafting Materials"])
+    scenario.changes.append(restore_arts_craft_change_1)
+    restore_arts_craft_change_2 = Room_Ressource_Change(datetime= time4,
+                                                       room = hobby_room,
+                                                       added_ressources=["Painting Materials", "Crafting Materials"])
+    scenario.changes.append(restore_arts_craft_change_2)
     
     return scenario
     
-    # create changes March - April
-    sleep_later_weekday = Gradual_Sleep_Cycle_Change(datetime= datetime(year = 2020, month = 3, day = 1, hour = 0, minute = 0),
-                                                      duration =  31 + 30, # days March and April 2020
-                                                      shift_in_mins = 120,
-                                                      breakfast_obligation= weekday_breakfast_obligation,
-                                                      dinner_obligation= weekday_dinner_obligation)
-    scenario.changes.append(sleep_later_weekday)
-    sleep_later_weekend = Gradual_Sleep_Cycle_Change(datetime= datetime(year = 2020, month = 3, day = 1, hour = 0, minute = 0),
-                                                          duration =  31 + 30, # days in feb and march 2020
-                                                          shift_in_mins = 120,
-                                                          breakfast_obligation= weekend_breakfast_obligation,
-                                                          dinner_obligation= weekend_dinner_obligation)
-    # scenario.changes.append(sleep_later_weekend)
-
-
-
-    # create changes July - August
-    sleep_earlier_weekday = Gradual_Sleep_Cycle_Change(datetime= datetime(year = 2020, month = 7, day = 7, hour = 0, minute = 0),
-                                                          duration =  31 + 31, # days in July and August 2020
-                                                          shift_in_mins = -120,
-                                                          breakfast_obligation= weekday_breakfast_obligation,
-                                                          dinner_obligation= weekday_dinner_obligation)
-    scenario.changes.append(sleep_earlier_weekday)
-    
-    sleep_earlier_weekend = Gradual_Sleep_Cycle_Change(datetime= datetime(year = 2020, month = 7, day = 7, hour = 0, minute = 0),
-                                                              duration =  31 + 31, # days in July and August 2020
-                                                              shift_in_mins = -120,
-                                                              breakfast_obligation= weekend_breakfast_obligation,
-                                                              dinner_obligation= weekend_dinner_obligation)
-    scenario.changes.append(sleep_earlier_weekend)
-
-    prioritize_study = Gradual_Leisure_Activity_Priority_Change(datetime= datetime(year = 2020, month = 7, day = 1, hour = 0, minute = 0),
-                                                              duration =  31 + 31, # days in July and August 2020
-                                                              person = alina,
-                                                              activity_name = study_activity.name,
-                                                              start_priority = 1,
-                                                              end_priority = 5)
-    scenario.changes.append(prioritize_study)
-
-    de_prioritize_tv = Gradual_Leisure_Activity_Priority_Change(datetime= datetime(year = 2020, month = 7, day = 1, hour = 0, minute = 0),
-                                                                  duration =  31 + 31, # days in July and August 2020
-                                                                  person = alina,
-                                                                  activity_name = watching_tv_activity.name,
-                                                                  start_priority = 4,
-                                                                  end_priority = 1)
-    scenario.changes.append(de_prioritize_tv)
-
-    """
-    
-    
-     # create persons
-    # create changes
-    # child 2 leaves for three months
-    child_2_move_out = Move_Out_Change(datetime(year = 2021, month = 6, day = 2, hour = 0, minute = 0), child_2)
-    child_2_move_in = Move_In_Change(datetime(year = 2021, month = 9, day = 2, hour = 0, minute = 0), child_2)
-    scenario.changes.append(child_2_move_out)
-    scenario.changes.append(child_2_move_in)
-
-    # parent 1 changes time for cooking
-    remove_cooking_change = Obligation_Remove_Change(datetime(year = 2021, month = 3, day = 2, hour = 0, minute = 0), parent_1, "Cook")
-    cook2_obligation = Obligation("Cook2", 
-                                start_time= time(15,30), 
-                                end_time = time(16,30), 
-                                location = kitchen)
-    add_cooking_change = Obligation_Add_Change(datetime(year = 2021, month = 3, day = 2, hour = 0, minute = 0), parent_1, cook2_obligation)
-    scenario.changes.append(remove_cooking_change)
-    scenario.changes.append(add_cooking_change) 
-
-    # child 2 picks up cooking practice instead of playing video games 
-    remove_play_change = Leisure_Activity_Remove_Change(datetime(year = 2022, month = 1, day = 2, hour = 0, minute = 0), child_2, "Play Games")
-    practice_cooking = Leisure_Activity("Practice Cooking", 
-                                            location = kitchen, 
-                                            min_duration=30, 
-                                            max_duration=60)
-    add_practice_cooking_change = Leisure_Activity_Add_Change(datetime(year = 2022, month = 1, day = 2, hour = 0, minute = 0), child_2, practice_cooking, 4)
-    scenario.changes.append(remove_play_change)
-    scenario.changes.append(add_practice_cooking_change) 
-    """
-    return scenario
 

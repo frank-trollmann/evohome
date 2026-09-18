@@ -210,3 +210,4 @@ examples/data_loading/data/smart_campus.csv
 examples/data_loading/notebooks/data_exploration.ipynb
 examples/data_loading/src/smart_campus_data_loader.py
 examples/gradual_change_scenario/data/recording.pickle
+examples/room_change_scenario/data/recording.pickle

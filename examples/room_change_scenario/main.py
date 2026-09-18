@@ -23,12 +23,12 @@ if __name__ == "__main__":
                             max_simulated_minutes = -1,
                             prediction_delay_in_min = 60,
                             random_seed = 42)
-    scenario_simulator = Scenario_Simulator(scenario, simulation, verbose=True) 
+    scenario_simulator = Scenario_Simulator(scenario, simulation, verbose=execution_mode == "VIEW") 
     simulation.set_simulator(scenario_simulator)
 
     if execution_mode == "RECORD":
         simulation.max_simulated_minutes = 10*30*24*60
-        data_recorder = Data_Recorder("examples/gradual_change_scenario/data/recording.pickle")
+        data_recorder = Data_Recorder("examples/room_change_scenario/data/recording.pickle")
         simulation.set_data_recorder(data_recorder)
 
     simulation.start()
