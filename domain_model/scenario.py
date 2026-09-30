@@ -27,6 +27,16 @@ class Scenario_Configuration:
         self.persons.append(person)
         person.move_to_room(person.sleep_room)
 
+    def remove_person(self,person):
+        """
+            Removes a person from the scenario.
+
+            Args:
+                person (Person): the person to remove
+        """
+        self.persons.remove(person)
+        person.move_to_room(None)
+
     def get_room_names(self):
         """
             Gets the names of all rooms in the house.
