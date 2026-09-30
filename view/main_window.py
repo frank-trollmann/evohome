@@ -48,7 +48,7 @@ class Main_window:
         scale_factor_x = screen_size[0] / draw_size[0]
         scale_factor_y = screen_size[1] / draw_size[1]
         scale_factor = min(scale_factor_x, scale_factor_y)
-        scaled_draw_surface = pygame.transform.scale_by(self.draw_surface, scale_factor)
+        scaled_draw_surface = pygame.transform.smoothscale_by(self.draw_surface, scale_factor)
         scaled_size = scaled_draw_surface.get_size()
         offset_x = (screen_size[0] - scaled_size[0]) / 2.0
         offset_y = (screen_size[1] - scaled_size[1]) / 2.0
