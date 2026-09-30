@@ -72,6 +72,10 @@ class Person:
             Args:
                 name (string): the name of the obligation to remove.
         """
+        if not isinstance(obligation_name, str):
+            raise Exception(f"Trying to remove a room without a valid name. Expected name of type string, found {obligation_name.type}.")
+
+
         self.obligations = [obligation for obligation in self.obligations if obligation.name != obligation_name]
 
     def remove_leisure_activity(self, activity_name):

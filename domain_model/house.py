@@ -23,6 +23,8 @@ class House:
             Args:
                 room (Room): the room to add.
         """
+        if(self.rooms.get(room.name) is not None):
+            raise Exception(f"Trying to add dublicate room with name {room.name}. Room names need to be unique.")
         self.rooms[room.name] = room
         self.transitions[room.name] = []
         for function in room.functions:
