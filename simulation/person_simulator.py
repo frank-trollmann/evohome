@@ -94,6 +94,11 @@ class Person_Simulator:
         available_locations = [activity.get_location() for  activity in available_activities]
         weights = [self.__get_adjusted_weight(available_options[index][PRIORITY_INDEX], available_locations[index]) for index in range(len(available_activities))]
 
+        if len(available_options) == 0:
+            print(f"Warning: no available activities for person {self.person.name}")
+            return
+
+
         current_activity_index = random.choices(population=range(len(weights)), weights=weights)[0]
         if current_activity_index is None:
             # fallback in case there are no valid activities just stand around and do nothing.
