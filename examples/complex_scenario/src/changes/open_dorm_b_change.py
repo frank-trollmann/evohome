@@ -1,4 +1,5 @@
 from domain_model.changes.scheduled_change import Scheduled_Change
+from simulation.pathfinding import Pathfinding
 
 
 class Open_Dorm_B_Change(Scheduled_Change):
@@ -22,3 +23,4 @@ class Open_Dorm_B_Change(Scheduled_Change):
         """
         self.campus.set_dorm_b_active(True)
         simulator.notify_visualization_refresh_needed() # need to redraw newly active rooms.
+        Pathfinding.instance().reset_path_cache() # reset path cache because new paths may have been added.

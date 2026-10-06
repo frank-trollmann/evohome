@@ -1,13 +1,15 @@
 
 import random
 
+from simulation.pathfinding import Pathfinding
+
 
 class Leisure_Activity:
     """
         This class represents a leisure activity and associated preferences.
         Leisure activities will be selected randomly according to their weight whenever a simulated person has free time. 
     """
-    def __init__(self, name, location_options = None, weekdays = None, min_duration = 1, max_duration = -1, required_ressources = []):
+    def __init__(self, name, location_options = None, weekdays = None, min_duration = 1, max_duration = -1, required_ressources = [], prefer_closest_room = False):
         """
             Constructor.
 
@@ -19,6 +21,7 @@ class Leisure_Activity:
                 min_duration (int): the minimum duration of the activity in minutes.
                 max_duration (int): the maximum duration of the activity in minutes. -1 means no maximum.
                 required_ressources (List<String>): the ressources required to perform this activity.
+                prefer_closest_room (bool): whether or not the activity should always default to the closest possible room from it's current position
 
         """
         self.name = name
@@ -27,6 +30,7 @@ class Leisure_Activity:
         self.min_duration = min_duration
         self.max_duration = max_duration
         self.required_ressources = set(required_ressources)
+        self.prefer_closest_room = prefer_closest_room
 
     def is_available(self,date):
         """
@@ -47,9 +51,9 @@ class Leisure_Activity:
         
         return True
 
-    def get_location(self, time):
+    def find_location(self, house, current_location, time):
         """
-            returns the location for this activity.
+            finds an appropriate location.
             Chooses an appropriate location according to the required ressources if no location is set.
         """
 
@@ -65,7 +69,10 @@ class Leisure_Activity:
                 valid_locations.append(location)
 
         if len(valid_locations) > 0:
-            return random.choice(valid_locations)
+            if(self.prefer_closest_room):
+                return Pathfinding.instance().get_closest_room(house,current_location, valid_locations)
+            else:
+                return random.choice(valid_locations)
         else:
             return None
 
