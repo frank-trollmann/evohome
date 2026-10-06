@@ -68,7 +68,7 @@ Each person has a daily schedule of obligations that differs only between weekda
 | Lunch | 12:00 - 13:00 | Living Room |
 | Piano Practice | 13:00 - 15:00 | Outside |
 | Dinner | 17:00 - 18:00 | Living Room |
-| Read Bedtime Story | 19:30 - 10:00 | Bedroom 2 |
+| Read Bedtime Story | 19:30 - 20:00 | Bedroom 2 |
 
 ### Coline Weekday:
 | Obligation | Time | Location |
@@ -76,7 +76,7 @@ Each person has a daily schedule of obligations that differs only between weekda
 | Breakfast | 6:00 - 6:30 | Living Room |
 | School | 7:00 - 15:00 | Outside |
 | Dinner | 17:00 - 18:00 | Living Room |
-| Read Bedtime Story | 19:30 - 10:00 | Bedroom 2 |
+| Read Bedtime Story | 19:30 - 20:00 | Bedroom 2 |
 
 ### Coline Weekend:
 | Obligation | Time | Location |

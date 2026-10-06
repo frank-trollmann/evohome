@@ -42,7 +42,7 @@ class Simple_Adaptation_Controller(Adaptation_Controller):
     def monitor(self, time, y):
         """
             This function adds the monitored information to the dataframe and keeps a consistent dataframe length.
-            For cinsistencies sake we don't add / remove data from the frame but overwrite the elements one at a time, starting with the oldest.
+            For consistencies sake we don't add / remove data from the frame but overwrite the elements one at a time, starting with the oldest.
         """
         x_value = {"weekday": time.weekday(), "hour": time.hour, "minute": time.minute}
         self.X.iloc[self.substituted_index] = x_value
