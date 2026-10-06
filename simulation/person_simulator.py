@@ -91,7 +91,7 @@ class Person_Simulator:
 
         available_options = [option for option in self.person.leisure_activities if option[ACTIVITY_INDEX].is_available(current_time)]
         available_activities = [option[ACTIVITY_INDEX] for option in available_options]
-        available_locations = [activity.get_location() for  activity in available_activities]
+        available_locations = [activity.get_location(current_time) for  activity in available_activities]
         weights = [self.__get_adjusted_weight(available_options[index][PRIORITY_INDEX], available_locations[index]) for index in range(len(available_activities))]
 
         if len(available_options) == 0:

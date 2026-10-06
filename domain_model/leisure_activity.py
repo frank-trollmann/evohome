@@ -47,8 +47,7 @@ class Leisure_Activity:
         
         return True
 
-
-    def get_location(self):
+    def get_location(self, time):
         """
             returns the location for this activity.
             Chooses an appropriate location according to the required ressources if no location is set.
@@ -62,7 +61,7 @@ class Leisure_Activity:
         valid_locations = []
         for location in self.location_options:
 
-            if location.is_active and location.ressources_available(self.required_ressources):
+            if location.is_available(time) and location.ressources_available(self.required_ressources):
                 valid_locations.append(location)
 
         if len(valid_locations) > 0:

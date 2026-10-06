@@ -13,7 +13,7 @@ class Room:
     FUNCTION_OFFICE = "Working"
 
 
-    def __init__(self, name, x, y, is_outside = False, functions = [], ressources = [], is_exit = False):
+    def __init__(self, name, x, y, is_outside = False, functions = [], ressources = [], is_exit = False, weekdays = None, opening_time = None, closing_time = None):
         """
             Constructor.
 
@@ -24,6 +24,9 @@ class Room:
                 functions (string[]): the functions of the room. See ROOM_FUNCTION_* constants.
                 ressources (string[]): the ressources available in this room (e.g., furniture).
                 is_exit (bool): True if the room is an exit from the house.
+                weekdays (int[]): The weekdays during which the room is open. None is interpreted as being open every day.
+                opening_time (time): the time the room opens. None is interpreted as being open around the clock.
+                closing_time (time): the time the room closes. None is interpreted as being open around the clock.
         """
         self.name = name
         self.x = x
@@ -35,6 +38,9 @@ class Room:
         self.is_outside = is_outside
         self.is_exit = is_exit
         self.is_active = True
+        self.weekdays = weekdays
+        self.opening_time = opening_time
+        self.closing_time = closing_time
 
     def ressources_available(self, ressources):
         """
@@ -71,6 +77,27 @@ class Room:
             Inactive rooms are treated as being not part of the house. They are ignored in pathfinding and activities.
         """
         self.is_active = active
+
+    def is_available(self, datetime):
+        """
+            Returns whether or not the room is available to be used for a specific time.
+
+            Args:
+                datetime (datetime): the desired date and time for availability.
+        """
+        if not self.is_active:
+            return False
+
+        weekday = datetime.weekday()
+        if self.weekdays != None and weekday not in self.weekdays:
+            return False
+
+        time = datetime.time()
+        if(self.opening_time != None and self.closing_time != None):
+            return time > self.opening_time and time < self.closing_time
+
+        return True
+        
 
     def add_ressources(self, ressource_list):
         """
