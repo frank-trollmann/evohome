@@ -80,7 +80,8 @@ The intake numbers are as follows:
 | 4 | 20 | 30 | 50 |
 | 5 | 25 | 25 | 50 |
 
-
+### Construction in Dorm B:
+Initially, Dorm B is closed as it is still constructed. All rooms within it are unavailable to students. On first of September during the first year (meaning in the middle of summer break) the dorm opens and becomes accessible. 
 
 
 # Project Structure

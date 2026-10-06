@@ -15,6 +15,7 @@ from domain_model.person import Person
 from datetime import datetime
 from datetime import time
 
+from examples.complex_scenario.src.changes.open_dorm_b_change import Open_Dorm_B_Change
 from examples.complex_scenario.src.changes.semester_vacation_end_change import Semester_Vacation_End_Change
 from examples.complex_scenario.src.changes.smester_vacation_start_change import Semester_Vacation_Start_Change
 from examples.complex_scenario.src.changes.student_population_change import Student_Population_Change
@@ -64,6 +65,8 @@ def create_complex_scenario():
         scenario.changes.append(summer_semester_start)
         scenario.changes.append(student_intake_change)
 
+    open_dorm_b_change = Open_Dorm_B_Change(datetime(year = YEAR_1, month = 9, day = 1, hour = 0, minute = 0), campus)
+    scenario.changes.append(open_dorm_b_change)
 
     
 

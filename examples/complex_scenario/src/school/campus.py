@@ -56,6 +56,7 @@ class Campus (House):
         self.seating_areas = []
         self.meeting_rooms = []
         self.leisure_rooms = []
+        self.dorm_b_rooms = []
         self.cafeteria = None
         self.library =  None
         self.school_yard =  None
@@ -76,6 +77,8 @@ class Campus (House):
         self._init_lecture_wing()
         self._init_library_cafeteria()
         self._init_school_yard()
+
+        self.set_dorm_b_active(False)
 
         self._init_activities()
         self._schedule_classes()
@@ -157,7 +160,6 @@ class Campus (House):
             student = self._add_random_student()
             added_students.append(student)
         return added_students
-
 
     def _init_activities(self):
         self.bathroom_activity = Leisure_Activity("Bathroom Break", 
@@ -383,7 +385,7 @@ class Campus (House):
         self.students.append(student)
         school_class.add_student(student)
         
-        dorm = random.choice(self.free_dorms)
+        dorm = random.choice([dorm for dorm in self.free_dorms if dorm.is_active == True])
         self.free_dorms.remove(dorm)
         student.sleep_room = dorm
         student.dorm = dorm
@@ -471,8 +473,6 @@ class Campus (House):
 
         self.students.remove(student)
         self.scenario.remove_person(student)
-
-
 
     def _set_student_to_absent(self, student):
         student.sleep_room = None      
@@ -581,7 +581,9 @@ class Campus (House):
         self.secretary_office_obligation_morning.start_time = time(6,0)
         self.secretary_office_obligation_afternoon.end_time = time(16,00)
 
-
+    def set_dorm_b_active(self, active):
+         for room in self.dorm_b_rooms:
+              room.set_active(active)
 
 
     def _select_class_for_new_student(self):
@@ -712,10 +714,12 @@ class Campus (House):
         b24 = self._create_dorm("Dorm B24", 2410, 560)
         b25 = self._create_dorm("Dorm B25", 2600, 560)
         b26 = self._create_dorm("Dorm B26", 2660, 560)
+        self.dorm_b_rooms = [b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, b24, b25, b26]
 
         bathroom_b_1 = self._create_bathroom("Bathroom B 1", 900, 600)
         bathroom_b_2 = self._create_bathroom("Bathroom B 2", 1530, 600)
         bathroom_b_3 = self._create_bathroom("Bathroom B 3", 2710, 480)
+        self.dorm_b_rooms.extend([bathroom_b_1, bathroom_b_2, bathroom_b_3])
 
         kitchen_b = self._create_room("Kitchen B", 980, 470, ressources=[self.RESSOURCE_SNACKS])
         self.seating_areas.append(kitchen_b)
@@ -723,10 +727,11 @@ class Campus (House):
         self.seating_areas.append(couch_b)
         pool_b = self._create_room("Pool B", 1870, 430, ressources=[self.RESSOURCE_POOL])
         air_hockey_b = self._create_room("Air Hockey B", 2510, 460, ressources=[self.RESSOURCE_AIR_HOCKEY])
+        self.dorm_b_rooms.extend([kitchen_b, couch_b, pool_b, air_hockey_b])
 
         self.exit_dorm_b_outside = self._create_room("Exit B 1", 1280, 600)
         self.exit_dorm_b_library = self._create_room("Exit B 2", 2310, 600)
-
+        self.dorm_b_rooms.extend([self.exit_dorm_b_library, self.exit_dorm_b_outside])
 
         hallway_b_1 = self._create_connection("Hallway B 1", 
                                                         x= 860, 
@@ -766,6 +771,8 @@ class Campus (House):
                                                         x= 2640, 
                                                         y = 430,
                                                         connected_rooms = [ hallway_b_8, bathroom_b_3, b14, b15, b25, b26])
+        self.dorm_b_rooms.extend([hallway_b_1, hallway_b_2, hallway_b_3, hallway_b_4, hallway_b_5, hallway_b_6, hallway_b_7, hallway_b_8, hallway_b_9])
+        
 
     def _init_lecture_wing(self):
         class_a = self._create_classroom("Classroom A", 1110, 1780)
