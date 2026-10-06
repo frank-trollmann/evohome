@@ -2,8 +2,10 @@
 
 import math
 
+from domain_model.changes.scheduled_change import Scheduled_Change
 
-class Gradual_Change:
+
+class Gradual_Change (Scheduled_Change):
     """
         This class represents a gradual change that starts on a specific day and stretches over a number of days.
         This is the superclass for all these changes.
@@ -18,7 +20,7 @@ class Gradual_Change:
 
         """
         self.datetime = datetime
-        self.duration = duration
+        self.duration_in_days = duration
         self.current_day = 0
 
     def execute(self, simulation):
@@ -40,7 +42,7 @@ class Gradual_Change:
         """
         self.current_day+= 1
         self.execute_gradual_change()
-        if self.current_day >= self.duration:
+        if self.current_day >= self.duration_in_days:
             simulation.remove_gradual_change(self)
 
     def execute_gradual_change(self):
@@ -53,6 +55,6 @@ class Gradual_Change:
         pass
 
     def get_progress_fraction(self):
-        fraction = float(self.current_day) / self.duration
+        fraction = float(self.current_day) / self.duration_in_days
         return max(0.0,min(1.0,fraction))
 
