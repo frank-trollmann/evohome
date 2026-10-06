@@ -52,7 +52,6 @@ class Campus (House):
         self.dorms = {}
         self.free_dorms = []
         self.classrooms = {}
-        self.bathrooms = {}
         self.seating_areas = []
         self.meeting_rooms = []
         self.leisure_rooms = []
@@ -163,9 +162,10 @@ class Campus (House):
 
     def _init_activities(self):
         self.bathroom_activity = Leisure_Activity("Bathroom Break", 
-                                                    location_options = list(self.bathrooms.values()), 
+                                                    location_options = self.get_rooms_by_function(Room.FUNCTION_BATHROOM), 
                                                     min_duration=10, 
-                                                    max_duration=20)
+                                                    max_duration=20,
+                                                    prefer_closest_room=True)
 
         self.socialize_activity = Leisure_Activity("Socialize",
                                                location_options= self.seating_areas + [self.school_yard],
@@ -519,9 +519,10 @@ class Campus (House):
         teacher.add_leisure_activity(teacher_hangout,8)
         
         teacher_bathroom_activity = Leisure_Activity("Teacher Bathroom", 
-                                                                    location_options = [self.bathrooms["Bathroom - Lecture Wing"]], 
+                                                                    self.get_rooms_by_function(Room.FUNCTION_BATHROOM),
                                                                     min_duration=30, 
-                                                                    max_duration=60)
+                                                                    max_duration=60,
+                                                                    prefer_closest_room=True)
         teacher.add_leisure_activity(teacher_bathroom_activity,2)
 
         snacking_activity = Leisure_Activity("Teacher Snacking",
@@ -585,7 +586,6 @@ class Campus (House):
          for room in self.dorm_b_rooms:
               room.set_active(active)
 
-
     def _select_class_for_new_student(self):
         return min(self.classes.values(), key= lambda school_class: len(school_class.students) )
 
@@ -603,7 +603,7 @@ class Campus (House):
         bathroom_a_1 = self._create_bathroom("Bathroom A 1", 40, 1860)
         kitchen_a_1 = self._create_room("Kitchen A 1", 190, 1740, ressources=[self.RESSOURCE_SNACKS])
         self.seating_areas.append(kitchen_a_1)
-        kicker_a_1 = self._create_room("Kicker A 1", 340, 1740, ressources=[self.RESSOURCE_KICKER])
+        kicker_a_1 = self._create_room("Kicker A 1", 340, 1740, ressources=[self.RESSOURCE_KICKER], opening_time = time(10,0), closing_time = time(20,0))
 
 
 
@@ -635,7 +635,7 @@ class Campus (House):
         a27 = self._create_dorm("Dorm A27", 330, 1220)
         a28 = self._create_dorm("Dorm A28", 200, 1220)
         bathroom_a_2 = self._create_bathroom("Bathroom A 2", 600, 1130)
-        pool_a_2 = self._create_room("Pool A 2", 390, 1020, ressources=[self.RESSOURCE_POOL])
+        pool_a_2 = self._create_room("Pool A 2", 390, 1020, ressources=[self.RESSOURCE_POOL], opening_time = time(10,0), closing_time = time(20,0))
 
         hallway_a_2_1 = self._create_connection("Hallway A 2 1", 
                                         x= 40, 
@@ -667,7 +667,7 @@ class Campus (House):
         a38 = self._create_dorm("Dorm A38", 330, 630)
         a39 = self._create_dorm("Dorm A39", 200, 630)
         bathroom_a_3 = self._create_bathroom("Bathroom A 3", 600, 520)
-        couch_a_3 = self._create_room("Couch A 3", 390, 500, ressources=[self.RESSOURCE_TV])
+        couch_a_3 = self._create_room("Couch A 3", 390, 500, ressources=[self.RESSOURCE_TV], opening_time = time(8,0), closing_time = time(22,0))
         self.seating_areas.append(couch_a_3)
 
         hallway_a_3_1 = self._create_connection("Hallway A 3 1", 
@@ -725,8 +725,8 @@ class Campus (House):
         self.seating_areas.append(kitchen_b)
         couch_b = self._create_room("Couch B", 1620, 440, ressources=[self.RESSOURCE_TV])
         self.seating_areas.append(couch_b)
-        pool_b = self._create_room("Pool B", 1870, 430, ressources=[self.RESSOURCE_POOL])
-        air_hockey_b = self._create_room("Air Hockey B", 2510, 460, ressources=[self.RESSOURCE_AIR_HOCKEY])
+        pool_b = self._create_room("Pool B", 1870, 430, ressources=[self.RESSOURCE_POOL], opening_time = time(10,0), closing_time = time(20,0))
+        air_hockey_b = self._create_room("Air Hockey B", 2510, 460, ressources=[self.RESSOURCE_AIR_HOCKEY], opening_time = time(10,0), closing_time = time(20,0))
         self.dorm_b_rooms.extend([kitchen_b, couch_b, pool_b, air_hockey_b])
 
         self.exit_dorm_b_outside = self._create_room("Exit B 1", 1280, 600)
@@ -773,23 +773,22 @@ class Campus (House):
                                                         connected_rooms = [ hallway_b_8, bathroom_b_3, b14, b15, b25, b26])
         self.dorm_b_rooms.extend([hallway_b_1, hallway_b_2, hallway_b_3, hallway_b_4, hallway_b_5, hallway_b_6, hallway_b_7, hallway_b_8, hallway_b_9])
         
-
     def _init_lecture_wing(self):
         class_a = self._create_classroom("Classroom A", 1110, 1780)
         class_b = self._create_classroom("Classroom B", 1660, 1780)
         class_c = self._create_classroom("Classroom C", 2150, 1780)
         class_d = self._create_classroom("Classroom D", 2650, 1780)
 
-        meet_1 = self._create_room("Meet 1", 730, 1450)
-        meet_2 = self._create_room("Meet 2", 890, 1450)
-        meet_3 = self._create_room("Meet 3", 1040, 1450)
-        meet_4 = self._create_room("Meet 4", 1200, 1450)
+        meet_1 = self._create_room("Meet 1", 730, 1450, opening_time = time(8,0), closing_time = time(17,0))
+        meet_2 = self._create_room("Meet 2", 890, 1450, opening_time = time(8,0), closing_time = time(17,0))
+        meet_3 = self._create_room("Meet 3", 1040, 1450, opening_time = time(8,0), closing_time = time(17,0))
+        meet_4 = self._create_room("Meet 4", 1200, 1450, opening_time = time(8,0), closing_time = time(17,0))
         self.meeting_rooms.extend([meet_1, meet_2, meet_3, meet_4])
 
         bathroom = self._create_bathroom("Bathroom - Lecture Wing", 1580, 1450) 
 
-        leisure_1 = self._create_room("Leisure 1", 1710, 1450)
-        leisure_2 = self._create_room("Leisure 2", 1980, 1450)
+        leisure_1 = self._create_room("Leisure 1", 1710, 1450, opening_time = time(10,0), closing_time = time(22,0))
+        leisure_2 = self._create_room("Leisure 2", 1980, 1450, opening_time = time(10,0), closing_time = time(22,0))
         self.seating_areas.append(leisure_1)
         self.seating_areas.append(leisure_2)
         self.leisure_rooms.append(leisure_1)
@@ -850,9 +849,9 @@ class Campus (House):
                                                                 connected_rooms = [hallway_lecture_9, class_d, self.secretary_office, self.exit_lecture_wing_main_exit])
 
     def _init_library_cafeteria(self):
-        self.cafeteria = self._create_room("Cafeteria", 2520, 1040, ressources=[self.RESSOURCE_SNACKS])
+        self.cafeteria = self._create_room("Cafeteria", 2520, 1040, ressources=[self.RESSOURCE_SNACKS], opening_time = time(8,0), closing_time = time(19,0))
         self.seating_areas.append(self.cafeteria)
-        self.library = self._create_room("Library", 2580, 780)
+        self.library = self._create_room("Library", 2580, 780, opening_time = time(10,0), closing_time = time(18,0))
         
         self.exit_cafeteria_outside= self._create_room("Exit Cafeteria",  2200, 1130)
 
@@ -874,11 +873,11 @@ class Campus (House):
         self.add_transtion(self.school_yard, self.exit_lecture_wing_outside)
         self.add_transtion(self.school_yard, self.exit_cafeteria_outside)
 
-    def _create_dorm(self, name, x,y):
+    def _create_dorm(self, name, x,y, opening_time = None, closing_time = None):
         """
             Create a dorm room and register it.
         """
-        dorm = Room(name, x, y)
+        dorm = Room(name, x, y, opening_time= opening_time, closing_time= closing_time)
         self.add_room(dorm)
         self.dorms[name] = dorm
         self.free_dorms.append(dorm)
@@ -893,11 +892,11 @@ class Campus (House):
             self.classrooms[name] = room
             return room
 
-    def _create_room(self,name,x,y,ressources = [], is_outside = False, is_exit = False):
+    def _create_room(self,name,x,y,ressources = [], is_outside = False, is_exit = False, opening_time = None, closing_time = None):
         """
             Create a bathroom 
         """
-        room = Room(name, x, y, ressources= ressources, is_outside= is_outside, is_exit= is_exit)
+        room = Room(name, x, y, ressources= ressources, is_outside= is_outside, is_exit= is_exit, opening_time= opening_time, closing_time= closing_time)
         self.add_room(room)
         return room
 
@@ -905,9 +904,8 @@ class Campus (House):
             """
                 Create a bathroom 
             """
-            room = Room(name, x, y)
+            room = Room(name, x, y, functions= [Room.FUNCTION_BATHROOM])
             self.add_room(room)
-            self.bathrooms[name] = room
             return room
 
     def _create_connection(self,name,x,y,connected_rooms):
