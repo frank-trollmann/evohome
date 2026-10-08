@@ -87,6 +87,15 @@ class Person:
         """
         self.leisure_activities = [activity for activity in self.leisure_activities if activity[0].name != activity_name]
 
+    def get_leisure_activity_priority(self,activity_name):
+        """
+            retrieves the priority of a leisure activity
+        """
+        for activity_tuple in self.leisure_activities:
+            if(activity_tuple[0].name == activity_name):
+                return activity_tuple[1]
+        raise Exception(f"Trying to retrieve priority for unkown activity.")
+
     def change_leisure_activity_priority(self,activity_name, new_priority):
         """
             Changes the priority of a leisure activity.
