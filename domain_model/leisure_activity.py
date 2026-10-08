@@ -46,7 +46,7 @@ class Leisure_Activity:
         if self.weekdays is not None and weekday not in self.weekdays:
             return False
 
-        if not self.__valid_location_exists() :
+        if not self.__valid_location_exists(date) :
             return False
         
         return True
@@ -105,11 +105,14 @@ class Leisure_Activity:
             location.release_ressources(self.required_ressources)
 
 
-    def __valid_location_exists(self):
+    def __valid_location_exists(self, datetime):
         """
             checks if a valid location for this activity exists.
             If a location is set, it is checked for ressource availability.
             If the location is not set, all locations are checked for ressource availability
+
+            Args:
+                date (datetime): the date to check against room opening hours
         """
         # case A: no options set is interpreted as outside, which is always valid
         if self.location_options is None:
@@ -117,7 +120,7 @@ class Leisure_Activity:
 
         # case B: options set: check that there is at least one option with the required ressources
         for room in self.location_options:
-            if not room.is_active:
+            if not room.is_available(datetime):
                 continue;
             if room.ressources_available(self.required_ressources):
                 return True

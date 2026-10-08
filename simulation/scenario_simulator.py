@@ -53,9 +53,10 @@ class Scenario_Simulator(Simulator_Base):
         self.weather.tick(current_time)
 
         while self.changes and current_time == self.changes[0].datetime:
+            print(f"Change {type(self.changes[0])} executed at", current_time)
             self.changes[0].execute(self)
             self.changes.pop(0)
-            print("Change executed at ", current_time)
+            
 
         for person_simulator in self.person_simulators:
             person_simulator.tick(current_time)
