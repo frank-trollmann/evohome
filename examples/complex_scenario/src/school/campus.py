@@ -170,7 +170,7 @@ class Campus (House):
         self.socialize_activity = Leisure_Activity("Socialize",
                                                location_options= self.seating_areas + [self.school_yard],
                                                min_duration=10, 
-                                               max_duration=60)
+                                               max_duration=60, prefer_closest_room=True)
 
         tv_locations = [room for room in self.rooms.values() if room.ressources_available(set([self.RESSOURCE_TV]))]
         self.watch_tv_activity = Leisure_Activity("Watch TV",
@@ -330,7 +330,7 @@ class Campus (House):
         self.gymnastics_club = Club("Gymnastics Club",
                                         start_time= time(8,00),
                                         end_time = time(10,00),
-                                        location = self.cafeteria,
+                                        location = self.sports_field,
                                         day = 5)
         self.gymnastics_club.set_teacher(random.choice(self.teachers))
         self.clubs.append(self.gymnastics_club)
@@ -458,6 +458,9 @@ class Campus (House):
         student.add_leisure_activity(self.shopping_activity,3*extroversion + random.random()*5)
         
         return student
+
+
+
 
     def _remove_student(self,student):
         school_class = student.school_class
