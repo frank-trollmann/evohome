@@ -80,7 +80,6 @@ class Room_Adaptation_Controller:
         """
             trains the model and resets prediction accuracy housekeeping variables
         """
-        print("adapting room ", self.room_name)
         self.predictor.train_model(self.X, self.Y)
 
 
