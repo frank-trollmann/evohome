@@ -3,10 +3,10 @@ from asyncio import current_task
 from collections import deque
 from datetime import time, timedelta
 from os import name
-import random
 import datetime
 
 from domain_model import room
+from simulation.random_generator import Simulation_Random_Generator
 from simulation.schedule_item import Schedule_Item
 from simulation.pathfinding import Pathfinding
 
@@ -99,7 +99,7 @@ class Person_Simulator:
             return
 
 
-        current_activity_index = random.choices(population=range(len(weights)), weights=weights)[0]
+        current_activity_index = Simulation_Random_Generator._generator.choices(population=range(len(weights)), weights=weights)[0]
         if current_activity_index is None:
             # fallback in case there are no valid activities just stand around and do nothing.
             return

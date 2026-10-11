@@ -1,7 +1,7 @@
 
-import random
 
 from simulation.pathfinding import Pathfinding
+from simulation.random_generator import Simulation_Random_Generator
 
 
 class Leisure_Activity:
@@ -72,7 +72,7 @@ class Leisure_Activity:
             if(self.prefer_closest_room):
                 return Pathfinding.instance().get_closest_room(house,current_location, valid_locations)
             else:
-                return random.choice(valid_locations)
+                return Simulation_Random_Generator._generator.choice(valid_locations)
         else:
             return None
 
@@ -86,7 +86,7 @@ class Leisure_Activity:
         if self.max_duration <=0:
             return -1
         min_duration = max(self.min_duration,1)
-        return random.randint(min_duration, self.max_duration)
+        return Simulation_Random_Generator._generator.randint(min_duration, self.max_duration)
     
     def start_activity(self, location):
         """

@@ -1,8 +1,8 @@
 
-import random
 from copy import copy, deepcopy
 
 
+from simulation.random_generator import Simulation_Random_Generator
 from simulation.simulator_base import Simulator_Base
 from simulation.weather import Weather_Simulation
 from simulation.person_simulator import Person_Simulator
@@ -62,7 +62,7 @@ class Scenario_Simulator(Simulator_Base):
             person_simulator.tick(current_time)
 
     def on_new_day(self):
-        random.shuffle(self.person_simulators)
+        Simulation_Random_Generator._generator.shuffle(self.person_simulators)
         changes = self.current_gradual_changes[:] # copy list to avoid concurrent modification. (on_next_day is deleting finished gradual changes)
         for gradual_change in  changes:
             gradual_change.on_next_day(self)

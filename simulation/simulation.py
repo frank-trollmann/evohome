@@ -1,5 +1,4 @@
 
-import random
 import pygame
 from copy import copy, deepcopy
 from datetime import timedelta
@@ -10,12 +9,11 @@ from view.main_window import Main_window
 
 class Simulation:
 
-    def __init__(self, display_user_interface = True, max_simulated_minutes = -1, prediction_delay_in_min = 0, random_seed = None):
+    def __init__(self, display_user_interface = True, max_simulated_minutes = -1, prediction_delay_in_min = 0):
         self.delta_time = timedelta(minutes= 1)
         self.display_user_interface = display_user_interface
         self.max_simulated_minutes = max_simulated_minutes;
 
-        self.random_seed = random_seed
         self.running = False
         self.paused = False
 
@@ -75,8 +73,6 @@ class Simulation:
     def start(self):
         if self.simulator is None:
             raise Exception("Trying to simulate without a valid simulator. Did you forget to set a simulator?")
-        
-        random.seed(self.random_seed)
 
         # initialize simulator
         self.simulator.start_simulation()
@@ -103,6 +99,10 @@ class Simulation:
         self.running = True
         while self.running:
             if not self.paused:
+
+                if(self.current_time.hour == 0 and self.current_time.minute == 0):
+                    print("starting day:", f"{self.current_time.day}.{self.current_time.month}.{self.current_time.year}")
+
                 self.simulator.tick(self.current_time)
 
                 # update prediction forecast

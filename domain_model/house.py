@@ -1,5 +1,8 @@
 
-import random
+
+
+
+from simulation.random_generator import Simulation_Random_Generator
 
 
 class House:
@@ -82,7 +85,7 @@ class House:
         if len(exits) == 0:
             return None
         else:
-            return random.choice(exits)
+            return Simulation_Random_Generator._generator.choice(exits)
 
 
 

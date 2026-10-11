@@ -35,8 +35,7 @@ class Test_Replay_Simulator(unittest.TestCase):
                                           )
         self.simulation = Simulation(display_user_interface = False, 
                             max_simulated_minutes = 3,
-                            prediction_delay_in_min = 0,
-                            random_seed = 42)
+                            prediction_delay_in_min = 0)
         self.simulation.set_simulator(self.simulator)
 
     

@@ -23,8 +23,7 @@ class Test_Simple_Scenario(unittest.TestCase):
         # set up mock house
         self.simulation = Simulation(display_user_interface = False, 
                             max_simulated_minutes = -1,
-                            prediction_delay_in_min = 60,
-                            random_seed = 42)
+                            prediction_delay_in_min = 60)
 
         self.filename = "tests/simple_scenario_temp.pickle"
         
