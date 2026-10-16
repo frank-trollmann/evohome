@@ -160,36 +160,5 @@ def create_gradual_change_scenario():
                                                                   end_priority = 1)
     scenario.changes.append(de_prioritize_tv)
 
-    """
-    
-    
-     # create persons
-    # create changes
-    # child 2 leaves for three months
-    child_2_move_out = Move_Out_Change(datetime(year = 2021, month = 6, day = 2, hour = 0, minute = 0), child_2)
-    child_2_move_in = Move_In_Change(datetime(year = 2021, month = 9, day = 2, hour = 0, minute = 0), child_2)
-    scenario.changes.append(child_2_move_out)
-    scenario.changes.append(child_2_move_in)
-
-    # parent 1 changes time for cooking
-    remove_cooking_change = Obligation_Remove_Change(datetime(year = 2021, month = 3, day = 2, hour = 0, minute = 0), parent_1, "Cook")
-    cook2_obligation = Obligation("Cook2", 
-                                start_time= time(15,30), 
-                                end_time = time(16,30), 
-                                location = kitchen)
-    add_cooking_change = Obligation_Add_Change(datetime(year = 2021, month = 3, day = 2, hour = 0, minute = 0), parent_1, cook2_obligation)
-    scenario.changes.append(remove_cooking_change)
-    scenario.changes.append(add_cooking_change) 
-
-    # child 2 picks up cooking practice instead of playing video games 
-    remove_play_change = Leisure_Activity_Remove_Change(datetime(year = 2022, month = 1, day = 2, hour = 0, minute = 0), child_2, "Play Games")
-    practice_cooking = Leisure_Activity("Practice Cooking", 
-                                            location = kitchen, 
-                                            min_duration=30, 
-                                            max_duration=60)
-    add_practice_cooking_change = Leisure_Activity_Add_Change(datetime(year = 2022, month = 1, day = 2, hour = 0, minute = 0), child_2, practice_cooking, 4)
-    scenario.changes.append(remove_play_change)
-    scenario.changes.append(add_practice_cooking_change) 
-    """
     return scenario
 
