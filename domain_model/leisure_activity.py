@@ -9,7 +9,7 @@ class Leisure_Activity:
         This class represents a leisure activity and associated preferences.
         Leisure activities will be selected randomly according to their weight whenever a simulated person has free time. 
     """
-    def __init__(self, name, location_options = None, weekdays = None, min_duration = 1, max_duration = -1, required_ressources = [], prefer_closest_room = False):
+    def __init__(self, name, location_options = None, weekdays = None, earliest_start_time = None, latest_start_time = None, min_duration = 1, max_duration = -1, required_ressources = [], prefer_closest_room = False):
         """
             Constructor.
 
@@ -20,6 +20,8 @@ class Leisure_Activity:
                 weekdays (int[]): the weekdays where the obligation happens. 0 = Monday, 6 = Sunday. None means every day.
                 min_duration (int): the minimum duration of the activity in minutes.
                 max_duration (int): the maximum duration of the activity in minutes. -1 means no maximum.
+                earliest_start_time (time): the minimum start time of the activity. If None, there is no limit.
+                latest_start_time (time): the maximum start time of the activity. If None, there is no limit.
                 required_ressources (List<String>): the ressources required to perform this activity.
                 prefer_closest_room (bool): whether or not the activity should always default to the closest possible room from it's current position
 
@@ -27,6 +29,8 @@ class Leisure_Activity:
         self.name = name
         self.location_options = location_options
         self.weekdays = weekdays
+        self.earliest_start_time = earliest_start_time
+        self.latest_start_time = latest_start_time
         self.min_duration = min_duration
         self.max_duration = max_duration
         self.required_ressources = set(required_ressources)
@@ -44,6 +48,13 @@ class Leisure_Activity:
         """
         weekday = date.weekday()
         if self.weekdays is not None and weekday not in self.weekdays:
+            return False
+
+        time = date.time()
+        if self.earliest_start_time is not None and time < self.earliest_start_time:
+            return False
+
+        if self.latest_start_time is not None and time > self.latest_start_time:
             return False
 
         if not self.__valid_location_exists(date) :
