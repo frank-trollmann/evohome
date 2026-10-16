@@ -9,8 +9,10 @@ This scenario illustrates how a lager-scale scenario can be built from the simul
 The scenario can be started as a module via *python -m examples.complex_scenario.main <execution_mode>* from the main folder of the project.
 
 Execution mode can have one of three values:
-- *RECORD*: runs the simulation for 5 years, recording presence data. Data will be stored in *data/recording.pickle* and can be explored using *data_exploration.ipynb*
+- *RECORD*: runs the simulation for 3 months prior to 01.04.2020. Data is stored in *data/recording.pickle*. This data will be used as training set for machine learning models in the other modes.
 - *VIEW*: runs the simulation indefinitely with predictions and a user interface. No data will be recorded.
+- *RUN*:runs the simulation with prediction but without adaptation for 5 years starting on 01.04.2020. Data is stored in *data/running.pickle*. It is visualized in notebook data_exploration.ipynb
+- *ADAPT*: runs the simulation with prediction and adaptation for 5 years starting on 01.04.2020. Data is stored in *data/adapting.pickle*. It is visualized in notebook adaptation_visualization.ipynb
 
 # The Scenario:
 
@@ -51,7 +53,7 @@ Students are organized in classes and each class has lessons on three of the fou
 
 Furthermore, the school offers a set of clubs that take place at specific times and that students can join.
 
-Any time not spent in these obligations is divided into different leisure activities that take place at varying places around campus.
+Any time not spent in these obligations is divided into different leisure activities that take place at varying places around campus. These leisure activities are assigned priorities between 0 and 10, depending on the student. Assignment is partially randomly but are kept somewhat consistent by using a simplified personality model, consisting of randomly assigned introversion, contientiousness and activeness parameters that are added to the respective activities (e.g., any sports activity receives a priority bonus based on the activeness of the student).
 
 Teachers are assigned to lessons and clubs, which determine their work scheduled. Free times in between is spent via a smaller selection of activities (preparing in the staff room, bathroom breaks and eating in the cafeteria).
 
@@ -82,6 +84,13 @@ The intake numbers are as follows:
 
 ### Construction in Dorm B:
 Initially, Dorm B is closed as it is still constructed. All rooms within it are unavailable to students. On first of September during the first year (meaning in the middle of summer break) the dorm opens and becomes accessible. 
+
+### Study priority
+Each student has three leisure activities related to studying. They may study in their dorm room, in a public place or at the library. Since studying is a leisure activity, it competes with other leisure activities (such as watching TV). 
+
+During the semester, the priority of the study activities gradually increase in priority over the first 60 days of the semester. This is simulating the increased pressure to study at the end of the semester due to examns. Overall, the priority of studying is raised by 6 over this time period. At the beginning of the semester vacations the study priority is lowered back to it's previous value.
+
+
 
 
 # Project Structure
