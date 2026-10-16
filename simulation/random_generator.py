@@ -4,8 +4,8 @@ from random import Random
 
 class Simulation_Random_Generator:
     """
-        Random generator instance for the simulation.
-        In order to not be influenced by random number generator use within adaptation or prediction, this is a dedicated insctance of the random number generator.
+        Random generator instance for the simulation scenario.
+        This random number generator guarantees reproducibility of simulation. Do not use outside of the simulation.
     """
     _generator = Random()
 

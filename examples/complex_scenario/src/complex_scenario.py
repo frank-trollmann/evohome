@@ -19,7 +19,7 @@ def create_complex_scenario():
     YEARS = 5
     YEAR_1 = 2020
 
-    campus = Campus(scenario= scenario, nr_students= 20)
+    campus = Campus(scenario= scenario, nr_students= 20, random_seed= 42)
     scenario.house = campus
     scenario.startTime = datetime(year = YEAR_1, month = 4, day = 1, hour = 0, minute = 0)
 

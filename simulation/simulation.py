@@ -5,11 +5,12 @@ from datetime import timedelta
 from collections import deque
 from timeit import default_timer as timer
 
+from simulation.random_generator import Simulation_Random_Generator
 from view.main_window import Main_window
 
 class Simulation:
 
-    def __init__(self, display_user_interface = True, max_simulated_minutes = -1, prediction_delay_in_min = 0):
+    def __init__(self, display_user_interface = True, max_simulated_minutes = -1, prediction_delay_in_min = 0, random_seed = None):
         self.delta_time = timedelta(minutes= 1)
         self.display_user_interface = display_user_interface
         self.max_simulated_minutes = max_simulated_minutes;
@@ -31,6 +32,9 @@ class Simulation:
 
         self.tick_count = 0
         self.prediction_delay_in_min = prediction_delay_in_min
+
+        if random_seed is not None:
+            Simulation_Random_Generator._generator.seed(random_seed)
     
     def get_current_prediction(self):
         if self.tick_count < self.prediction_delay_in_min:

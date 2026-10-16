@@ -5,14 +5,12 @@ from examples.simple_scenario.src.extended_data_recorder import Extended_Data_Re
 from examples.simple_scenario.src.decision_tree_predictor import Decision_Tree_Predictor
 from examples.simple_scenario.src.simple_scenario import create_simple_scenario
 
-from simulation.random_generator import Simulation_Random_Generator
 from simulation.scenario_simulator import Scenario_Simulator
 from simulation.learning_system import prediction_system
 from simulation.simulation import Simulation
 
  
 if __name__ == "__main__":
-    Simulation_Random_Generator._generator.seed(42)
     if len(sys.argv) < 2:
         print("Missing command line argument. Please provide the following arguments:")
         print("- Execution mode: RECORD/RUN/ADAPT/VIEW")
@@ -26,7 +24,8 @@ if __name__ == "__main__":
     scenario = create_simple_scenario()
     simulation = Simulation(display_user_interface = execution_mode == "VIEW", 
                             max_simulated_minutes = -1,
-                            prediction_delay_in_min = 60)
+                            prediction_delay_in_min = 60,
+                            random_seed = 42)
     scenario_simulator = Scenario_Simulator(scenario, simulation) 
     simulation.set_simulator(scenario_simulator)
 

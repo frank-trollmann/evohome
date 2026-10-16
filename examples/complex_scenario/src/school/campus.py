@@ -1,6 +1,7 @@
 
 from copy import copy
 from datetime import time
+from random import Random
 
 
 from domain_model.house import House
@@ -11,10 +12,11 @@ from domain_model.room import Room
 
 
 from examples.complex_scenario.src.school import school_class
+from examples.complex_scenario.src.school.campus_random_generator import Campus_Random_Generator
 from examples.complex_scenario.src.school.club import Club
 from examples.complex_scenario.src.school.school_class import School_Class
-import examples.complex_scenario.src.util as util
-from simulation.random_generator import Simulation_Random_Generator
+from examples.complex_scenario.src.util import get_random_color, get_random_time_between
+
 
 class Campus (House):
     """
@@ -32,7 +34,7 @@ class Campus (House):
     STUDENT_VACATION_ABSENCE_PROBABILITY = 0.8
 
 
-    def __init__(self, scenario, nr_students):
+    def __init__(self, scenario, nr_students, random_seed = None):
         super().__init__()
         self.scenario = scenario
 
@@ -85,7 +87,9 @@ class Campus (House):
         self._init_staff_obligations()
         self._init_staff()
         self._init_obligations() 
-        
+
+        if random_seed is not None:
+            Campus_Random_Generator._generator.seed(random_seed)
 
         for _ in range(nr_students):
             self._add_random_student()
@@ -102,7 +106,7 @@ class Campus (House):
              club.pause()
 
         for student in self.students:
-            dice_roll = Simulation_Random_Generator._generator.random()
+            dice_roll = Campus_Random_Generator._generator.random()
             if dice_roll < Campus.STUDENT_VACATION_ABSENCE_PROBABILITY:
                  self._set_student_to_absent(student)
 
@@ -140,7 +144,7 @@ class Campus (House):
         """
         removed_students = []
         for i in range(nr_students):
-            student = Simulation_Random_Generator._generator.choice(self.students)
+            student = Campus_Random_Generator._generator.choice(self.students)
             removed_students.append(student)
             self._remove_student(student)
         return removed_students
@@ -294,7 +298,7 @@ class Campus (House):
                                      end_time = time(19,00),
                                      location = self.classrooms["Classroom A"],
                                      day = 0)
-        self.chess_club.set_teacher(Simulation_Random_Generator._generator.choice(self.teachers))
+        self.chess_club.set_teacher(Campus_Random_Generator._generator.choice(self.teachers))
         self.clubs.append(self.chess_club)
 
         self.roleplay_club = Club("DnD Club",
@@ -316,7 +320,7 @@ class Campus (House):
                                         end_time = time(19,00),
                                         location = self.sports_field,
                                         day = 3)
-        self.basketball_club.set_teacher(Simulation_Random_Generator._generator.choice(self.teachers))
+        self.basketball_club.set_teacher(Campus_Random_Generator._generator.choice(self.teachers))
         self.clubs.append(self.basketball_club)
         
         self.cooking_club = Club("Cooking Club",
@@ -324,7 +328,7 @@ class Campus (House):
                                         end_time = time(19,00),
                                         location = self.cafeteria,
                                         day = 4)
-        self.cooking_club.set_teacher(Simulation_Random_Generator._generator.choice(self.teachers))
+        self.cooking_club.set_teacher(Campus_Random_Generator._generator.choice(self.teachers))
         self.clubs.append(self.cooking_club)
         
         self.gymnastics_club = Club("Gymnastics Club",
@@ -332,7 +336,7 @@ class Campus (House):
                                         end_time = time(10,00),
                                         location = self.sports_field,
                                         day = 5)
-        self.gymnastics_club.set_teacher(Simulation_Random_Generator._generator.choice(self.teachers))
+        self.gymnastics_club.set_teacher(Campus_Random_Generator._generator.choice(self.teachers))
         self.clubs.append(self.gymnastics_club)
         
         self.debate_club = Club("Debate Club",
@@ -340,7 +344,7 @@ class Campus (House):
                                         end_time = time(16,00),
                                         location = self.classrooms["Classroom D"],
                                         day = 6)
-        self.debate_club.set_teacher(Simulation_Random_Generator._generator.choice(self.teachers))
+        self.debate_club.set_teacher(Campus_Random_Generator._generator.choice(self.teachers))
         self.clubs.append(self.debate_club)
 
     def _schedule_classes(self):
@@ -353,12 +357,12 @@ class Campus (House):
             # which of the four blocks is to be left free for which class? indexed by class index.
             free_times = []
             for class_index in range(len(all_classes)):
-                free_times.append(Simulation_Random_Generator._generator.randint(0,3))
+                free_times.append(Campus_Random_Generator._generator.randint(0,3))
             for time in range(4):
                 available_rooms = list(self.classrooms.values())
                 for class_index in range(len(all_classes)):
                     if time != free_times[class_index]:
-                        room = Simulation_Random_Generator._generator.choice(available_rooms)
+                        room = Campus_Random_Generator._generator.choice(available_rooms)
                         available_rooms.remove(room)
                         all_classes[class_index].set_schedule_item(day, time, room)
 
@@ -378,50 +382,50 @@ class Campus (House):
         school_class = self._select_class_for_new_student()
 
         student = Person(name = f"Student {self.student_nr_counter}" ,
-                         ui_color = util.get_random_color(),
-                         wake_up_time= util.get_random_time_between(6,0,10,0),
-                         sleep_time=util.get_random_time_between(20,0,23,55))
+                         ui_color = get_random_color(),
+                         wake_up_time= get_random_time_between(6,0,10,0),
+                         sleep_time=get_random_time_between(20,0,23,55))
         student.school_class = school_class
         self.students.append(student)
         school_class.add_student(student)
         
-        dorm = Simulation_Random_Generator._generator.choice([dorm for dorm in self.free_dorms if dorm.is_active == True])
+        dorm = Campus_Random_Generator._generator.choice([dorm for dorm in self.free_dorms if dorm.is_active == True])
         self.free_dorms.remove(dorm)
         student.sleep_room = dorm
         student.dorm = dorm
         self.scenario.add_person(student)
 
         # use extroversion and conscientious personality traits to influences leisure activity weights. 
-        extroversion = Simulation_Random_Generator._generator.random()
+        extroversion = Campus_Random_Generator._generator.random()
         introversion = 1 - extroversion
-        conscientiousness = Simulation_Random_Generator._generator.random()
+        conscientiousness = Campus_Random_Generator._generator.random()
         unconscientiousness = 1 - conscientiousness
-        activeness = Simulation_Random_Generator._generator.random()
-        inactiveness = Simulation_Random_Generator._generator.random()
+        activeness = Campus_Random_Generator._generator.random()
+        inactiveness = Campus_Random_Generator._generator.random()
 
         # schedule obligations and clubs
         student.add_obligation(self.student_lunch_obligation)
 
         student.clubs = []
-        if(3* introversion + 2 * inactiveness + 2 * conscientiousness + 4 *Simulation_Random_Generator._generator.random() > 6):
+        if(3* introversion + 2 * inactiveness + 2 * conscientiousness + 4 *Campus_Random_Generator._generator.random() > 6):
             student.clubs.append(self.chess_club)
             self.chess_club.add_student(student)
-        if(2* introversion + 2 * conscientiousness + 6 * Simulation_Random_Generator._generator.random() > 6):
+        if(2* introversion + 2 * conscientiousness + 6 * Campus_Random_Generator._generator.random() > 6):
             student.clubs.append(self.roleplay_club)
             self.roleplay_club.add_student(student)
-        if(2* extroversion + 5* conscientiousness + 3*Simulation_Random_Generator._generator.random() > 6):
+        if(2* extroversion + 5* conscientiousness + 3*Campus_Random_Generator._generator.random() > 6):
             student.clubs.append(self.study_club)
             self.study_club.add_student(student)
-        if(5*activeness + 3*extroversion + 2*Simulation_Random_Generator._generator.random() > 6):
+        if(5*activeness + 3*extroversion + 2*Campus_Random_Generator._generator.random() > 6):
             student.clubs.append(self.basketball_club)
             self.basketball_club.add_student(student)  
-        if(2*extroversion + 8*Simulation_Random_Generator._generator.random() > 6):
+        if(2*extroversion + 8*Campus_Random_Generator._generator.random() > 6):
             student.clubs.append(self.cooking_club)
             self.cooking_club.add_student(student)
-        if(6* activeness + 4* Simulation_Random_Generator._generator.random() > 6):
+        if(6* activeness + 4* Campus_Random_Generator._generator.random() > 6):
                 student.clubs.append(self.gymnastics_club)
                 self.gymnastics_club.add_student(student)
-        if(4*extroversion + 3*conscientiousness + 4*Simulation_Random_Generator._generator.random() > 6):
+        if(4*extroversion + 3*conscientiousness + 4*Campus_Random_Generator._generator.random() > 6):
                 student.clubs.append(self.debate_club)
                 self.debate_club.add_student(student)
 
@@ -438,24 +442,24 @@ class Campus (House):
                                                     max_duration=120)
 
         student.add_leisure_activity(self.bathroom_activity,2)
-        student.add_leisure_activity(self.meeting_activity, 4 + 3*extroversion + 3*Simulation_Random_Generator._generator.random())
-        student.add_leisure_activity(self.socialize_activity,6*extroversion + 4*Simulation_Random_Generator._generator.random())
-        student.add_leisure_activity(alone_time_activity,8*introversion + 2*Simulation_Random_Generator._generator.random())
-        student.add_leisure_activity(self.snacking_activity, 3 + 2* unconscientiousness + 5*Simulation_Random_Generator._generator.random())
-        student.add_leisure_activity(self.watch_tv_activity, 5*unconscientiousness + 5*Simulation_Random_Generator._generator.random())
-        student.add_leisure_activity(self.pool_activity,4*activeness + 3*introversion + 3*Simulation_Random_Generator._generator.random())
-        student.add_leisure_activity(self.kicker_activity,4*activeness + 3*extroversion + 3*Simulation_Random_Generator._generator.random())
-        student.add_leisure_activity(self.air_hockey_activity,4*activeness + 3*extroversion + 3*Simulation_Random_Generator._generator.random())
-        student.add_leisure_activity(self.air_hockey_activity,5*activeness + 4*extroversion + 1*Simulation_Random_Generator._generator.random())
+        student.add_leisure_activity(self.meeting_activity, 4 + 3*extroversion + 3*Campus_Random_Generator._generator.random())
+        student.add_leisure_activity(self.socialize_activity,6*extroversion + 4*Campus_Random_Generator._generator.random())
+        student.add_leisure_activity(alone_time_activity,8*introversion + 2*Campus_Random_Generator._generator.random())
+        student.add_leisure_activity(self.snacking_activity, 3 + 2* unconscientiousness + 5*Campus_Random_Generator._generator.random())
+        student.add_leisure_activity(self.watch_tv_activity, 5*unconscientiousness + 5*Campus_Random_Generator._generator.random())
+        student.add_leisure_activity(self.pool_activity,4*activeness + 3*introversion + 3*Campus_Random_Generator._generator.random())
+        student.add_leisure_activity(self.kicker_activity,4*activeness + 3*extroversion + 3*Campus_Random_Generator._generator.random())
+        student.add_leisure_activity(self.air_hockey_activity,4*activeness + 3*extroversion + 3*Campus_Random_Generator._generator.random())
+        student.add_leisure_activity(self.air_hockey_activity,5*activeness + 4*extroversion + 1*Campus_Random_Generator._generator.random())
         student.add_leisure_activity(self.basketball_activity,6*activeness + 4*extroversion)
-        student.add_leisure_activity(self.board_gaming_activity, 3*inactiveness + 3 * introversion + 4*Simulation_Random_Generator._generator.random())
+        student.add_leisure_activity(self.board_gaming_activity, 3*inactiveness + 3 * introversion + 4*Campus_Random_Generator._generator.random())
 
-        student.add_leisure_activity(self.study_outside_activity, 4*conscientiousness + 4*extroversion + 2*Simulation_Random_Generator._generator.random())
-        student.add_leisure_activity(self.study_library_activity, 5*conscientiousness+ 4*introversion + Simulation_Random_Generator._generator.random())
-        student.add_leisure_activity(study_dorm_activity, 3*conscientiousness + 5*introversion + 2*Simulation_Random_Generator._generator.random())
+        student.add_leisure_activity(self.study_outside_activity, 4*conscientiousness + 4*extroversion + 2*Campus_Random_Generator._generator.random())
+        student.add_leisure_activity(self.study_library_activity, 5*conscientiousness+ 4*introversion + Campus_Random_Generator._generator.random())
+        student.add_leisure_activity(study_dorm_activity, 3*conscientiousness + 5*introversion + 2*Campus_Random_Generator._generator.random())
 
-        student.add_leisure_activity(self.cinema_activity,3*introversion + Simulation_Random_Generator._generator.random()*3)
-        student.add_leisure_activity(self.shopping_activity,3*extroversion + Simulation_Random_Generator._generator.random()*5)
+        student.add_leisure_activity(self.cinema_activity,3*introversion + Campus_Random_Generator._generator.random()*3)
+        student.add_leisure_activity(self.shopping_activity,3*extroversion + Campus_Random_Generator._generator.random()*5)
         
         return student
 
@@ -502,7 +506,7 @@ class Campus (House):
 
     def _add_teacher(self,school_class):
         teacher = Person(name = f"Student {self.student_nr_counter}" ,
-                                 ui_color = util.get_random_color(),
+                                 ui_color = get_random_color(),
                                  wake_up_time= time(7,00),
                                  sleep_time=time(17,00))
         self.scenario.add_person(teacher)
@@ -545,13 +549,13 @@ class Campus (House):
     
     def _add_office_staff(self):
             self.principal = Person(name = "Principal" ,
-                                     ui_color = util.get_random_color(),
+                                     ui_color = get_random_color(),
                                      wake_up_time= time(13,00),
                                      sleep_time=time(14,00))
             self.scenario.add_person(self.principal)
 
             self.secretary = Person(name = f"Secretary" ,
-                                                 ui_color = util.get_random_color(),
+                                                 ui_color = get_random_color(),
                                                  wake_up_time= time(13,00),
                                                  sleep_time=time(14,00))
             self.scenario.add_person(self.secretary)
