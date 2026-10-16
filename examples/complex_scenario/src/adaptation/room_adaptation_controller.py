@@ -52,7 +52,6 @@ class Room_Adaptation_Controller:
 
         if time.weekday() == 0 and time.hour == 0 and time.minute == 0:
             needs_adaptation = self.analyze(time)
-            print(f"room {self.room_name} needs adaptation? {needs_adaptation}")
             if needs_adaptation:
                 self.plan_and_execute()
 
