@@ -14,6 +14,7 @@ class Room_Adaptation_Controller:
         If the threshold is exceeded on three consecutive days, this triggers adaptation.
     """
 
+
     def __init__(self,room_name, predictor):
         """
             constructor
@@ -24,6 +25,7 @@ class Room_Adaptation_Controller:
         """
         self.room_name = room_name
         self.predictor = predictor
+        self.accuracy_threshold = 0.9
     
 
     def on_simulation_start(self, X, y):
@@ -34,6 +36,7 @@ class Room_Adaptation_Controller:
         self.X = pd.DataFrame.copy(X)
         self.Y = pd.DataFrame.copy(y)
         self.substituted_index = 0
+        self.correct_prediction_count = 0
 
         
 
@@ -47,8 +50,9 @@ class Room_Adaptation_Controller:
         """
         self.monitor(time,y,y_pred)
 
-        if(time.hour == 0 and time.minute == 0):
+        if time.weekday() == 0 and time.hour == 0 and time.minute == 0:
             needs_adaptation = self.analyze(time)
+            print(f"room {self.room_name} needs adaptation? {needs_adaptation}")
             if needs_adaptation:
                 self.plan_and_execute()
 
@@ -62,19 +66,22 @@ class Room_Adaptation_Controller:
         self.X.iloc[self.substituted_index] = x_value
         self.Y.iloc[self.substituted_index] = int(y)
         self.substituted_index = (self.substituted_index + 1) % len(self.X)
-
+        self.correct_prediction_count += y == y_pred
     
 
         
-    
     def analyze(self, time):
         """
             Checks whether an adaptation is necessary.
             This function triggers an adaptation if the accuracy is consistently below the threshold.
         """
-        if time.weekday() == 0 and time.hour == 0 and time.minute == 0:
-            return True
-        return False
+
+        nr_predictions_in_week = 60*24*7
+        accuracy = self.correct_prediction_count / nr_predictions_in_week
+        self.correct_prediction_count = 0
+        
+        return self.accuracy_threshold > accuracy
+
 
     def plan_and_execute(self):
         """
