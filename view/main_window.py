@@ -11,6 +11,9 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "100,100"
 pygame.init()
 
 class Main_window:
+
+    initial_sleep_time = 0.1
+
    
     def __init__(self, simulation):
         pygame.font.init()
@@ -18,7 +21,7 @@ class Main_window:
 
         self.simulation = simulation
 
-        self.sleep_time = 0.1
+        self.sleep_time = Main_window.initial_sleep_time
         self.paused = False
 
         self.house_background = self.__create_house_background()
@@ -120,16 +123,6 @@ class Main_window:
             house_background = pygame.Surface([max_x + 20,max_y + 20])
             house_background.fill((255,255,255))
 
-        # draw rooms
-        for room in rooms:
-            if room.is_active:
-                room_color = (0,0,255)
-            else:
-                room_color = (100,100,100)
-            pygame.draw.circle(surface = house_background,
-                               center = (room.x,room.y),
-                               radius = 10,
-                               color = room_color)
         
         # draw room connections
         for start_room_key in transitions.keys():
@@ -141,11 +134,22 @@ class Main_window:
                 else:
                     line_color = (100,100,100)
     
-                pygame.draw.line(surface = house_background,
+                pygame.draw.aaline(surface = house_background,
                                 start_pos = (start_room.x,start_room.y),
                                 end_pos = (end_room.x, end_room.y),
                                 width = 5,
                                 color = line_color)
+
+        # draw rooms
+        for room in rooms:
+            if room.is_active:
+                room_color = (0,0,150)
+            else:
+                room_color = (100,100,100)
+            pygame.draw.circle(surface = house_background,
+                                center = (room.x,room.y),
+                                radius = 10,
+                                color = room_color)
         return house_background
 
     
@@ -160,6 +164,10 @@ class Main_window:
             for person in room.persons:
                 x_offset = 20 * current_person_index 
                 y_offset = 20
+                pygame.draw.circle(surface = surface,
+                                               center = (room.x + x_offset,room.y + y_offset),
+                                               radius = 10,
+                                               color = (person.ui_color[0]*0.5, person.ui_color[1]*0.5,person.ui_color[2]*0.5))
                 pygame.draw.circle(surface = surface,
                                center = (room.x + x_offset,room.y + y_offset),
                                radius = 8,
@@ -178,6 +186,10 @@ class Main_window:
         for room in simulation.rooms:
             if(current_prediction[index]):
                 pygame.draw.circle(surface = surface,
+                                                center = (room.x,room.y-20),
+                                                radius = 12,
+                                                color = (100,100,0))
+                pygame.draw.circle(surface = surface,
                                 center = (room.x,room.y-20),
                                 radius = 10,
                                 color = (255,255,0))
@@ -188,7 +200,7 @@ class Main_window:
         """
             draw the current time to the surface
         """
-        text = simulation.current_time.strftime("%m/%d/%Y, %H:%M:%S, %A")
+        text = f"Date: {simulation.current_time.strftime('%m/%d/%Y, %H:%M:%S, %A')}"
         text_surface = self.font.render(text,True,(0,0,0),(255,255,255))
         surface.blit(text_surface, (10,10))
     
@@ -197,6 +209,16 @@ class Main_window:
             draws window controls to the given surface
         """
         screen_width = surface.get_size()[0]
+
+        speed = "Paused"
+        if not self.simulation.is_paused():
+            speed = (1 / self.sleep_time) * Main_window.initial_sleep_time
+            if int(speed) == speed:
+                speed = int(speed)
+
+
+        text_surface = self.font.render(f"Simulation Speed: {speed}",True,(0,0,0),(255,255,255))
+        surface.blit(text_surface,self.__get_speed_label_position(screen_width))
 
         slower_pos = self.__get_slower_button_position(screen_width)
         self.__draw_button(surface, "<<", slower_pos)
@@ -251,6 +273,9 @@ class Main_window:
     
     def __get_pause_button_position(self,width):
         return (width-100,10)
+
+    def __get_speed_label_position(self,width):
+            return (width-400,10)
     
     def __get_button_size(self):
         return (40,30)
