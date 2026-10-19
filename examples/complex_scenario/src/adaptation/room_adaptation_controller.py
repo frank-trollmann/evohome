@@ -90,7 +90,6 @@ class Room_Adaptation_Controller:
         """
         X = pd.DataFrame(self.X_que)
         Y = pd.DataFrame(list(self.Y_que))
-        print(Y)
         self.predictor.train_model(X, Y)
 
 
