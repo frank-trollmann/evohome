@@ -1,4 +1,6 @@
 
+from collections import deque
+
 import pandas as pd
 from sklearn import tree
 
@@ -34,19 +36,21 @@ class Room_Adaptation_Controller:
             Called when simulation is started.
             Establishes the dataset and resents all important variables. 
         """
-        self.X = X
-        self.Y = pd.DataFrame.copy(y)
+
+        
+        self.X_que = deque(X.to_dict(orient="records"))
+        self.Y_que = deque(y.to_list())
         self.correct_prediction_count = 0
 
     
 
-    def on_new_prediction(self, time, y, y_pred, substituted_index):
+    def on_new_prediction(self, time, y, y_pred):
         """
             Called when new predictions come in.
             Does housekeeping and decudes on adaptations
             Structure follows a rudimentary MAPE feedback loop.
         """
-        self.monitor(time,y,y_pred, substituted_index)
+        self.monitor(time,y,y_pred)
 
         if time.weekday() == 0 and time.hour == 0 and time.minute == 0:
             needs_adaptation = self.analyze(time)
@@ -54,12 +58,15 @@ class Room_Adaptation_Controller:
                 self.plan_and_execute()
 
 
-    def monitor(self, time, y,y_pred, substituted_index):
+    def monitor(self, time, y,y_pred):
         """
             This function adds the monitored information to the dataframe and keeps a consistent dataframe length.
             For consistencies sake we don't add / remove data from the frame but overwrite the elements one at a time, starting with the oldest.
         """
-        self.Y.iloc[substituted_index] = int(y)
+        self.X_que.append({"weekday": time.weekday(), "hour": time.hour, "minute": time.minute})
+        self.X_que.popleft()
+        self.Y_que.append(int(y))
+        self.Y_que.popleft()
         self.correct_prediction_count += y == y_pred
     
 
@@ -81,7 +88,10 @@ class Room_Adaptation_Controller:
         """
             trains the model and resets prediction accuracy housekeeping variables
         """
-        self.predictor.train_model(self.X, self.Y)
+        X = pd.DataFrame(self.X_que)
+        Y = pd.DataFrame(list(self.Y_que))
+        print(Y)
+        self.predictor.train_model(X, Y)
 
 
        
