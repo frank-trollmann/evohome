@@ -28,7 +28,7 @@ class Simple_Adaptation_Controller(Adaptation_Controller):
         
 
 
-    def on_new_prediction(self, time, y, y_pred, prediction_time):
+    def on_new_prediction(self, time, y, y_pred, prediction_metadata):
         """
             This function is implemented with a very rudimentary version of the MAPE-K feedback loop where K is implemented by self.X and self.Y
         """

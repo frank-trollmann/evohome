@@ -43,7 +43,7 @@ class CompositeAdaptationController(Adaptation_Controller):
 
     
 
-    def on_new_prediction(self, time, y, y_pred, prediction_time):
+    def on_new_prediction(self, time, y, y_pred, prediction_metadata):
         """
             notifies of new predictions.
             The predictions are forwarded to the individual room adaptation controllers

@@ -41,7 +41,7 @@ class Data_Recorder:
         self.prediction_times = []
         self.adaptation_times = []
 
-    def on_new_datapoint(self, time, sensor_data, prediction, weather_quality, prediction_time, adaptation_time):
+    def on_new_datapoint(self, time, sensor_data, prediction, weather_quality, prediction_metadata, adaptation_metadata):
         """
             Notifies the data recorder of a new data point.
             The data recorder keeps track of the data internally.
@@ -51,9 +51,12 @@ class Data_Recorder:
                 sensor_data (array of booleans): the sensor data for all rooms.
                 prediction (array of booleans): the prediction for all rooms.
                 weather_quality (float): the quality of the weather at this time.
-                prediction_time (float): the time it took to compute the prediction.
+                prediction_metadata (Prediction_Metadata): the metadata of the prediction
                 adaptation_time (float): the time it took to compute the prediction.
         """
+        prediction_time = -1 if prediction_metadata is None else prediction_metadata.prediction_time
+        adaptation_time = -1 if adaptation_metadata is None else adaptation_metadata.adaptation_time
+
         self.dates.append(time)
         self.weather.append(weather_quality)
         self.prediction_times.append(prediction_time)

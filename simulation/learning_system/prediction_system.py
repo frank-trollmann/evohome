@@ -1,5 +1,8 @@
 
 
+from simulation.learning_system.prediction_metadata import Prediction_Metadata
+
+
 class Prediction_System:
 
     def set_simulation(self,simulation):
@@ -44,3 +47,12 @@ class Prediction_System:
             - time: the time to predict for. An object of type datetime.
         """
         return None
+
+    def get_last_prediction_metadata(self):
+        """
+            Returns the metadata of the last prediction.
+            In it's default implementation the metadata is empty. Prediction time is added externally in the simulation.
+
+            This method can be overwritten in order to keep track of more metadata.
+        """
+        return  Prediction_Metadata()

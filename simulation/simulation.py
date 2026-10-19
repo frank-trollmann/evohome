@@ -5,6 +5,7 @@ from datetime import timedelta
 from collections import deque
 from timeit import default_timer as timer
 
+from simulation.learning_system import adaptation_metadata
 from simulation.random_generator import Simulation_Random_Generator
 from view.main_window import Main_window
 
@@ -20,7 +21,7 @@ class Simulation:
 
         self.current_time = None
         self.predictions = deque()
-        self.prediction_times = deque()
+        self.prediction_metadata = deque()
 
         self.prediction_system = None
         self.adaptation_controller = None
@@ -43,12 +44,12 @@ class Simulation:
             return None
         return self.predictions[0]
 
-    def get_current_prediction_time(self):
+    def get_current_prediction_metadata(self):
         if self.tick_count < self.prediction_delay_in_min:
             return None
-        if len(self.prediction_times) == 0:
+        if len(self.prediction_metadata) == 0:
             return None
-        return self.prediction_times[0]
+        return self.prediction_metadata[0]
     
     def pause(self):
         self.paused = True
@@ -115,31 +116,36 @@ class Simulation:
                     self.prediction_system.on_new_datapoint(copy(self.current_time),self.get_sensor_values())
                     prediction = self.prediction_system.predict_presence(self.predicted_time)
                     prediction_time = timer() - start_time
+                    prediction_metadata = self.prediction_system.get_last_prediction_metadata()
+                    prediction_metadata.prediction_time = self.predicted_time
                     self.predictions.append(prediction)
-                    self.prediction_times.append(prediction_time)
+                    self.prediction_metadata.append(prediction_metadata)
                 
                 # forward information to adaptation controller
                 adaptation_time = -1
+                adaptation_metadata = None
                 if self.adaptation_controller is not None:
                     prediction = self.get_current_prediction()
                     if(prediction is not None):
-                        prediction_time = self.get_current_prediction_time()
+                        prediction_metadata = self.get_current_prediction_metadata()
                         data_point = self.get_sensor_values()
                         start_time = timer()
-                        self.adaptation_controller.on_new_prediction(copy(self.current_time), data_point, prediction, prediction_time )
+                        self.adaptation_controller.on_new_prediction(copy(self.current_time), data_point, prediction, prediction_metadata)
                         adaptation_time = timer() - start_time
+                        adaptation_metadata = self.adaptation_controller.get_last_adaptation_metadata()
+                        adaptation_metadata.adaptation_time = adaptation_time
 
                 # update data recorder
                 if self.data_recorder is not None:
                     data_point = self.get_sensor_values()
                     prediction = self.get_current_prediction()
-                    prediction_time = self.get_current_prediction_time()
-                    self.data_recorder.on_new_datapoint(copy(self.current_time),data_point, prediction, self.simulator.get_weather_value(), prediction_time, adaptation_time)
+                    prediction_metadata = self.get_current_prediction_metadata()
+                    self.data_recorder.on_new_datapoint(copy(self.current_time),data_point, prediction, self.simulator.get_weather_value(), prediction_metadata, adaptation_metadata)
 
                 # update list of predictions
                 if(len(self.predictions) > self.prediction_delay_in_min + 1):
                         self.predictions.popleft()
-                        self.prediction_times.popleft()
+                        self.prediction_metadata.popleft()
 
                 self.current_time = self.current_time + self.delta_time
                 self.predicted_time = self.predicted_time + self.delta_time
