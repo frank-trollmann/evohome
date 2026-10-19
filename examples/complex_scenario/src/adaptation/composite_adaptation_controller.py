@@ -52,7 +52,7 @@ class CompositeAdaptationController(Adaptation_Controller):
 
         # update X value globally to avoid doing identical work in each room controller
         x_value = {"weekday": time.weekday(), "hour": time.hour, "minute": time.minute}
-        #self.X.iloc[self.substituted_index] = x_value
+        self.X.iloc[self.substituted_index] = x_value
         self.substituted_index = (self.substituted_index + 1) % len(self.X)
 
         for room_index in range(len(self.room_names)):
