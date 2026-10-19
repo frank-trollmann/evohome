@@ -117,7 +117,7 @@ class Simulation:
                     prediction = self.prediction_system.predict_presence(self.predicted_time)
                     prediction_time = timer() - start_time
                     prediction_metadata = self.prediction_system.get_last_prediction_metadata()
-                    prediction_metadata.prediction_time = self.predicted_time
+                    prediction_metadata.prediction_time = prediction_time
                     self.predictions.append(prediction)
                     self.prediction_metadata.append(prediction_metadata)
                 
