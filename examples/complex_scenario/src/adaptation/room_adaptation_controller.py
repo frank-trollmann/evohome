@@ -15,7 +15,7 @@ class Room_Adaptation_Controller:
     """
 
 
-    def __init__(self,room_name, predictor):
+    def __init__(self,room_name, room_index, predictor):
         """
             constructor
             
@@ -24,6 +24,7 @@ class Room_Adaptation_Controller:
                 predictor (Room_Predictor): the model that does prediction for this room.
         """
         self.room_name = room_name
+        self.room_index = room_index
         self.predictor = predictor
         self.accuracy_threshold = 0.9
     
@@ -33,22 +34,19 @@ class Room_Adaptation_Controller:
             Called when simulation is started.
             Establishes the dataset and resents all important variables. 
         """
-        self.X = pd.DataFrame.copy(X)
+        self.X = X
         self.Y = pd.DataFrame.copy(y)
-        self.substituted_index = 0
         self.correct_prediction_count = 0
 
-        
+    
 
-
-
-    def on_new_prediction(self, time, y, y_pred):
+    def on_new_prediction(self, time, y, y_pred, substituted_index):
         """
             Called when new predictions come in.
             Does housekeeping and decudes on adaptations
             Structure follows a rudimentary MAPE feedback loop.
         """
-        self.monitor(time,y,y_pred)
+        self.monitor(time,y,y_pred, substituted_index)
 
         if time.weekday() == 0 and time.hour == 0 and time.minute == 0:
             needs_adaptation = self.analyze(time)
@@ -56,15 +54,12 @@ class Room_Adaptation_Controller:
                 self.plan_and_execute()
 
 
-    def monitor(self, time, y,y_pred):
+    def monitor(self, time, y,y_pred, substituted_index):
         """
             This function adds the monitored information to the dataframe and keeps a consistent dataframe length.
             For consistencies sake we don't add / remove data from the frame but overwrite the elements one at a time, starting with the oldest.
         """
-        x_value = {"weekday": time.weekday(), "hour": time.hour, "minute": time.minute}
-        self.X.iloc[self.substituted_index] = x_value
-        self.Y.iloc[self.substituted_index] = int(y)
-        self.substituted_index = (self.substituted_index + 1) % len(self.X)
+        self.Y.iloc[substituted_index] = int(y)
         self.correct_prediction_count += y == y_pred
     
 
