@@ -54,8 +54,8 @@ class Data_Recorder:
                 prediction_metadata (Prediction_Metadata): the metadata of the prediction
                 adaptation_time (float): the time it took to compute the prediction.
         """
-        prediction_time = -1 if prediction_metadata is None else prediction_metadata.prediction_time
-        adaptation_time = -1 if adaptation_metadata is None else adaptation_metadata.adaptation_time
+        prediction_time = None if prediction_metadata is None else prediction_metadata.prediction_time
+        adaptation_time = None if adaptation_metadata is None else adaptation_metadata.adaptation_time
 
         self.dates.append(time)
         self.weather.append(weather_quality)
