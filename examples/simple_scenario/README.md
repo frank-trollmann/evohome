@@ -1,10 +1,6 @@
 # Scenario Purpose
 
-This scenario illustrates how to:
-- define a scenario for the simulation
-- record data with the simulation
-- deploy a machine learning model in the simulation
-- record and evaluate data about the performance of the machine learning model.
+This scenario illustrates how to define a complete scenario for the simulation, including data recording, prediction via a Machine Learning model and adaptation of the model. 
 
 # Useage
 
@@ -12,22 +8,26 @@ The scenario can be started as a module via *python -m examples.simple_scenario.
 
 Execution mode can have one of three values:
 - *RECORD*: runs the simulation for 3 months, recording presence data. Data will be stored in *data/recording.pickle* and can be explored using *data_exploration.ipynb*
-- RUN:  runs the simulation for 24 months, recording presence data and predictions. Data will be stored in *data/running.pickle* and can be explored using *model_evaluation.ipynb*
-- *ADAPT*: runs the simulation for 24 months, while adapting. The scenario is the same as in RUN but an additional adpatation controller retrains the model periodically. Data will be stored in *data/adapting.pickle* and can be explored using *adaptation_evaluation.ipynb*
+- *RUN*:  runs the simulation for 24 months, recording presence data and predictions. Data will be stored in *data/running.pickle* and can be explored using *model_evaluation.ipynb*. The machine learning model is trained on previously recorded data. This data needs to be created by running the scenario in *RECORD* mode at least once.
+- *ADAPT*: runs the simulation for 24 months, while adapting. The scenario is the same as in RUN but an additional adpatation controller retrains the model periodically. Data will be stored in *data/adapting.pickle* and can be explored using *adaptation_evaluation.ipynb*. The machine learning model is trained on previously recorded data. This data needs to be created by running the scenario in *RECORD* mode at least once.
 - *VIEW*: runs the simulation indefinitely with predictions and a user interface. No data will be recorded.
 
 # The Scenario:
 
-The scenario is defined in src/simple_scenario.py. 
+Here we describe a short summary of the scenario.
+The source code defining this scenario can be found in *src/simple_scenario.py*. 
 
-Here we describe a short summary of the scenario:
+
+
 
 ## House and Occupants:
 
-It consists of a house with 11 rooms. The layout of the house is as follows:
+The house consists of 9 rooms with the following layout:
 ![House](images/house_1.png)
 
-The house has four occupants : 
+Each room is equipped with one occupancy sensor. The hallway in the center is equipped with two sensors, one on each end. Overall, this results in 11 occupancy sensors. 
+
+Four persons live in the house: 
 - Arny and Betty (sleep in Bedroom 1)
 - Coline (sleeps in Bedroom 2)
 - Dave (sleeps in Bedroom 3)
@@ -118,11 +118,6 @@ On 02.06.2021 Dave temporarily leaves the household because he participates in a
 On 02.01.2022, Dave changes priority in leisure activities. Instead of playing video games, Dave is learning to cook and practices cooking regularly. This changes the distribution of rooms in leisure times.
 
 
-
-
-
-
-
 # Project Structure
 
 The project is structured along the following folders:
@@ -131,4 +126,57 @@ The project is structured along the following folders:
 - *notebooks*: contains Python Notebooks to visualize the collected data.
 - *src*: contains source code.
 
+# Source Code
 
+The source code for creating a simulation scenario can be found in *main.py*. Here we explain the most important lines that run for the ADAPT mode.
+
+The main class that needs to be instantiated for a simulation run is $Simulation$. In this case, we instantiate this class with 
+
+```
+simulation = Simulation(display_user_interface = False, 
+                        max_simulated_minutes = 24*30*24*60,
+                        prediction_delay_in_min = 60,
+                        random_seed = 42)
+```
+This tells the simulation to not without user interface (*display_user_interface*), for a duration of roughly 24 months (*max_simulated_minutes*), and to predict presence 60 minutes into the future ($prediction_delay_in_min$). 
+
+The scenario is also initailized with a $random seed$ of 24. The simulation uses it's own random generated, meaning calls to the random module outside of the simulation will not have an effect on the reproducibility of the simulation run.
+
+Next, create a simulation scenario and attach it to the simulation. This can be done with the following code:
+
+```
+scenario = create_simple_scenario()
+scenario_simulator = Scenario_Simulator(scenario, simulation) 
+simulation.set_simulator(scenario_simulator)
+```
+
+Any scenario needs to implement the class $Scenario$. This class contains the house configuration, as well as persons and changes. For this example, the scenario is assembled in function *create_simple_scenario*, which can be found in *src/simple_scenario.py*.
+
+The scenario is added to the simulation by means of a *Scenario_Simulator*. This wrapper is necessary because there are also other ways to generate occupancy data (e.g., shocased in the *data_loading* example.) 
+
+
+If the simulation is used for recording datasets, a $Data_Recorder$ can be attached. The following code snippet showcases how this can be done:
+
+```
+data_recorder = Extended_Data_Recorder("examples/simple_scenario/data/adapting.pickle")
+simulation.set_data_recorder(data_recorder)
+```
+
+In this case, custom data recorder is attached. The *Extended_Data_Recorder* implements the bae class *Data_Recorder*. It can be found in *src/extended_data_recorder.py*. The extension showcases how it is possible to alter the recorded data. The extended data recorder adds three columns to the recorded data, representing the weekday, hour and minute.
+
+An optional prediction system can be attached to the simulation in order to predict presence within the simulation. If present, the prediction will be shown in the user interface and recorded by the data recorder. In this scenario, the prediction is attached with the following lines of code:
+
+```
+prediction_system = Decision_Tree_Predictor()
+simulation.set_prediction_system(prediction_system)
+```
+The $Decision_Tree_Predictor* is located in *src/decision_tree_predictor.py* and implements a prediction based on a decision tree classifier. It implements the base class *Prediction_System*.
+
+If a prediction system is present, an optional adaptation controller can be attached to the simulation to control adaptation of the prediction system. The adaptation controller needs to implement the base class $Adaptation_Controller$. In the scenario, this is done with the following lines of code:
+
+```
+adaptation_controller = Simple_Adaptation_Controller()
+simulation.set_adaptation_controller(adaptation_controller)
+```
+
+The *Simple_Adaptation_Controller* is a simplistic implementation of the adaptation controller that retrains the *Decision_Tree_Predictor* once every week. The implementation can be found in *src/simple_adaptation_controller.py*.
