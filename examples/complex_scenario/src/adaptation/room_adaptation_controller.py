@@ -9,11 +9,7 @@ from simulation.learning_system.adaptation_controller import Adaptation_Controll
 class Room_Adaptation_Controller:
     """
         Example for how a an adaptation controller can be implemented.
-        The adaptation controller retrains the model according to the two parameters ADAPTATION_ACCURACY_THRESHOLD and ADAPTATION_DAY_TOLERANCE.
-
-        models are measured against their maximum observed accuracy.
-        If they are worse than ADAPTATION_ACCURACY_THRESHOLD at the end of a day, this is counted as evidence to potentially require adaptation
-        If the threshold is exceeded on three consecutive days, this triggers adaptation.
+        This implementation checks for adaptation need once per week and retrains this model if it's accuracy is smaller than 0.9
     """
 
 
