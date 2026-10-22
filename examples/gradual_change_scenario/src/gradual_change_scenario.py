@@ -14,12 +14,20 @@ from examples.gradual_change_scenario.src.gradual_sleep_cycle_change import Grad
 
 
 def create_gradual_change_scenario():
+    """
+        Assembles all aspects of the gradual change scenario, including the room setup, persons, schedules and changes.
+
+        returns: The scenario (ScenarioConfiguration)
+    
+    """
+
+    # create base setup of scenario and house
     scenario = Scenario_Configuration()
     scenario.background_image = "examples/gradual_change_scenario/images/house_1.png"
-
     house = House()
     scenario.house = house
     scenario.startTime = datetime(year = 2020, month = 1, day = 1, hour = 0, minute = 0)
+
 
     # create rooms and transitions
     bath = Room("Bath", 220, 230, functions = [Room.FUNCTION_BATHROOM])
@@ -40,42 +48,39 @@ def create_gradual_change_scenario():
     house.add_transtion(living, hallway)
     house.add_transtion(hallway, bath)
 
+
     # create Obligations
     weekday_breakfast_obligation = Obligation("Breakfast", 
                                 start_time= time(7,00), 
                                 end_time = time(7,30), 
                                 location = kitchen, 
                                 weekdays = [0,1,2,3,4])
-
     weekday_university_obligation = Obligation("University", 
                                         start_time= time(10,00), 
                                         end_time = time(16,00), 
                                         location = None, 
                                         weekdays = [0,1,2,3,4])
-
     weekday_dinner_obligation = Obligation("Dinner", 
                                     start_time= time(21,00), 
                                     end_time = time(21,30), 
                                     location = kitchen, 
                                     weekdays = [0,1,2,3,4])
-
     weekend_breakfast_obligation = Obligation("Breakfast", 
                                     start_time= time(10,00), 
                                     end_time = time(10,30), 
                                     location = kitchen, 
                                     weekdays = [5,6])
-
     weekend_lunch_obligation = Obligation("Lunch", 
                                             start_time= time(14,00), 
                                             end_time = time(14,30), 
                                             location = kitchen, 
                                             weekdays = [5,6])
-
     weekend_dinner_obligation = Obligation("Dinner", 
                                         start_time= time(23,00), 
                                         end_time = time(23,30), 
                                         location = kitchen, 
                                         weekdays = [5,6])
+
 
     # create leisure activities
     socialize_activity = Leisure_Activity("Socializing", 
@@ -86,7 +91,6 @@ def create_gradual_change_scenario():
                                                 location_options = [sleep],
                                                 min_duration= 30, 
                                                 max_duration= 90)
-
     snacking_activity = Leisure_Activity("Snacking", 
                                                     location_options = [kitchen],
                                                     min_duration= 10, 
@@ -97,7 +101,9 @@ def create_gradual_change_scenario():
                                                         max_duration= 180)
 
 
-    # give aline generous wakeup and sleep times so they can be influenced by breakfast and tv.
+
+    # Create person.
+    # give aline generous wakeup and sleep times so they can be influenced by obligations
     alina = Person("Alina", (255, 0, 0),wake_up_time= time(11,00), sleep_time = time(21,00))
     alina.sleep_room = sleep
     scenario.add_person(alina)
@@ -120,14 +126,6 @@ def create_gradual_change_scenario():
                                                       breakfast_obligation= weekday_breakfast_obligation,
                                                       dinner_obligation= weekday_dinner_obligation)
     scenario.changes.append(sleep_later_weekday)
-    sleep_later_weekend = Gradual_Sleep_Cycle_Change(datetime= datetime(year = 2020, month = 3, day = 1, hour = 0, minute = 0),
-                                                          duration =  31 + 30, # days in feb and march 2020
-                                                          shift_in_mins = 120,
-                                                          breakfast_obligation= weekend_breakfast_obligation,
-                                                          dinner_obligation= weekend_dinner_obligation)
-    # scenario.changes.append(sleep_later_weekend)
-
-
 
     # create changes July - August
     sleep_earlier_weekday = Gradual_Sleep_Cycle_Change(datetime= datetime(year = 2020, month = 7, day = 7, hour = 0, minute = 0),
@@ -136,14 +134,6 @@ def create_gradual_change_scenario():
                                                           breakfast_obligation= weekday_breakfast_obligation,
                                                           dinner_obligation= weekday_dinner_obligation)
     scenario.changes.append(sleep_earlier_weekday)
-    
-    sleep_earlier_weekend = Gradual_Sleep_Cycle_Change(datetime= datetime(year = 2020, month = 7, day = 7, hour = 0, minute = 0),
-                                                              duration =  31 + 31, # days in July and August 2020
-                                                              shift_in_mins = -120,
-                                                              breakfast_obligation= weekend_breakfast_obligation,
-                                                              dinner_obligation= weekend_dinner_obligation)
-    scenario.changes.append(sleep_earlier_weekend)
-
     prioritize_study = Gradual_Leisure_Activity_Priority_Change(datetime= datetime(year = 2020, month = 7, day = 1, hour = 0, minute = 0),
                                                               duration =  31 + 31, # days in July and August 2020
                                                               person = alina,
@@ -151,7 +141,6 @@ def create_gradual_change_scenario():
                                                               start_priority = 1,
                                                               end_priority = 5)
     scenario.changes.append(prioritize_study)
-
     de_prioritize_tv = Gradual_Leisure_Activity_Priority_Change(datetime= datetime(year = 2020, month = 7, day = 1, hour = 0, minute = 0),
                                                                   duration =  31 + 31, # days in July and August 2020
                                                                   person = alina,

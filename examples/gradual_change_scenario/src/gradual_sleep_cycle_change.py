@@ -19,7 +19,7 @@ class Gradual_Sleep_Cycle_Change(Gradual_Change):
             Args:
                 datetime (datetime): the date and time when the change should start.
                 duration (int): the number of days this change should happen over.
-                shift_in_hours(int): by how many hours the time will shift.
+                shift_in_mins(int): by how many minutes the time will shift.
                 breakfast_obligation (Obligation): the obligation representing breakfast.
                 dinner_obligation (Obligation): the obligation representing dinner.
 
@@ -29,10 +29,12 @@ class Gradual_Sleep_Cycle_Change(Gradual_Change):
         self.breakfast_obligation = breakfast_obligation;
         self.dinner_obligation = dinner_obligation;
 
-    def execute(self, simulation):
+    def _on_execution_start(self, simulation):
         """
-            Executes the start of the change.
-            This is overwritten to be able to preserve the initial start and end times of activities to have them available for calculations during execute_gradual.
+            Called to react to begin of change.
+            Interface for custom implementation.
+
+            Here, we preserve the initial start and end time of the activity to preserve them for calculations.
 
             Args:
                 simulation (Scenario_Simulator): the simulation.
@@ -41,13 +43,15 @@ class Gradual_Sleep_Cycle_Change(Gradual_Change):
         self.breakfast_end = copy(self.breakfast_obligation.end_time)
         self.dinner_start = copy(self.dinner_obligation.start_time)
         self.dinner_end = copy(self.dinner_obligation.end_time)
-        super().execute(simulation)
 
 
-    def execute_gradual_change(self):
+    def _on_execute_gradual_change(self):
         """
-            Ran on every gradual change.
-            Needs to be overwritten for custo implementations of Gradual_Change
+            Called to implement the gradual change. 
+            Interface for custom implementation.
+
+            This method runs once every day and can rely on get_progress_fraction to give the right fraction.
+            Here, we update the start and end times of the activities.
         """
         progress_fraction = self.get_progress_fraction()
         current_shift_in_mins = int(progress_fraction * self.shift_in_mins)

@@ -1,7 +1,6 @@
 # Scenario Purpose
 
-This scenario showcases gradual changes within the scenario-based simulation engine. More specifically, it is designed to illustrate how to ...
-- define a scenario for the simulation
+This scenario showcases gradual changes within the scenario-based simulation engine. More specifically, it is designed to illustrate how to 
 - define gradual changes for the scenario
 - define custom gradual changes
 
@@ -14,23 +13,24 @@ Execution mode can have one of three values:
 - *RECORD*: runs the simulation for 8 months, recording presence data. Data will be stored in *data/recording.pickle* and can be explored using *data_exploration.ipynb*
 - *VIEW*: runs the simulation indefinitely with predictions and a user interface. No data will be recorded.
 
+The scenario does not contain prediction or adaptation.
+
+
 # The Scenario:
 
-The scenario is defined in src/gradual_change_scenario_.py. 
+The scenario is defined in *src/gradual_change_scenario_.py.*
 
-Here we describe a short summary of the scenario:
+Here, we describe a short summary of the scenario:
 
 ## House and Occupants:
 
-It consists of a student apparmtment with five areas. The layout of the house is as follows:
+The house consists of a student apparmtment with five areas. The layout of the house is as follows:
 ![House](images/house_1.png)
 
-The house has one occupant, Alina, who is a student.
-
+The house has one occupant: Alina.
 ## Schedules:
 
 Alina's daily schedule differs between weekdays and weekends. The two schedules are as follows:
-
 
 ### Weekday:
 | Obligation | Time | Location |
@@ -57,11 +57,11 @@ Alina fills her leisure time with the following activities:
 | Watching TV | Living Room | 4 |
 
 ## Variability:
-The scenario contains four distinct phases:
+The scenario runs over ten months, contains five distinct phases:
 
-During the two month (January and February 2020) the scenario is stable.
+During the first two month (January and February 2020) the scenario is stable.
 
-During following two months (March and April 2020), Allina's gradually changes her weekay bed time habits. This is reflected by her weekday breakfast and dinner times gradually shifting to two hours later. The change is meant to symbolize decreasing motivation for her studies.
+During following two months (March and April 2020), Allina gradually changes her weekay bed time habits. This is reflected by her weekday breakfast and dinner times gradually shifting to two hours later. The change is meant to symbolize decreasing motivation for her studies.
 
 During May and June, the scenario is stable again.
 
@@ -70,6 +70,10 @@ The fourth phase is meant to represent the opposite of the second phase as Alina
 After this, the scenario remains stable.
 
 Concurrently to these phases, the weather changes throughout the year, which will influence the probability of activity "Socializing" to be chosen.
+
+## Prediction and Adaptation
+
+The scenario code does not include occupancy prediction or adaptation.
 
 
 
@@ -82,3 +86,11 @@ The project is structured along the following folders:
 - *src*: contains source code.
 
 
+# Source Code
+
+The main discussion of source code for running a scenario can be found in the simple_scenario example.
+
+This scenario showcases how to build a custom gradual change in *src/gradual_sleep_cycle_change.py*. 
+The scenario configuration can be found in *src/gradual_change_scenario.py*.
+
+In addition to the custom gradual change, the scenario also uses the *Gradual_Leisure_Activity_Priority_Change* which changes the priority of a leisure activity over time.
