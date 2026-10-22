@@ -12,6 +12,9 @@ class Work_Location_Change(Scheduled_Change):
         self.new_location = new_location
     
     def execute(self, _ ):
+        """
+            Sets the new work location
+        """
         self.work_obligation.location = self.new_location
 
 

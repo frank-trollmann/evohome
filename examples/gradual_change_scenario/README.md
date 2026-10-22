@@ -90,7 +90,7 @@ The project is structured along the following folders:
 
 The main discussion of source code for running a scenario can be found in the simple_scenario example.
 
-This scenario showcases how to build a custom gradual change in *src/gradual_sleep_cycle_change.py*. 
-The scenario configuration can be found in *src/gradual_change_scenario.py*.
+The scenario configuration can be found in *src/room_change_scenario.py*.
+It should be noted that room changes are implemented in two parts. The actual activation / deactivation of rooms is implemented as *Room_Activation_Change*. The adaptation of leisure activities to the change is implemented as *Room_Ressource_Change*. While it would have possible to set the new room in leisure activities directly with a different change, this change allows for activities to more naturally adapt to the changes due to their synchronization with ressource availability.
 
-In addition to the custom gradual change, the scenario also uses the *Gradual_Leisure_Activity_Priority_Change* which changes the priority of a leisure activity over time.
+The scenario also contains a custom change to change the work location implemented in *src/work_location_change.py*

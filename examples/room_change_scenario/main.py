@@ -6,6 +6,12 @@ from simulation.learning_system.data_recorder import Data_Recorder
 from simulation.scenario_simulator import Scenario_Simulator
 from simulation.simulation import Simulation
 
+"""
+    Main starting point for running the simulation.
+    Supports the folloing execution modes
+        - RECORD: runs the simulation for 10 months without prediction or adaptation. Records data to *data/recording.pickle*.
+        - VIEW: runs the simulation indefinitely with predictions and a user interface. Records no data.
+"""
  
 if __name__ == "__main__":
     if len(sys.argv) < 2:

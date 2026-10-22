@@ -9,19 +9,19 @@ This scenario showcases adapting the scenario to changing rooms. More specifical
 
 The scenario can be started as a module via *python -m examples.room_change_scenario.main <execution_mode>* from the main folder of the project.
 
-Execution mode can have one of three values:
-- *RECORD*: runs the simulation for 8 months, recording presence data. Data will be stored in *data/recording.pickle* and can be explored using *data_exploration.ipynb*
+The following execution modes are supported:
+- *RECORD*: runs the simulation for 10 months, recording presence data. Data will be stored in *data/recording.pickle* and can be explored using *data_exploration.ipynb*
 - *VIEW*: runs the simulation indefinitely with predictions and a user interface. No data will be recorded.
 
 # The Scenario:
 
-The scenario is defined in src/room_change_scenario_.py. 
+The scenario is defined in *src/room_change_scenario.py*. 
 
 Here we describe a short summary of the scenario:
 
 ## House and Occupants:
 
-It consists of a student apparmtment with five areas. The layout of the house is as follows:
+The house consists of a student apparmtment with five areas. The layout of the house is as follows:
 ![House](images/room_change_house.png)
 
 The house has two occupants: Anna and Bettina. Both sleep in the same room and use the other rooms for various work and leisure activities.
@@ -94,7 +94,7 @@ Bettina has the following activities
 | Gaming | Home Office, Living Room, Hobby Room | PC  | 3|
 | Watching TV | Living Room | TV  | 3|
 
-It is worth noting that a lot of activities have been set up to be doable in different rooms but require ressources to be done (e.g., a PC). This enables us to move ressources between rooms in order to control which room will be selected for the activity. 
+It is worth noting that a lot of activities have been set up to be doable in different rooms but require ressources (e.g., a PC). This enables us to move ressources between rooms in order to control which room will be selected for the activity. 
 
 ## Variability:
 The variability in this scenario focuses on room availability. We assume a scenario in which both the home office and hobby room are renovated over time. When this happens, some of the ressources in these rooms become unusable, while others get moved to a different room. This will make cause some leisure activities to become unavailable, while others will shift to a different room.
@@ -105,7 +105,7 @@ The scenario consists of the following phases:
 The initial scenario is exactly as described above with all rooms open and all leisure activities active. The scenario starts on 01.01.2020 and runs for two months.
 
 ### Closing the Home Office (01.03.2020 - 30.04.2020)
-As renovation starts, the home office is closed on 01.03.2020. At this day, the room becomes inactive. To accomodate for the unavailability of the room, a set of changes happen:
+As renovation starts, the home office is closed on 01.03.2020. On this day, the room becomes inactive. To accomodate for the unavailability of the room, a set of changes happen:
 - The PC is moved from the home office to the living room, where it is available as a ressource.
 - Bettina moves her work location from the home office to the living room (since she is working using the computer).
 - The ressource "Desk" does not move to the living room (assuming the living room doesn't have a dedicated desk setup where productive focus work can be done). Accordingly, the "Creative Writing" Activity becomes impossible. 
@@ -124,6 +124,11 @@ Additionally, the Crafting Materials and Painting Materials are now moved to the
 The Hobby room is opened again. The sewing machine, crafting and painting materials are moved back into the room.
 The conditions now should be the exact same as in the beginning of the simulation.
 
+## Prediction and Adaptation
+
+The scenario code does not include occupancy prediction or adaptation.
+
+
 # Project Structure
 
 The project is structured along the following folders:
@@ -133,3 +138,11 @@ The project is structured along the following folders:
 - *src*: contains source code.
 
 
+# Source Code
+
+The main discussion of source code for running a scenario can be found in the simple_scenario example.
+
+This scenario showcases how to build a custom gradual change in *src/gradual_sleep_cycle_change.py*. 
+The scenario configuration can be found in *src/gradual_change_scenario.py*.
+
+In addition to the custom gradual change, the scenario also uses the *Gradual_Leisure_Activity_Priority_Change* which changes the priority of a leisure activity over time.

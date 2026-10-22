@@ -20,9 +20,15 @@ from examples.room_change_scenario.src.work_location_change import Work_Location
 
 
 def create_room_change_scenario():
+    """
+        Assembles all aspects of the simple scenario, including the room setup, persons, schedules and changes.
+
+        returns: The scenario (ScenarioConfiguration)
+    """
+
+    # create base setup of scenario and house
     scenario = Scenario_Configuration()
     scenario.background_image = "examples/room_change_scenario/images/room_change_house.png"
-
     house = House()
     scenario.house = house
     scenario.startTime = datetime(year = 2020, month = 1, day = 1, hour = 0, minute = 0)
@@ -54,6 +60,7 @@ def create_room_change_scenario():
     house.add_transtion(hallway_2, home_office)
     house.add_transtion(hallway_2, bedroom)
 
+
     # create persons
     anna = Person("Anna", (255, 0, 0),wake_up_time= time(8,00), sleep_time = time(22,00))
     anna.sleep_room = bedroom
@@ -62,6 +69,7 @@ def create_room_change_scenario():
     bettina = Person("Bettina", (0, 0, 255),wake_up_time= time(10,00), sleep_time = time(23,00))
     bettina.sleep_room = bedroom
     scenario.add_person(bettina)
+
 
     # create obligation schedule
     anna_weekday_breakfast_obligation = Obligation("Breakfast", 
@@ -202,6 +210,7 @@ def create_room_change_scenario():
     anna.add_leisure_activity(watching_tv,1)
     bettina.add_leisure_activity(watching_tv,3)
 
+
     # Phase 2 changes (close home office )
     time1 = datetime(year = 2020, month = 3, day = 1, hour = 0, minute = 0)
     close_home_office_change = Room_Activation_Change(datetime= time1,
@@ -223,7 +232,6 @@ def create_room_change_scenario():
     scenario.changes.append(work_location_change)
 
 
-
     # Phase 3 changes (close hobby room)
     time2 = datetime(year = 2020, month = 5, day = 1, hour = 0, minute = 0)
     close_hobby_room_change = Room_Activation_Change(datetime= time2,
@@ -239,7 +247,6 @@ def create_room_change_scenario():
                                                    room = bedroom,
                                                    added_ressources=["Sewing Machine"])
     scenario.changes.append(move_sewing_machine_change_2)
-
 
 
     # phase 4 changes (open home office)
@@ -270,6 +277,7 @@ def create_room_change_scenario():
                                                        added_ressources=["Painting Materials", "Crafting Materials"])
     scenario.changes.append(move_arts_craft_change_2)
 
+
     # phase 5 changes (open hobby room)
     time4 = datetime(year = 2020, month = 9, day = 1, hour = 0, minute = 0)
     open_hobby_room_change = Room_Activation_Change(datetime= time4,
@@ -292,6 +300,7 @@ def create_room_change_scenario():
                                                        room = hobby_room,
                                                        added_ressources=["Painting Materials", "Crafting Materials"])
     scenario.changes.append(restore_arts_craft_change_2)
+
     
     return scenario
     
