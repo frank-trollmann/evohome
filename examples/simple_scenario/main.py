@@ -9,6 +9,15 @@ from simulation.scenario_simulator import Scenario_Simulator
 from simulation.learning_system import prediction_system
 from simulation.simulation import Simulation
 
+"""
+    Main starting point for running the simulation.
+    Supports the folloing execution modes
+        - RECORD: runs the simulation for 3 months without prediction or adaptation. Records data to *data/recording.pickle*.
+        - RUN:  runs the simulation for 24 months with prediction. Records data to *data/running.pickle*.
+        - ADAPT: runs the simulation for 24 months, with prediction and adaptation. Records data to *data/adapting.pickle*.
+        - VIEW: runs the simulation indefinitely with predictions and a user interface. Records no data.
+
+"""
  
 if __name__ == "__main__":
     if len(sys.argv) < 2:

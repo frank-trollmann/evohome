@@ -12,11 +12,16 @@ Execution mode can have one of three values:
 - *ADAPT*: runs the simulation for 24 months, while adapting. The scenario is the same as in RUN but an additional adpatation controller retrains the model periodically. Data will be stored in *data/adapting.pickle* and can be explored using *adaptation_evaluation.ipynb*. The machine learning model is trained on previously recorded data. This data needs to be created by running the scenario in *RECORD* mode at least once.
 - *VIEW*: runs the simulation indefinitely with predictions and a user interface. No data will be recorded.
 
+
+The project also comes with three Python notebooks to vidualize the data created by the scenario. The following notebooks are available: 
+- *data_exploration.ipynb* visualizes the data recorded in execution mode RECORD
+- *prediction_evaluation.ipynb* visualizes the predictions recorded with execution mode *RUN*
+- *adaptation_evaluation.ipynb* compares the data recorded in execution moes *RUN* and *ADAPT* to visualize the difference of prediction with and without adaptation.
+
 # The Scenario:
 
 Here we describe a short summary of the scenario.
 The source code defining this scenario can be found in *src/simple_scenario.py*. 
-
 
 
 
@@ -116,6 +121,14 @@ On 02.06.2021 Dave temporarily leaves the household because he participates in a
 
 ### Leisure activity change
 On 02.01.2022, Dave changes priority in leisure activities. Instead of playing video games, Dave is learning to cook and practices cooking regularly. This changes the distribution of rooms in leisure times.
+
+
+## Prediction and Adaptation
+
+Prediction in this scenario is done using a Decision Tree classifier. The classifier predicts occupancy of all rooms concurrently based on the weekday, hour, and minute of the predicted moment. The prediction in execution modes RUN and ADAPT is the same.
+
+The adaptation is run in execution mode ADAPT. It updates the prediction model once per week irrespective of it's performance. The update is done based on a complete retrain from the values of the previous week.
+
 
 
 # Project Structure

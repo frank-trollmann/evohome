@@ -17,12 +17,20 @@ from datetime import time
 
 
 def create_simple_scenario():
-    scenario = Scenario_Configuration()
-    scenario.background_image = "examples/simple_scenario/images/house_1.png"
+    """
+        Assembles all aspects of the simple scenario, including the room setup, persons, schedules and changes.
 
+        returns: The scenario (ScenarioConfiguration)
+    
+    """
+
+    # create base setup of scenario and house
+    scenario = Scenario_Configuration()
+    scenario.background_image = "examples/simple_scenario/images/house.png"
     house = House()
     scenario.house = house
     scenario.startTime = datetime(year = 2020, month = 6, day = 1, hour = 0, minute = 0)
+
 
     # create rooms and transitions
     hallway_1 = Room("Hallway 1", 230, 370)
@@ -48,7 +56,6 @@ def create_simple_scenario():
     house.add_room(kitchen)
     house.add_room(living_room)
     house.add_room(porch)
-
 
     house.add_transtion(bedroom2, hallway_1)
     house.add_transtion(bedroom3, hallway_1)
@@ -123,6 +130,7 @@ def create_simple_scenario():
                                 start_time= time(15,00), 
                                 end_time = time(17,00), 
                                 weekdays = [5,6])
+
     
     # create leisure_activities
     alone_time_parent_1 = Leisure_Activity("Alone Time", 
@@ -139,7 +147,6 @@ def create_simple_scenario():
                                             min_duration=10, 
                                             max_duration=60,
                                             required_ressources=["TV", "Couch"])
-
     alone_time_parent_2 = Leisure_Activity("Alone Time", 
                                             location_options = [bedroom1], 
                                             min_duration=30, 
@@ -171,7 +178,7 @@ def create_simple_scenario():
 
 
     
-     # create persons
+     # create persons and add obligations and activities
     parent_1 = Person("Arny", (255, 255, 0),wake_up_time= time(8,00), sleep_time = time(22,00))
     parent_1.sleep_room = bedroom1
     scenario.add_person(parent_1)
@@ -199,7 +206,6 @@ def create_simple_scenario():
     parent_2.add_leisure_activity(porch_reading,4)
     parent_2.add_leisure_activity(inside_reading,2)
 
-
     child_1 = Person("Coline", (255, 0, 255),wake_up_time = time(6,00), sleep_time = time(20,00))
     child_1.sleep_room = bedroom2
     scenario.add_person(child_1)
@@ -224,6 +230,7 @@ def create_simple_scenario():
     child_2.add_leisure_activity(alone_time_child_2,2)
     child_2.add_leisure_activity(watch_tv,4)
     child_2.add_leisure_activity(play_pc,4)
+
 
     # create changes
     # child 2 leaves for three months
@@ -251,6 +258,7 @@ def create_simple_scenario():
     add_practice_cooking_change = Leisure_Activity_Add_Change(datetime(year = 2022, month = 1, day = 2, hour = 0, minute = 0), child_2, practice_cooking, 4)
     scenario.changes.append(remove_play_change)
     scenario.changes.append(add_practice_cooking_change) 
+
 
     return scenario
 
