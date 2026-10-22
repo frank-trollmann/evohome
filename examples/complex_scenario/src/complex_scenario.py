@@ -13,29 +13,24 @@ from examples.complex_scenario.src.school.campus import Campus
 
 
 def create_complex_scenario():
-    scenario = Scenario_Configuration()
-    scenario.background_image = "examples/complex_scenario/images/campus.png"
+    """
+            Assembles all aspects of the  scenario, including the room setup, persons, schedules and changes.
+    
+            returns: The scenario (ScenarioConfiguration)
+    """
+
 
     YEARS = 5
     YEAR_1 = 2020
 
+    # create base setup of scenario and campus
+    scenario = Scenario_Configuration()
+    scenario.background_image = "examples/complex_scenario/images/campus.png"
     campus = Campus(scenario= scenario, nr_students= 20, random_seed= 42)
     scenario.house = campus
     scenario.startTime = datetime(year = YEAR_1, month = 4, day = 1, hour = 0, minute = 0)
 
-    # build schedule:
-        #   duration: 5 years.
-        #   Semester times: 
-        #       Summer Semester: 01.4. - 01.07.
-        #       Summer Break: 01.07. - 01.10.
-        #       Winter Semester: 01.10. - 01.02.
-        #       Winter break: 01.02. - 01.04.
-        #   student numbers:
-        #        Year 1: 20
-        #        Year 2: 30
-        #        Year 3: 40
-        #        Year 4: 50
-        #        Year 5: 50
+    # schedule all changes:
     for year in range(YEAR_1, YEAR_1 + YEARS):
         
         summer_semester_study_priority_increase = Gradual_Study_Priority_Change(datetime(year = year, month = 4, day = 2),
@@ -59,7 +54,6 @@ def create_complex_scenario():
                                                            nr_removed= nr_changed_students,
                                                            nr_added=nr_changed_students + nr_added_students)
 
-
         scenario.changes.append(summer_semester_study_priority_increase)
         scenario.changes.append(summer_break_start)
         scenario.changes.append(summer_break_study_priority_decrease)
@@ -69,11 +63,9 @@ def create_complex_scenario():
         scenario.changes.append(summer_semester_start)
         scenario.changes.append(student_intake_change)
 
-
-
-
     open_dorm_b_change = Open_Dorm_B_Change(datetime(year = YEAR_1, month = 9, day = 1, hour = 0, minute = 0), campus)
     scenario.changes.append(open_dorm_b_change)
+
 
     return scenario
 

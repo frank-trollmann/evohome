@@ -10,7 +10,7 @@ class Open_Dorm_B_Change(Scheduled_Change):
         """
             Constructor.
 
-            Args:
+            params:
                 datetime (datetime): the date and time when the change should be executed.
                 campus (Campus): the campus affected by the change.
         """

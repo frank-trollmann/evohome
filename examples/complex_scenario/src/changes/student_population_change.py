@@ -9,7 +9,7 @@ class Student_Population_Change(Scheduled_Change):
         """
             Constructor.
 
-            Args:
+            params:
                 datetime (datetime): the date and time when the change should be executed.
                 campus (Campus): the campus to add / remove students for
                 nr_removed (int): how many students to remove
@@ -22,7 +22,7 @@ class Student_Population_Change(Scheduled_Change):
     
     def execute(self, simulator):
         """
-            sets the campus to semester vacation mode
+           adds and removes the expected number of students.
         """
         print("Student Intake change. Current: ", len(self.campus.students), "Removing: ", self.nr_removed, "adding: ", self.nr_added)
         removed_students = self.campus.remove_students(self.nr_removed)

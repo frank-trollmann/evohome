@@ -24,13 +24,14 @@ class Campus (House):
         This is a convenience wrapper to reduce the complexity of defining the campus scenario. 
     """
 
+    # constants for different ressource types
     RESSOURCE_SNACKS = "Snacks"
     RESSOURCE_KICKER = "Kicker"
     RESSOURCE_POOL = "POOL"
     RESSOURCE_AIR_HOCKEY = "Air Hockey"
     RESSOURCE_TV = "TV"
 
-
+    # probability of students being absent during semester
     STUDENT_VACATION_ABSENCE_PROBABILITY = 0.8
 
 
@@ -38,6 +39,11 @@ class Campus (House):
         super().__init__()
         self.scenario = scenario
 
+        # set randomness to determined value
+        if random_seed is not None:
+            Campus_Random_Generator._generator.seed(random_seed)
+
+        # initialize global variables
         self.student_nr_counter = 0
         self.principal = None
         self.secretary = None
@@ -48,7 +54,6 @@ class Campus (House):
                         "Class C": School_Class("Class C"),
                         "Class D": School_Class("Class D")}
         self.clubs = []
-
         self.secretary_office = None
         self.principal_office = None
         self.dorms = {}
@@ -62,8 +67,6 @@ class Campus (House):
         self.library =  None
         self.school_yard =  None
         self.sports_field =  None
-
-
         self.exit_dorm_a = None
         self.exit_dorm_b_outside = None
         self.exit_dorm_b_library = None
@@ -72,33 +75,30 @@ class Campus (House):
         self.exit_lecture_wing_main_exit = None
         self.exit_cafeteria_outside = None
 
-
+        # initialize rooms
         self._init_dorm_a()
         self._init_dorm_b()
         self._init_lecture_wing()
         self._init_library_cafeteria()
         self._init_school_yard()
-
         self.set_dorm_b_active(False)
 
+        # init obligations and leisure activities
         self._init_activities()
         self._schedule_classes()
-
         self._init_staff_obligations()
-        self._init_staff()
+        self._init_staff() # needs to be called before _init_obligations so teachers are available as club supervisors 
         self._init_obligations() 
 
-        if random_seed is not None:
-            Campus_Random_Generator._generator.seed(random_seed)
-
+        # init persons
         for _ in range(nr_students):
             self._add_random_student()
 
-
-
     def set_to_semester_vacation(self):
         """
-            sets the campus to semester vacation mode
+            Sets the campus to semester vacation mode
+
+            Stops all classes and clups and sets a number of student to be absent during the vacation
         """
         self._clear_scheduled_classes()
 
@@ -117,7 +117,9 @@ class Campus (House):
 
     def set_to_semester_time(self):
         """
-            sets the campus to semester mode
+            Sets the campus to semester mode.
+
+            Resumes clubs and classes. All students return.
         """
         self._schedule_classes()
 
@@ -135,12 +137,13 @@ class Campus (House):
 
     def remove_students(self, nr_students):
         """
-            removes a given number of students. Students are selected randomly
+            Removes a given number of students. Students are selected randomly.
             
             Args:
                 nr_students (int): the number of students to be removed
             
-            Returns the list of removed students
+            Returns:
+                 the list of removed students (list<Student>)
         """
         removed_students = []
         for i in range(nr_students):
@@ -151,12 +154,13 @@ class Campus (House):
 
     def add_students(self,nr_students):
         """
-            removes a given number of students.
+            Adds a given number of students.
             
             Args:
                 nr_students (int): the number of students to be added
             
-            Returns the list of added students
+            Returns:
+                 the list of added students (list<Student>)
         """
         added_students = []
         for i in range(nr_students):
@@ -164,7 +168,20 @@ class Campus (House):
             added_students.append(student)
         return added_students
 
+    def set_dorm_b_active(self, active):
+        """
+            Used to open or close dorm b.
+
+            params:
+                active (bool): whether or not dorm be should be open.
+        """
+        for room in self.dorm_b_rooms:
+            room.set_active(active)
+
     def _init_activities(self):
+        """
+            Initializes all leisure activities.
+        """
         self.bathroom_activity = Leisure_Activity("Bathroom Break", 
                                                     location_options = self.get_rooms_by_function(Room.FUNCTION_BATHROOM), 
                                                     min_duration=10, 
@@ -250,6 +267,9 @@ class Campus (House):
                                                             max_duration=90)
 
     def _init_staff_obligations(self):
+        """
+            Initializes obligations for teachers and office staff.
+        """
         self.teacher_lunch_obligation = Obligation("Lunch", 
                                                 start_time= time(12,00), 
                                                 end_time = time(13,00),
@@ -279,6 +299,9 @@ class Campus (House):
                                     weekdays = [0,1,2,3,4,5])
 
     def _init_obligations(self):
+        """
+            Initializes student obligations.
+        """
 
         self.student_lunch_obligation = Obligation("Lunch", 
                                         start_time= time(12,00), 
@@ -349,7 +372,8 @@ class Campus (House):
 
     def _schedule_classes(self):
         """
-            schedules all classes such that each class has one free time slot per day
+            Schedules all classes.
+            Each class has a dedicated classroom and one free time slot per day
             Assumption: we do not have less class rooms than classes.
         """
         all_classes = copy(list(self.classes.values()))
@@ -368,7 +392,8 @@ class Campus (House):
 
     def _clear_scheduled_classes(self):
         """
-        clears the scheduled classes (used for setting the school into vacation mode)
+            Clears the scheduled classes.
+            Used for setting the school into vacation mode.
         """
         all_classes = copy(list(self.classes.values()))
         for day in range(5):
@@ -378,24 +403,31 @@ class Campus (House):
                     all_classes[class_index].set_schedule_item(day, time, None)
 
     def _add_random_student(self):
+        """
+            Add one random student to the school.
+            Also initializes all obligations and leisure activities.
+        """
         self.student_nr_counter += 1
-        school_class = self._select_class_for_new_student()
 
         student = Person(name = f"Student {self.student_nr_counter}" ,
                          ui_color = get_random_color(),
                          wake_up_time= get_random_time_between(6,0,10,0),
                          sleep_time=get_random_time_between(20,0,23,55))
-        student.school_class = school_class
         self.students.append(student)
+
+        # add to a class
+        school_class = self._select_class_for_new_student()
+        student.school_class = school_class
         school_class.add_student(student)
-        
+
+        # find dorm
         dorm = Campus_Random_Generator._generator.choice([dorm for dorm in self.free_dorms if dorm.is_active == True])
         self.free_dorms.remove(dorm)
         student.sleep_room = dorm
         student.dorm = dorm
         self.scenario.add_person(student)
 
-        # use extroversion and conscientious personality traits to influences leisure activity weights. 
+        # generate simplified personality traits to influence club and leisure activity preferences.
         extroversion = Campus_Random_Generator._generator.random()
         introversion = 1 - extroversion
         conscientiousness = Campus_Random_Generator._generator.random()
@@ -405,7 +437,6 @@ class Campus (House):
 
         # schedule obligations and clubs
         student.add_obligation(self.student_lunch_obligation)
-
         student.clubs = []
         if(3* introversion + 2 * inactiveness + 2 * conscientiousness + 4 *Campus_Random_Generator._generator.random() > 6):
             student.clubs.append(self.chess_club)
@@ -453,20 +484,18 @@ class Campus (House):
         student.add_leisure_activity(self.air_hockey_activity,5*activeness + 4*extroversion + 1*Campus_Random_Generator._generator.random())
         student.add_leisure_activity(self.basketball_activity,6*activeness + 4*extroversion)
         student.add_leisure_activity(self.board_gaming_activity, 3*inactiveness + 3 * introversion + 4*Campus_Random_Generator._generator.random())
-
         student.add_leisure_activity(self.study_outside_activity, 4*conscientiousness + 4*extroversion + 2*Campus_Random_Generator._generator.random())
         student.add_leisure_activity(self.study_library_activity, 5*conscientiousness+ 4*introversion + Campus_Random_Generator._generator.random())
         student.add_leisure_activity(study_dorm_activity, 3*conscientiousness + 5*introversion + 2*Campus_Random_Generator._generator.random())
-
         student.add_leisure_activity(self.cinema_activity,3*introversion + Campus_Random_Generator._generator.random()*3)
         student.add_leisure_activity(self.shopping_activity,3*extroversion + Campus_Random_Generator._generator.random()*5)
         
         return student
 
-
-
-
     def _remove_student(self,student):
+        """
+            Remove a student from the school.
+        """
         school_class = student.school_class
         school_class.remove_student(student)
 
@@ -482,6 +511,9 @@ class Campus (House):
         self.scenario.remove_person(student)
 
     def _set_student_to_absent(self, student):
+        """
+            Sets a student to absent without removing them completely.
+        """
         student.sleep_room = None      
 
         for club in student.clubs:
@@ -491,20 +523,30 @@ class Campus (House):
         student.add_obligation(self.absent_obligation)
 
     def _set_student_to_present(self, student):
-            student.sleep_room = student.dorm      
-    
-            for club in student.clubs:
-                    club.add_student(student)
-    
-            student.remove_obligation(self.absent_obligation.name)
-            student.add_obligation(self.student_lunch_obligation)
+        """
+            Sets a student to present.
+            Reverts all effects of _set_student_to_absent
+        """ 
+        student.sleep_room = student.dorm      
+
+        for club in student.clubs:
+                club.add_student(student)
+
+        student.remove_obligation(self.absent_obligation.name)
+        student.add_obligation(self.student_lunch_obligation)
 
     def _init_staff(self):
+        """
+            Initializes the teachers and office staff.
+        """
         for school_class in self.classes.values():
             self._add_teacher(school_class)
         self._add_office_staff()
 
     def _add_teacher(self,school_class):
+        """
+            Adds a school teacher and initializes all obligations and leisure activities.
+        """
         teacher = Person(name = f"Student {self.student_nr_counter}" ,
                                  ui_color = get_random_color(),
                                  wake_up_time= time(7,00),
@@ -539,64 +581,82 @@ class Campus (House):
         teacher.add_leisure_activity(snacking_activity,2)
 
     def _set_teacher_to_absent(self, teacher):
-    
+        """
+            Sets a teacher to absent during school vacation.
+        """
         teacher.remove_obligation(self.teacher_lunch_obligation.name)
         teacher.add_obligation(self.absent_obligation)
     
     def _set_teacher_to_present(self, teacher):
+        """
+            Sets a teacher to be present.
+            Reverts all effects of _set_teacher_to_absent.
+        """
         teacher.add_obligation(self.teacher_lunch_obligation)
         teacher.remove_obligation(self.absent_obligation.name)
     
     def _add_office_staff(self):
-            self.principal = Person(name = "Principal" ,
-                                     ui_color = get_random_color(),
-                                     wake_up_time= time(13,00),
-                                     sleep_time=time(14,00))
-            self.scenario.add_person(self.principal)
+        """
+            Adds a principal and secretary.
+        """
+        self.principal = Person(name = "Principal" ,
+                                    ui_color = get_random_color(),
+                                    wake_up_time= time(13,00),
+                                    sleep_time=time(14,00))
+        self.scenario.add_person(self.principal)
 
-            self.secretary = Person(name = f"Secretary" ,
-                                                 ui_color = get_random_color(),
-                                                 wake_up_time= time(13,00),
-                                                 sleep_time=time(14,00))
-            self.scenario.add_person(self.secretary)
+        self.secretary = Person(name = f"Secretary" ,
+                                                ui_color = get_random_color(),
+                                                wake_up_time= time(13,00),
+                                                sleep_time=time(14,00))
+        self.scenario.add_person(self.secretary)
 
-    
-    
-            # obligations
-            lunch_obligation = Obligation("Lunch", 
-                                            start_time= time(13,00), 
-                                            end_time = time(14,00),
-                                            location = self.cafeteria,
-                                            weekdays = [0,1,2,3,4,5])
-            self.principal.add_obligation(lunch_obligation)
-            self.principal.add_obligation(self.principal_office_obligation_morning)
-            self.principal.add_obligation(self.principal_office_obligation_afternoon)
 
-            
-            self.secretary.add_obligation(lunch_obligation)
-            self.secretary.add_obligation(self.secretary_office_obligation_morning)
-            self.secretary.add_obligation(self.secretary_office_obligation_afternoon)
+        # obligations
+        lunch_obligation = Obligation("Lunch", 
+                                        start_time= time(13,00), 
+                                        end_time = time(14,00),
+                                        location = self.cafeteria,
+                                        weekdays = [0,1,2,3,4,5])
+        self.principal.add_obligation(lunch_obligation)
+        self.principal.add_obligation(self.principal_office_obligation_morning)
+        self.principal.add_obligation(self.principal_office_obligation_afternoon)
+
+        self.secretary.add_obligation(lunch_obligation)
+        self.secretary.add_obligation(self.secretary_office_obligation_morning)
+        self.secretary.add_obligation(self.secretary_office_obligation_afternoon)
 
     def _set_office_staff_to_vacation(self):
+        """
+            Sets office staff to absent during school vacation.
+        """
         self.principal_office_obligation_morning.start_time = time(10,0)
         self.principal_office_obligation_afternoon.end_time = time(15,0)
         self.secretary_office_obligation_morning.start_time = time(9,0)
         self.secretary_office_obligation_afternoon.end_time = time(14,30)
 
     def _set_office_staff_to_semester_time(self):
+        """
+            Sets office staff to present. Reverts all effects of _set_office_staff_to_vacation
+        """
         self.principal_office_obligation_morning.start_time = time(9,00)
         self.principal_office_obligation_afternoon.end_time = time(18,00)
         self.secretary_office_obligation_morning.start_time = time(6,0)
         self.secretary_office_obligation_afternoon.end_time = time(16,00)
 
-    def set_dorm_b_active(self, active):
-         for room in self.dorm_b_rooms:
-              room.set_active(active)
-
     def _select_class_for_new_student(self):
+        """
+            Select a class for a new student.
+
+            returns:
+                The selected class (School_Class)
+        """
         return min(self.classes.values(), key= lambda school_class: len(school_class.students) )
 
     def _init_dorm_a(self):
+        """
+            initialize all rooms and connections in Dorm A
+        """
         # Floor 1:
         stairs_a_1_up = self._create_room("Stairs A 1 Up", 40, 1530)
         a11 = self._create_dorm("Dorm A11", 200, 1530)
@@ -695,6 +755,9 @@ class Campus (House):
         self.add_transtion(stairs_a_2_up, stairs_a_3_down)
         
     def _init_dorm_b(self):
+        """
+            initialize all rooms and connections in Dorm B
+        """
         b1 = self._create_dorm("Dorm B1", 880, 290)
         b2 = self._create_dorm("Dorm B2", 1060, 290)
         b3 = self._create_dorm("Dorm B3", 1120, 290)
@@ -781,6 +844,9 @@ class Campus (House):
         self.dorm_b_rooms.extend([hallway_b_1, hallway_b_2, hallway_b_3, hallway_b_4, hallway_b_5, hallway_b_6, hallway_b_7, hallway_b_8, hallway_b_9])
         
     def _init_lecture_wing(self):
+        """
+            initialize all rooms and connections in the lecture wing.
+        """
         class_a = self._create_classroom("Classroom A", 1110, 1780)
         class_b = self._create_classroom("Classroom B", 1660, 1780)
         class_c = self._create_classroom("Classroom C", 2150, 1780)
@@ -856,6 +922,9 @@ class Campus (House):
                                                                 connected_rooms = [hallway_lecture_9, class_d, self.secretary_office, self.exit_lecture_wing_main_exit])
 
     def _init_library_cafeteria(self):
+        """
+            initialize the library and cafeteria
+        """
         self.cafeteria = self._create_room("Cafeteria", 2520, 1040, ressources=[self.RESSOURCE_SNACKS], opening_time = time(8,0), closing_time = time(19,0))
         self.seating_areas.append(self.cafeteria)
         self.library = self._create_room("Library", 2580, 780, opening_time = time(10,0), closing_time = time(18,0))
@@ -872,6 +941,9 @@ class Campus (House):
                                                                 connected_rooms = [ hallway_cafeteria_library_1, self.exit_dorm_b_library, self.library])
 
     def _init_school_yard(self):
+        """
+            initialize the schhol yard and sports field
+        """
         self.school_yard = self._create_room("School Yard", 1610, 1030, is_outside=True)
         self.sports_field = self._create_room("Sports Field", 915, 1050, is_outside=True)
 
@@ -880,42 +952,92 @@ class Campus (House):
         self.add_transtion(self.school_yard, self.exit_lecture_wing_outside)
         self.add_transtion(self.school_yard, self.exit_cafeteria_outside)
 
-    def _create_dorm(self, name, x,y, opening_time = None, closing_time = None):
+    def _create_dorm(self, name, x,y):
         """
             Create a dorm room and register it.
+
+            params: 
+                name(string): the name of the room
+                x(int): the x coordinate of the room in user interface.
+                y(int): the y coordinate of the room in user interface.
+
+            returns: 
+                the crated room (Room)
         """
-        dorm = Room(name, x, y, opening_time= opening_time, closing_time= closing_time)
+        dorm = Room(name, x, y)
         self.add_room(dorm)
         self.dorms[name] = dorm
         self.free_dorms.append(dorm)
         return dorm
 
     def _create_classroom(self, name, x,y):
-            """
-                Create a dorm room and register it.
-            """
-            room = Room(name, x, y)
-            self.add_room(room)
-            self.classrooms[name] = room
-            return room
+        """
+            Create a classroom and register it.
+
+            params: 
+                name(string): the name of the room
+                x(int): the x coordinate of the room in user interface.
+                y(int): the y coordinate of the room in user interface.
+
+            returns: 
+                the crated room (Room)
+        """
+        room = Room(name, x, y)
+        self.add_room(room)
+        self.classrooms[name] = room
+        return room
 
     def _create_room(self,name,x,y,ressources = [], is_outside = False, is_exit = False, opening_time = None, closing_time = None):
         """
-            Create a bathroom 
+            Create a room. 
+
+            params: 
+                name(string): the name of the room
+                x(int): the x coordinate of the room in user interface.
+                y(int): the y coordinate of the room in user interface.
+                ressources(list<string>: the available ressources
+                is_outside (bool): whether the room is outside.
+                is_exit(bool): whether the room is an exit
+                opening_time(Datetime.time): the time the room opens
+                closing_time(Datetime.time): the time the room closes.
+
+            returns: 
+                the created room (Room)
         """
         room = Room(name, x, y, ressources= ressources, is_outside= is_outside, is_exit= is_exit, opening_time= opening_time, closing_time= closing_time)
         self.add_room(room)
         return room
 
     def _create_bathroom(self,name,x,y):
-            """
-                Create a bathroom 
-            """
-            room = Room(name, x, y, functions= [Room.FUNCTION_BATHROOM])
-            self.add_room(room)
-            return room
+        """
+            Create a bathroom 
+
+            params: 
+                name(string): the name of the room
+                x(int): the x coordinate of the room in user interface.
+                y(int): the y coordinate of the room in user interface.
+
+            returns: 
+                the created room (Room)
+        """
+        room = Room(name, x, y, functions= [Room.FUNCTION_BATHROOM])
+        self.add_room(room)
+        return room
 
     def _create_connection(self,name,x,y,connected_rooms):
+        """
+            Create a connection between two or more rooms.
+            The connection will be a room itself that contains transitions to the connected rooms.
+
+            params: 
+                name(string): the name of the room
+                x(int): the x coordinate of the room in user interface.
+                y(int): the y coordinate of the room in user interface.
+                connected_rooms (list<Room>): all rooms connected to this one.
+
+            returns: 
+                the created room (Room)
+        """
         connection = self._create_room(name,x,y)
         for room in connected_rooms:
             self.add_transtion(connection,room)

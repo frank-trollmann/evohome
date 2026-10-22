@@ -16,6 +16,12 @@ class School_Class :
     LESSON_END_TIMES = [time(9,45), time(11,45), time(14,45), time(16,45)]
 
     def __init__(self, name):
+        """
+            Constructor.
+
+            params:
+                name(string): name of the class
+        """
         self.name = name
         self.students = []
         self.teacher = None
@@ -24,10 +30,15 @@ class School_Class :
 
     def set_schedule_item(self, day,time,room):
         """
-            sets the schedule 
-            automatically adds obligations for the schedule to all students that are currently registered.
+            Sets the schedule for one lesson.
+            Automatically adds obligations for the schedule to all students that are currently registered.
             Setting a room of None is interpreted as there being no lesson. 
             Old obligations are cleaned up, if they exist.
+
+            params:
+                day(int) the index of the day the lesson takes place (Monday = 0)
+                time(int) the index of the time slot of the lesson (0 to 3)
+                room(Room) the room the lesson takes place in. None, if there is no lesson.
         """
         self.schedule[day][time] = room
         lesson_name = f"Lesson {day},{time}"
@@ -57,8 +68,11 @@ class School_Class :
 
     def add_student(self, student):
         """
-            adds a student to the class.
+            Adds a student to the class.
             lessons are added automatically as obligations
+
+            params: 
+                student (Person): the student to add
         """
         self.students.append(student)
         for lesson_obligation in self.lesson_obligations:
@@ -68,6 +82,9 @@ class School_Class :
         """
             removes a student from the class.
             lesson obligations are cleaned up as well.
+
+            params: 
+                student (Person): the student to remove
         """
         self.students.remove(student)
         for lesson_obligation in self.lesson_obligations:
@@ -75,9 +92,12 @@ class School_Class :
 
     def set_teacher(self, teacher):
         """
-        sets the teacher of the class.
-        Setting the teacher to None is interpreted as removing the teacher.
-        Lessen obligations are added to the teacher and removed from the previous teacher.
+            sets the teacher of the class.
+            Setting the teacher to None is interpreted as removing the teacher.
+            Lessen obligations are added to the teacher and removed from the previous teacher.
+
+            params: 
+                teacher (Person): the teacher
         """
         # remove obligations from previous teacher
         if self.teacher is not None:

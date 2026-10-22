@@ -14,7 +14,7 @@ class Gradual_Study_Priority_Change(Gradual_Change):
         """
             Constructor.
 
-            Args:
+            Params:
                 datetime (datetime): the date and time when the change should start.
                 duration (int): the number of days this change should happen over.
                 day_delta(float): priority change per day.
@@ -27,7 +27,7 @@ class Gradual_Study_Priority_Change(Gradual_Change):
 
 
 
-    def execute_gradual_change(self):
+    def _on_execute_gradual_change(self):
         """
             Ran on every gradual change.
             Needs to be overwritten for custo implementations of Gradual_Change

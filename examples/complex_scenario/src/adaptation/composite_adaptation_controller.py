@@ -17,7 +17,7 @@ class CompositeAdaptationController(Adaptation_Controller):
         """
             constructor
             
-            Args:
+            params:
                 scenario (Scenario): reference to the scenario
                 composite_predictor (Composite_Predictor): reference to the predictor
         """
@@ -47,6 +47,13 @@ class CompositeAdaptationController(Adaptation_Controller):
         """
             notifies of new predictions.
             The predictions are forwarded to the individual room adaptation controllers
+
+            Args:
+                time (datetime): the time of the data point.
+                y (array of booleans): the actual sensor data for all rooms.
+                y_pred (array of booleans): the prediction for all rooms.
+                prediction_metadata (Prediction_Metadata): the metadata of the prediction
+
         """
 
         for room_index in range(len(self.room_names)):

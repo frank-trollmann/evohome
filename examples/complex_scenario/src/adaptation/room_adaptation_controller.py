@@ -15,7 +15,7 @@ class Room_Adaptation_Controller:
 
     def __init__(self,room_name, room_index, predictor):
         """
-            constructor
+            Constructor
             
              Args:
                 room_name (string): the name of the room this adaptation controller is targeting
@@ -32,8 +32,6 @@ class Room_Adaptation_Controller:
             Called when simulation is started.
             Establishes the dataset and resents all important variables. 
         """
-
-        
         self.X_que = deque(X.to_dict(orient="records"))
         self.Y_que = deque(y.to_list())
         self.correct_prediction_count = 0
@@ -71,6 +69,12 @@ class Room_Adaptation_Controller:
         """
             Checks whether an adaptation is necessary.
             This function triggers an adaptation if the accuracy is consistently below the threshold.
+
+            Args:
+                time (datetime): the time of the data point.
+
+            Returns:
+                True if an adaptation should take place. False otherwise
         """
 
         nr_predictions_in_week = 60*24*7

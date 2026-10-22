@@ -23,7 +23,7 @@ class Composite_Predictor(Prediction_System):
         """
             constructor
 
-            Args:
+            params:
                 scenario (Scenario): reference to the simulation scenario
         """
         self.scenario = scenario

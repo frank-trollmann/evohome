@@ -5,25 +5,45 @@ import pandas as pd
 
 class Extended_Data_Recorder(Data_Recorder):
     """
-        Extended data recorder. This data recorder keeps track of teh following additional features:
+        Extended data recorder. This data recorder keeps track of the following additional features:
         - weekday: the day of the week.
         - hour: the hour the data point occurred in.
         - minute: the inute the data point occurred in.
     """
 
     def on_simulation_start(self):
+        """
+            Called when the simulation is started
+        """
         super().on_simulation_start()
         self.weekdays = []
         self.hours = []
         self.minutes = []
         
     def on_new_datapoint(self, time, sensor_data, prediction, weather, prediction_time, adaptation_time):
+        """
+            Records a new data point.
+
+            params:
+                time (Datetime): the moment of the datapoint
+                sensor_data (List<int>): the occupancy of rooms, indexed by room number.
+                prediction (List<int>): the prediction of each room, indexed by room number
+                weather (float): the suitability of weather conditions for outside activities
+                prediction_metadata: the metadata of predictions. In this scenario, this only contains prediction time.
+                adaptation_metadata: the metadata of predictions. In this scenario, this only contains adaptation time.
+        """
         super().on_new_datapoint(time, sensor_data, prediction, weather, prediction_time, adaptation_time)
         self.weekdays.append(time.weekday())
         self.hours.append(time.hour)
         self.minutes.append(time.minute)
 
     def compile_data(self):
+        """
+            Called to compile collected data into a dataset.
+            This is called before storing the dataset to hard disk
+
+            returns: the dataset to store
+        """
         data = super().compile_data()
         data["weekday"] = self.weekdays
         data["hour"] = self.hours
