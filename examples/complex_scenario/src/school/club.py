@@ -15,7 +15,7 @@ class Club :
         """
             constructor.
 
-            params:
+            Args:
                 name (string): the name of the club
                 day (int): the index of the weekday of the club (0 = Monday)
                 start_time (datetime.time): the beginning of the club obligation
@@ -38,7 +38,7 @@ class Club :
             add a student to the club.
             Also adds the obligation.
 
-            params: 
+            Args: 
                 student (Person): the student to add
         """
         if not self.paused:
@@ -51,7 +51,7 @@ class Club :
             Remove a student from the club.
             Also removes the connected obligation.
 
-            params: 
+            Args: 
                 student (Person): the student to remove
         """
         student.remove_obligation(self.obligation.name)
@@ -64,7 +64,7 @@ class Club :
             adds / removes obligation from new / old teacher.
             Setting teacher to None is interpreted as there being no supervising teacher.
 
-            params: 
+            Args: 
                 teacher (Person): the teacher
         """
         if self.teacher is not None:

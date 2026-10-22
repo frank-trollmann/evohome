@@ -14,7 +14,7 @@ class Immediate_Study_Priority_Change(Scheduled_Change):
         """
             Constructor.
 
-            params:
+            Args:
                 datetime (datetime): the date and time when the change should start.
                 duration (int): the number of days this change should happen over.
                 delta(float): priority change

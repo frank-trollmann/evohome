@@ -17,7 +17,7 @@ class CompositeAdaptationController(Adaptation_Controller):
         """
             constructor
             
-            params:
+            Args:
                 scenario (Scenario): reference to the scenario
                 composite_predictor (Composite_Predictor): reference to the predictor
         """

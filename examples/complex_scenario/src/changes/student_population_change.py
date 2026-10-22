@@ -9,7 +9,7 @@ class Student_Population_Change(Scheduled_Change):
         """
             Constructor.
 
-            params:
+            Args:
                 datetime (datetime): the date and time when the change should be executed.
                 campus (Campus): the campus to add / remove students for
                 nr_removed (int): how many students to remove

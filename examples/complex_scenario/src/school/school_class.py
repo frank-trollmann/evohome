@@ -19,7 +19,7 @@ class School_Class :
         """
             Constructor.
 
-            params:
+            Args:
                 name(string): name of the class
         """
         self.name = name
@@ -35,7 +35,7 @@ class School_Class :
             Setting a room of None is interpreted as there being no lesson. 
             Old obligations are cleaned up, if they exist.
 
-            params:
+            Args:
                 day(int) the index of the day the lesson takes place (Monday = 0)
                 time(int) the index of the time slot of the lesson (0 to 3)
                 room(Room) the room the lesson takes place in. None, if there is no lesson.
@@ -71,7 +71,7 @@ class School_Class :
             Adds a student to the class.
             lessons are added automatically as obligations
 
-            params: 
+            Args: 
                 student (Person): the student to add
         """
         self.students.append(student)
@@ -83,7 +83,7 @@ class School_Class :
             removes a student from the class.
             lesson obligations are cleaned up as well.
 
-            params: 
+            Args: 
                 student (Person): the student to remove
         """
         self.students.remove(student)
@@ -96,7 +96,7 @@ class School_Class :
             Setting the teacher to None is interpreted as removing the teacher.
             Lessen obligations are added to the teacher and removed from the previous teacher.
 
-            params: 
+            Args: 
                 teacher (Person): the teacher
         """
         # remove obligations from previous teacher

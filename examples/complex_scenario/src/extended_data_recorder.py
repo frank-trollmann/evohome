@@ -24,7 +24,7 @@ class Extended_Data_Recorder(Data_Recorder):
         """
             Records a new data point.
 
-            params:
+            Args:
                 time (Datetime): the moment of the datapoint
                 sensor_data (List<int>): the occupancy of rooms, indexed by room number.
                 prediction (List<int>): the prediction of each room, indexed by room number

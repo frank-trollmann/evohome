@@ -15,7 +15,7 @@ class Room_Predictor():
         """
             constructor
             
-            params:
+            Args:
                 room_name (string): the name of the room this adaptation controller is targeting
         """
         self.room_name = room_name
@@ -26,7 +26,7 @@ class Room_Predictor():
         """
             train the model on a provided dataset
 
-             params:
+             Args:
                 X (dataframe): A dataframe containing the training features. The model expects the features "weekday", "hour", and "minute"]
                 y (dataframe): A dataframe containing the training labels. The model expects a one-dimensional output consistent with binary classification
         """
@@ -39,7 +39,7 @@ class Room_Predictor():
         """
             predict the presence for a point in time.
 
-            params:
+            Args:
                 time(Datetime.datetime): the time for which to predict.
         """
         weekday = time.weekday()

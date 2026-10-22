@@ -9,7 +9,7 @@ class Semester_Vacation_Start_Change(Scheduled_Change):
         """
             Constructor.
 
-            params:
+            Args:
                 datetime (datetime): the date and time when the change should be executed.
                 campus (Campus): the campus affected by the change.
         """

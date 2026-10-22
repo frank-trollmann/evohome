@@ -39,7 +39,7 @@ class Simple_Adaptation_Controller(Adaptation_Controller):
 
             This function is implemented with a very rudimentary version of the MAPE-K feedback loop where K is implemented by self.X and self.Y
 
-            params:
+            Args:
                 time (Datetime): the moment of the prediction
                 y (List<int>): the occupancy of rooms, indexed by room number.
                 y_pred (List<int>): the predicted occupancy of rooms, indexed by room number (unused)
@@ -56,7 +56,7 @@ class Simple_Adaptation_Controller(Adaptation_Controller):
             This function adds the monitored information to the dataframe and keeps a consistent dataframe length.
             For consistencies sake we don't add / remove data from the frame but overwrite the elements one at a time, starting with the oldest.
 
-            params:
+            Args:
                 time (Datetime): the moment of prediction
                 y (List<int>): the occupancy of rooms, indexed by room number.
         """
@@ -75,7 +75,7 @@ class Simple_Adaptation_Controller(Adaptation_Controller):
             Checks whether an adaptation is necessary.
             This function triggers an adaptation once every week at Monday, 0:00:00, regardless of model performance,
 
-            params: 
+            Args: 
                 time (Datetime): the moment of prediction
 
             returns: true at the beginning of each week.

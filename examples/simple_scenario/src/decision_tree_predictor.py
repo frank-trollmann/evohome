@@ -36,7 +36,7 @@ class Decision_Tree_Predictor(Prediction_System):
         """
             trains the model.
 
-            params:
+            Args:
                 X (Pandas.Dataframe): the input features of the model.
                 y (Pandas.Dataframe): the training labels
         """
@@ -50,7 +50,7 @@ class Decision_Tree_Predictor(Prediction_System):
         """
             Predicts presence for one point in time.
 
-            params: 
+            Args: 
                 time (Datetime): the time for which the model is predicting
             
             returns:

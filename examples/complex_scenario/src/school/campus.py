@@ -172,7 +172,7 @@ class Campus (House):
         """
             Used to open or close dorm b.
 
-            params:
+            Args:
                 active (bool): whether or not dorm be should be open.
         """
         for room in self.dorm_b_rooms:
@@ -956,7 +956,7 @@ class Campus (House):
         """
             Create a dorm room and register it.
 
-            params: 
+            Args: 
                 name(string): the name of the room
                 x(int): the x coordinate of the room in user interface.
                 y(int): the y coordinate of the room in user interface.
@@ -974,7 +974,7 @@ class Campus (House):
         """
             Create a classroom and register it.
 
-            params: 
+            Args: 
                 name(string): the name of the room
                 x(int): the x coordinate of the room in user interface.
                 y(int): the y coordinate of the room in user interface.
@@ -991,7 +991,7 @@ class Campus (House):
         """
             Create a room. 
 
-            params: 
+            Args: 
                 name(string): the name of the room
                 x(int): the x coordinate of the room in user interface.
                 y(int): the y coordinate of the room in user interface.
@@ -1012,7 +1012,7 @@ class Campus (House):
         """
             Create a bathroom 
 
-            params: 
+            Args: 
                 name(string): the name of the room
                 x(int): the x coordinate of the room in user interface.
                 y(int): the y coordinate of the room in user interface.
@@ -1029,7 +1029,7 @@ class Campus (House):
             Create a connection between two or more rooms.
             The connection will be a room itself that contains transitions to the connected rooms.
 
-            params: 
+            Args: 
                 name(string): the name of the room
                 x(int): the x coordinate of the room in user interface.
                 y(int): the y coordinate of the room in user interface.

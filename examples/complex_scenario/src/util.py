@@ -25,7 +25,7 @@ def get_random_time_between(start_hours, start_mins, end_hours, end_mins):
     """
         Returns a random time between a start and end time
 
-        params:
+        Args:
             start_hours (Int): the hour of the start time
             start_mins (Int): the minutes of the start time
             end_hours (Int): the hour of the end time
