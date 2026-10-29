@@ -32,7 +32,7 @@ class Prediction_System:
             
             This method will be called by the simulation in consecutive order. It can be assumed to be the lastes point in a time series with constant frequency. 
 
-            parameters:
+            Args:
             - time: an object of type datetime
             - sensor_data: an array of booleans. Each element in the array corresponds to the presence sensor in a room. Rooms are represented in the same order as self.simulation.rooms.
         """
@@ -43,7 +43,7 @@ class Prediction_System:
             Method that predicts the presence in rooms. The predicted presence is made known in the prediction.
             Note that the data this prediction is made on is dependent on the implementation.
 
-            parameters:
+            Args:
             - time: the time to predict for. An object of type datetime.
         """
         return None
@@ -54,5 +54,8 @@ class Prediction_System:
             In it's default implementation the metadata is empty. Prediction time is added externally in the simulation.
 
             This method can be overwritten in order to keep track of more metadata.
+
+            Returns:
+                Rrediction_Metadata: the metadata of the prediction
         """
         return  Prediction_Metadata()

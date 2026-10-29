@@ -3,7 +3,10 @@
 class Scenario_Configuration:
     """
         This class represents the configuration of a scenario.
-        The scenario defines the initial setup and a set of change sto be executed at specific times.
+        The scenario defines the setup of the simulation. It consists of:
+        - a house with rooms and transitions through which persons can move.
+        - a set of persons, each with their own obligations and leisure activities.
+        - a set of changes that will alter the scenario at specific points in time.
     """
 
     def __init__(self):
@@ -40,7 +43,7 @@ class Scenario_Configuration:
     def get_room_names(self):
         """
             Gets the names of all rooms in the house.
-            Room names will be sorted by first name
+            Room names will be sorted alphabetically by name.
 
             Returns:
                 string[]: the names of all rooms.

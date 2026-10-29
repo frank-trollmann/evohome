@@ -11,12 +11,24 @@ from simulation.schedule_item import Schedule_Item
 from simulation.pathfinding import Pathfinding
 
 class Person_Simulator:
+    """
+        Simulator class for an object of type Person.
+        Simulates the daily schedule and movement of the person.
+    """
 
     MODE_UNDECIDED = 0
     MODE_OBLIGATION = 1
     MODE_LEISURE = 2
 
     def __init__(self, simulator, person, verbose = False):
+        """
+            Constructor.
+
+            Args:
+                simulator (Scenario_Simulator): reference to the top level simulator
+                person (Person): The person to simulate
+                verbose (bool): whether the simulation should print debug information or run silently.
+        """
         self.simulator = simulator
         self.verbose = verbose
         self.person = person
@@ -28,6 +40,9 @@ class Person_Simulator:
     def tick(self, current_time):
         """
             This function should be called every minute to update the persons position and activities
+
+            Args:
+                current_time (datetime): the current date and time of the simulation
         """
         now = current_time.time()
         if current_time.hour == 0 and current_time.minute == 0:

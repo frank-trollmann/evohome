@@ -21,6 +21,7 @@ class Room:
                 name (string): the name of the room.
                 x (int): the x coordinate of the room in the user interface.
                 y (int): the y coordinate of the room in the user interface.
+                is_outside (bool): Whether or not the room is outside the house. Rooms outside are affected by weather during selection.
                 functions (string[]): the functions of the room. See ROOM_FUNCTION_* constants.
                 ressources (string[]): the ressources available in this room (e.g., furniture).
                 is_exit (bool): True if the room is an exit from the house.
@@ -73,8 +74,11 @@ class Room:
 
     def set_active(self, active):
         """
-            sets the room to be active or inactive.
+            Sets the room to be active or inactive.
             Inactive rooms are treated as being not part of the house. They are ignored in pathfinding and activities.
+
+            Args:
+                active (bool): whether or not the room should be active.
         """
         self.is_active = active
 

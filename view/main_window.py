@@ -11,11 +11,21 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "100,100"
 pygame.init()
 
 class Main_window:
+    """
+        Main window of the visualization.
+        This window draws the state of the house (rooms, peresence of persons) in a Pygame window.
+    """
 
     initial_sleep_time = 0.1
 
    
     def __init__(self, simulation):
+        """
+            Constructor.
+
+            Args:
+                simulation (Simulation) reference to the main simulation.
+        """
         pygame.font.init()
         self.font = pygame.font.SysFont('Comic Sans MS', 20)
 
@@ -234,12 +244,21 @@ class Main_window:
         self.__draw_button(surface, ">>", faster_pos)
 
     def __speed_up(self):
+        """
+            Callback function for increasing simulation speed.
+        """
         self.sleep_time = max(self.sleep_time/ 2.0, 0.0000001)
 
     def __slow_down(self):
+        """
+            Callback function for decreasing simulation speed.
+        """
         self.sleep_time = min(self.sleep_time*2, 2.0)
 
     def __toggle_pause(self):
+        """
+            Callback function for pausing simulation.
+        """
         if self.simulation.is_paused():
             self.simulation.resume()
         else:
@@ -247,7 +266,7 @@ class Main_window:
 
     def __draw_button(self, surface, text,  position):
         """
-            draw a single button to the given surface
+            Draw a single button to the given surface.
         """
         size = self.__get_button_size()
         pygame.draw.rect(surface,(200,200,200), position + self.__get_button_size())
@@ -259,6 +278,9 @@ class Main_window:
         surface.blit(slower_text_surface,(position[0] + offset_x, position[1] + offset_y))
     
     def __event_over_button(self, event, button_position):
+        """
+            Check if an event is on top of a button.
+        """
         click_pos = event.pos
         button_size = self.__get_button_size()
         hit_x = click_pos[0] > button_position[0] and click_pos[0] < button_position[0] + button_size[0]
@@ -266,18 +288,33 @@ class Main_window:
         return hit_x and hit_y
 
     def __get_slower_button_position(self, width):
+        """
+            Determines the position of the slow down based on window width.
+        """
         return (width-150,10)
     
     def __get_faster_button_position(self, width):
+        """
+            Determines the position of the speed up button based on window width.
+        """
         return (width-50,10)
     
     def __get_pause_button_position(self,width):
+        """
+            Determines the position of the pause button based on window width.
+        """
         return (width-100,10)
 
     def __get_speed_label_position(self,width):
-            return (width-400,10)
+        """
+            Determines the position of the speed label based on window width.
+        """
+        return (width-400,10)
     
     def __get_button_size(self):
+        """
+            Determines the size of buttons.
+        """
         return (40,30)
     
 

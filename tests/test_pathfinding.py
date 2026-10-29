@@ -34,12 +34,12 @@ class Test_Pathfinding(unittest.TestCase):
     def test_find_path(self):
        pathfinding = Pathfinding.instance()
        
-       assert not pathfinding.has_path(self.room_1,self.room_4), "Path exists before calculation."
+       assert not pathfinding.__has_cached_path(self.room_1,self.room_4), "Path exists before calculation."
        
        path = pathfinding.get_path(self.house, self.room_1, self.room_4)
        assert len(path)  == 2, f"Path length wrong. Length is {len(path)}"
 
-       assert pathfinding.has_path(self.room_1,self.room_4), "Path does not exist after calculation."
+       assert pathfinding.__has_cached_path(self.room_1,self.room_4), "Path does not exist after calculation."
 
        path2 = pathfinding.get_path(self.house, self.room_1, self.room_4)
        assert path2 == path, "Dynamic programming error: Remembered path different from calculated path"

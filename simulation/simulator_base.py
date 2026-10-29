@@ -12,59 +12,69 @@ class Simulator_Base:
 
     def get_room_by_name(self, name):
         """
-            Retrieves a room by name.
-            
-            :param name: the name of the room
-            :return: the room with the given name
+            retrieves the room by name.
+
+            Args:
+                name (string) the name of the room
+
+            Returns:
+                Room: the room
         """
         return None
     
     def get_rooms(self):
         """
-            Retrieves all rooms as a list.
-            :return: a list of rooms
+            Retrieves all rooms.
+
+            Returns:
+                list<Room>: all rooms
         """
         return []
     
     def get_transitions(self):
         """
-            Retrieves all transitions. 
-            If there are no transitions to retrieve the default value of this function can be used.
-            Expected format of transitions: A dictionary from start room name to target room.
-            
-            :return: a dictionary of transitions
+            Retrieves all transitions.
+
+            Returns:
+                dictionary: A dictionary representation of transitions with source name (string) as key and target room (Room) as value
         """
         return {}
     
     def get_start_time(self):
         """
-            Retrieves the start time of the simulation.
-        
-            :return: the start time
+            Retrieves the start time of the scenario.
+
+            Returns:
+                datetime: the starting time and date
         """
         return None
     
     def tick(self, current_time):
         """
-            A simulation tick. Should adjust the simulated content to the provided time.
-        
-            :param current_time: the current time of the simulation
+            One tick in the simulation. 
+            Simulates one minute in the scenario and sets presence of persons in rooms accordingly. 
+
+            Args:
+                current_time (datetime) the current time.
+
         """
         pass
 
     def get_weather_value(self):
         """
-            Retrieves the current weather value.
-        
-            :return: the current weather value
+            retrieves the weather value
+
+            Returns:
+                float: the suitability of the current weather for outside activities.
         """
         return 0
 
     def get_background_image(self):
         """
-            Retrieves the background image for the simulation.
+            Retrieves the background image of the scenario.
 
-            :return: the background image
+            Returns: 
+                string: the url of the background image
         """
         return None
 

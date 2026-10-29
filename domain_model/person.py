@@ -46,11 +46,7 @@ class Person:
             Adds an obligation to the person.
             
             Args:
-                name (string): the name of the obligation.
-                start_time (time): the start time of the obligation.
-                end_time (time): the end time of the obligation.
-                location (Room): the location where the obligation happens. None means the location happens outside of the house.
-                weekdays (int[]): the weekdays where the obligation happens. 0 = Monday, 6 = Sunday. None means every day.
+                obligation (Obligation): the obligation to add.
         """
         self.obligations.append(obligation)
 
@@ -83,28 +79,28 @@ class Person:
             Removes a leisure activity from the person.
 
             Args:
-                name (string): the name of the leisure activity to remove.
+                activity_name (string): the name of the leisure activity to remove.
         """
         self.leisure_activities = [activity for activity in self.leisure_activities if activity[0].name != activity_name]
 
     def get_leisure_activity_priority(self,activity_name):
         """
-            retrieves the priority of a leisure activity
+            Retrieves the priority of a leisure activity.
         """
         for activity_tuple in self.leisure_activities:
             if(activity_tuple[0].name == activity_name):
                 return activity_tuple[1]
         raise Exception(f"Trying to retrieve priority for unkown activity.")
 
-    def change_leisure_activity_priority(self,activity_name, new_priority):
+    def change_leisure_activity_priority(self, activity_name, new_priority):
         """
             Changes the priority of a leisure activity.
             Args:
-                name (string): the name of the leisure activity to remove.
+                activity_name (string): the name of the leisure activity to remove.
+                new_priority (int): the new priority of the activity.
 
         """
         self.leisure_activities = [Person.__update_activity_priority_with_name(activity_tuple,activity_name,new_priority) for activity_tuple in self.leisure_activities]
-
 
     def __update_activity_priority_with_name(activity_tuple, the_name, new_priority):
             if(activity_tuple[0].name == the_name):

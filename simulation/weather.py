@@ -17,6 +17,9 @@ class Weather_Simulation:
     """
 
     def __init__(self):
+        """
+            Constructor.
+        """
         self.quality = 0
         self.adjustment = 0
         self.season_factor = 0
@@ -26,6 +29,9 @@ class Weather_Simulation:
         """
             Simulates the current weather. 
             After this has been called, the weather is stored in self.quality.
+
+            Args:
+                current_time (datetime): the current date and time.
         """
         year_day = current_time.timetuple().tm_yday
         if self.last_simulated_day != year_day:

@@ -72,7 +72,7 @@ class House:
 
     def get_adjacent_rooms(self, room):
         """
-            returns the rooms adjacent to a given room
+            Returns the rooms adjacent to a given room.
         """
         return [neighbor for neighbor in self.transitions[room.name] if neighbor.is_active]
 

@@ -36,36 +36,48 @@ class Leisure_Activity:
         self.required_ressources = set(required_ressources)
         self.prefer_closest_room = prefer_closest_room
 
-    def is_available(self,date):
+    def is_available(self,datetime):
         """
-            Checks whether the activity is currently available
+            Checks whether the activity is currently available.
+            Checks...
+            - Whether the weekday is correct
+            - Whether the time adheres to earliest and latest start time
+            - Whether there is a valid room to execute the activity in.
             
             Args:
-                date (datetime): the date to execute the activity on.
+                datetime (datetime): the date to start the activity on.
 
             Returns:
                 bool: True if the date is a day of the week where this obligation happens.
         """
-        weekday = date.weekday()
+        weekday = datetime.weekday()
         if self.weekdays is not None and weekday not in self.weekdays:
             return False
 
-        time = date.time()
+        time = datetime.time()
         if self.earliest_start_time is not None and time < self.earliest_start_time:
             return False
 
         if self.latest_start_time is not None and time > self.latest_start_time:
             return False
 
-        if not self.__valid_location_exists(date) :
+        if not self.__valid_location_exists(datetime) :
             return False
         
         return True
 
-    def find_location(self, house, current_location, time):
+    def find_location(self, house, current_location, datetime):
         """
-            finds an appropriate location.
-            Chooses an appropriate location according to the required ressources if no location is set.
+            Finds an appropriate location.
+            Chooses an appropriate location according to the required ressources if no fixed location is set.
+
+            Args:
+                house (House): the house.
+                current_location (Room): the current location of the person. Used to sort rooms according to distance, if required.
+                datetime: (Datetime): the current date and time.
+            
+            Returns:
+                The appropriate location (Location)
         """
 
         # case A: return None if no location options are set
@@ -76,7 +88,7 @@ class Leisure_Activity:
         valid_locations = []
         for location in self.location_options:
 
-            if location.is_available(time) and location.ressources_available(self.required_ressources):
+            if location.is_available(datetime) and location.ressources_available(self.required_ressources):
                 valid_locations.append(location)
 
         if len(valid_locations) > 0:
@@ -102,7 +114,10 @@ class Leisure_Activity:
     def start_activity(self, location):
         """
             Called when starting the activity.
-            Does busywork, such as blocking required ressources
+            Does busywork, such as blocking required ressources.
+
+            Args:
+                location (Room): the location in which the activity is executed.
         """
         if location is not None:
             location.block_ressources(self.required_ressources)
@@ -110,7 +125,10 @@ class Leisure_Activity:
     def end_activity(self, location):
         """
             Called when ending the activity.
-            Does busywork, such as releasing required ressources
+            Does busywork, such as releasing required ressources.
+
+            Args:
+                location (Room): the location in which the activity is executed.
         """
         if location is not None:
             location.release_ressources(self.required_ressources)
@@ -124,6 +142,9 @@ class Leisure_Activity:
 
             Args:
                 date (datetime): the date to check against room opening hours
+
+            Returns:
+                True, if there is at least one valid location.
         """
         # case A: no options set is interpreted as outside, which is always valid
         if self.location_options is None:

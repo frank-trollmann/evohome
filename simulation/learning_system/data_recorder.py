@@ -3,7 +3,7 @@ import pandas as pd
 class Data_Recorder:
     """
     
-        base class for recording data from an experiment.
+        Base class for recording data from an experiment.
         in it's base form, this class will record the following features:
         - date (datetime): the date and time of the data point
         - room_X (int): the value of the presence sensor in room number X. 0 stands for no presence, 1 for presence.
@@ -21,7 +21,10 @@ class Data_Recorder:
 
     def set_simulation(self,simulation):
         """
-            used to notify the data recorder of the simulation
+            Used to set the simulation.
+
+            Args: 
+                simulation (Simulation): the simulation
         """
         self.simulation = simulation
     
@@ -52,7 +55,7 @@ class Data_Recorder:
                 prediction (array of booleans): the prediction for all rooms.
                 weather_quality (float): the quality of the weather at this time.
                 prediction_metadata (Prediction_Metadata): the metadata of the prediction
-                adaptation_time (float): the time it took to compute the prediction.
+                adaptation_metadata (Adaptation_Metadata): the metadata of the adaptation
         """
         prediction_time = None if prediction_metadata is None else prediction_metadata.prediction_time
         adaptation_time = None if adaptation_metadata is None else adaptation_metadata.adaptation_time
