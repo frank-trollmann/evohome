@@ -11,7 +11,7 @@ class Person:
             Constructor.
             Args:
                 name (string): the name of the person.
-                ui_color (string): the color used to represent this person in the user interface.
+                ui_color (list<int>): the color represented as three integer lists (red, green, blue)
                 wake_up_time (time): the time the person naturally wakes up.
                 sleep_time (time): the time the person naturally goes to sleep.
         """
@@ -56,7 +56,7 @@ class Person:
 
             Args:
                 activity (Leisure_Activity): the leisure activity to add.
-                priority (int): the priority of the leisure activity. Higher priorities mean the activity will be chosen with higher probability.
+                priority (float): the priority of the leisure activity. Higher priorities mean the activity will be chosen with higher probability.
         """
         self.leisure_activities.append((activity,priority))
 

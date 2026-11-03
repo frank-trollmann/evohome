@@ -1,6 +1,6 @@
 
 
-class Scenario_Configuration:
+class Scenario:
     """
         This class represents the configuration of a scenario.
         The scenario defines the setup of the simulation. It consists of:
@@ -17,7 +17,7 @@ class Scenario_Configuration:
         self.background_image = None
         self.house = None
         self.persons = []
-        self.startTime = None
+        self.start_time = None
         self.changes = []
     
     def add_person(self, person):

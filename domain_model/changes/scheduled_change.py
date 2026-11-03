@@ -14,11 +14,11 @@ class Scheduled_Change:
         """
         self.datetime = datetime
 
-    def execute(self, _):
+    def execute(self, simulator):
         """
             Executes the change by modifying the given simulation.
 
             Args:
-                simulation (Scenario_Simulator): the simulation.
+                simulator (Scenario_Simulator): the simulation.
         """
         pass

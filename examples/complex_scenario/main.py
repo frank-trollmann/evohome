@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     if execution_mode == "RECORD":
         simulation.max_simulated_minutes = 90 * 24 * 60 # 90 days
-        scenario.startTime += timedelta(days = -90)
+        scenario.start_time += timedelta(days = -90)
         data_recorder = Extended_Data_Recorder("examples/complex_scenario/data/recording.pickle")
         simulation.set_data_recorder(data_recorder)
 

@@ -48,6 +48,7 @@ class Gradual_Change (Scheduled_Change):
         self._on_execute_gradual_change()
         if self.current_day >= self.duration_in_days:
             simulation.remove_gradual_change(self)
+            self._on_execution_end(simulation)
 
 
     def get_progress_fraction(self):
@@ -65,7 +66,7 @@ class Gradual_Change (Scheduled_Change):
             Interface for custom implementation.
 
             Args:
-                            simulation (Scenario_Simulator): the simulation.
+                simulation (Scenario_Simulator): the simulation.
         """
         pass
 
@@ -75,4 +76,15 @@ class Gradual_Change (Scheduled_Change):
             Interface for custom implementation.
         """
         pass
+
+    def _on_execution_end(self, simulation):
+        """
+            Called to react to end of change.
+            Interface for custom implementation.
+
+            Args:
+                simulation (Scenario_Simulator): the simulation.
+        """
+        pass
+    
 
