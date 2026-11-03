@@ -2,7 +2,7 @@ from operator import is_
 
 from datetime import datetime
 from datetime import time
-from domain_model.scenario import Scenario_Configuration
+from domain_model.scenario import Scenario
 from examples.complex_scenario.src.changes.immediate_study_priority_change import Immediate_Study_Priority_Change
 from examples.complex_scenario.src.changes.gradual_study_priority_change import Gradual_Study_Priority_Change
 from examples.complex_scenario.src.changes.open_dorm_b_change import Open_Dorm_B_Change
@@ -24,11 +24,11 @@ def create_complex_scenario():
     YEAR_1 = 2020
 
     # create base setup of scenario and campus
-    scenario = Scenario_Configuration()
+    scenario = Scenario()
     scenario.background_image = "examples/complex_scenario/images/campus.png"
     campus = Campus(scenario= scenario, nr_students= 20, random_seed= 42)
     scenario.house = campus
-    scenario.startTime = datetime(year = YEAR_1, month = 4, day = 1, hour = 0, minute = 0)
+    scenario.start_time = datetime(year = YEAR_1, month = 4, day = 1, hour = 0, minute = 0)
 
     # schedule all changes:
     for year in range(YEAR_1, YEAR_1 + YEARS):

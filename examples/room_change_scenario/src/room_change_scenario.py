@@ -7,7 +7,7 @@ from domain_model.changes.room_activation_change import Room_Activation_Change
 from domain_model.changes.room_ressource_change import Room_Ressource_Change
 from domain_model.leisure_activity import Leisure_Activity
 from domain_model.obligation import Obligation
-from domain_model.scenario import Scenario_Configuration
+from domain_model.scenario import Scenario
 from domain_model.house import House
 from domain_model.room import Room
 from domain_model.person import Person
@@ -27,11 +27,11 @@ def create_room_change_scenario():
     """
 
     # create base setup of scenario and house
-    scenario = Scenario_Configuration()
+    scenario = Scenario()
     scenario.background_image = "examples/room_change_scenario/images/room_change_house.png"
     house = House()
     scenario.house = house
-    scenario.startTime = datetime(year = 2020, month = 1, day = 1, hour = 0, minute = 0)
+    scenario.start_time = datetime(year = 2020, month = 1, day = 1, hour = 0, minute = 0)
 
     # create rooms and transitions
     kitchen = Room("Kitchen", 200, 550, functions = [Room.FUNCTION_COOK])

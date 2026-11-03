@@ -6,7 +6,7 @@ from domain_model.changes.obligation_add_change import Obligation_Add_Change
 from domain_model.changes.obligation_remove_change import Obligation_Remove_Change
 from domain_model.leisure_activity import Leisure_Activity
 from domain_model.obligation import Obligation
-from domain_model.scenario import Scenario_Configuration
+from domain_model.scenario import Scenario
 from domain_model.changes.move_out_change import Move_Out_Change
 from domain_model.house import House
 from domain_model.room import Room
@@ -25,11 +25,11 @@ def create_simple_scenario():
     """
 
     # create base setup of scenario and house
-    scenario = Scenario_Configuration()
+    scenario = Scenario()
     scenario.background_image = "examples/simple_scenario/images/house.png"
     house = House()
     scenario.house = house
-    scenario.startTime = datetime(year = 2020, month = 6, day = 1, hour = 0, minute = 0)
+    scenario.start_time = datetime(year = 2020, month = 6, day = 1, hour = 0, minute = 0)
 
 
     # create rooms and transitions
