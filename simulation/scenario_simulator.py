@@ -90,7 +90,7 @@ class Scenario_Simulator(Simulator_Base):
             Returns:
                 datetime: the starting time and date
         """
-        return copy(self.scenario.startTime)
+        return copy(self.scenario.start_time)
     
     def tick(self, current_time):
         """
